@@ -1,16 +1,31 @@
+/* Copyright (C) 2005 Jakub Wilk
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published 
+ * by the Free Software Foundation.
+ */
+
 #include "common.h"
 #include "ui.h"
 
-#include <ctype.h>
-#include <curses.h>
-#include <limits.h>
+#include <signal.h>
 
-#include "io.h"
-#include "hue.h"
+#define _XOPEN_SOURCE_EXTENDED 
+#include <ncursesw/ncurses.h>
+
 #include "html.h"
+#include "hue.h"
+#include "io.h"
 #include "terminfo.h"
+#include "unicode.h"
 
-static WINDOW *wscreen, *wmenu, *wview;
+#define w_count 5
+#define wmenu   windows[0]
+#define wview   windows[1]
+#define wtitle  windows[2]
+#define wscroll windows[3]
+#define wstatus windows[4]
+
+static WINDOW* windows[w_count];
 
 static int attrs[HUE_count];
 
@@ -31,73 +46,117 @@ void ui_cursor(bool store)
 #define ui_restore_cursor() \
   do ui_cursor(false); while(false)
 
-void ui_redraw_statusline(bool activemenu)
+void ui_show_statusline(bool activemenu)
 {
   ui_store_cursor();
-  wattrset(wscreen, attrs[HUE_default]);
-  mvwaddch(wscreen, LINES-1, c_menu_width+2, activemenu ? ACS_LRCORNER : ACS_LLCORNER);
-  wattrset(wscreen, attrs[activemenu ? HUE_default : HUE_dimmed]);
-  mvwhline(wscreen, LINES-1, 0, ACS_HLINE, c_menu_width+2);
-  wattrset(wscreen, attrs[!activemenu ? HUE_default : HUE_dimmed]);
-  mvwhline(wscreen, LINES-1, c_menu_width+3, ACS_HLINE, COLS-c_menu_width-5);
-  wnoutrefresh(wscreen);
+  wattrset(wstatus, attrs[HUE_default]);
+  mvwaddch(wstatus, 0, c_menu_width+2, activemenu ? ACS_LRCORNER : ACS_LLCORNER);
+  wattrset(wstatus, attrs[activemenu ? HUE_default : HUE_dimmed]);
+  mvwhline(wstatus, 0, 0, ACS_HLINE, c_menu_width+2);
+  wattrset(wstatus, attrs[!activemenu ? HUE_default : HUE_dimmed]);
+  mvwhline(wstatus, 0, c_menu_width+3, ACS_HLINE, COLS-c_menu_width-3);
+  wnoutrefresh(wstatus);
   ui_restore_cursor();
 }
 
-bool ui_prepare(void)
+struct scrollbar_t
+{
+  WINDOW* window;
+  unsigned int range;
+  unsigned int position;
+  unsigned int height;
+  bool disabled;
+};
+
+static void ui_show_scrollbar(struct scrollbar_t *scrollbar)
+{
+  if (scrollbar->disabled)
+    return;
+  unsigned int height = scrollbar->height;
+  ui_store_cursor();
+  wattrset(scrollbar->window, attrs[HUE_default]);
+  mvwvline(scrollbar->window, 0, 0, ACS_VLINE, height);
+  if (scrollbar->range > 0)
+  {
+    height--;
+    unsigned int range = scrollbar->range;
+    unsigned int start = (range/2 + height*scrollbar->position)/range;
+    unsigned int stop = (range/2 + height*(1+scrollbar->position))/range;
+    unsigned int size = stop - start;
+    if (size == 0)
+      size++;
+    mvwvline(scrollbar->window, start, 0, ACS_CKBOARD, size);
+  }
+  wnoutrefresh(scrollbar->window);
+  wrefresh(wview); // !
+  ui_restore_cursor();
+}
+
+#define COLOR_DEFAULT (-1)
+
+inline bool ui_prepare(void)
 {
   if (!is_term)
     return false; // FIXME
-  wscreen = initscr();
 
-  halfdelay(3);
-  noecho();
-  nonl();
+  initscr();
+  halfdelay(1); raw();
+  noecho(); nonl();
   intrflush(NULL, FALSE);
+  keypad(stdscr, TRUE);
+ 
+  curs_set(0);
   
   start_color();
+  use_default_colors();
 #define build_attr(k, f, g, a) \
   do { \
     init_pair(HUE_##k, COLOR_##f, COLOR_##g); attrs[HUE_##k] = COLOR_PAIR(HUE_##k) | (a); \
   } while(false)
-  
-  build_attr(tluafed, WHITE, BLACK, 0);
+  build_attr(tluafed, WHITE, DEFAULT, 0);
   attrs[HUE_misc] = attrs[HUE_default];
   attrs[HUE_bold] = attrs[HUE_default] | A_BOLD;
   build_attr(reverse, BLACK, WHITE, 0);
   build_attr(title, WHITE, BLUE, 0);
   attrs[HUE_boldtitle] = attrs[HUE_title] | A_BOLD;
   build_attr(highlight, WHITE, MAGENTA, A_BOLD);
-  build_attr(hyperlink, CYAN, BLACK, 0);
-  build_attr(italic, RED, BLACK, 0);
+  build_attr(hyperlink, CYAN, DEFAULT, 0);
+  build_attr(italic, RED, DEFAULT, 0);
   attrs[HUE_phraze] = attrs[HUE_italic] | A_BOLD;
-  build_attr(dimmed, BLACK, BLACK, A_BOLD);
+  build_attr(dimmed, BLACK, DEFAULT, A_BOLD);
 #undef build_color
   
-  wattrset(wscreen, attrs[HUE_reverse]);
-  mvwhline(wscreen, 0, 0, ' ', COLS);
-  mvwaddstr(wscreen, 0, 1, "pwnsjp-interactive " K_VERSION);
-  wattrset(wscreen, attrs[HUE_default]);
-  mvwvline(wscreen, 1, c_menu_width+2, ACS_VLINE, LINES-2);
-  keypad(wscreen, TRUE);
+  wnoutrefresh(stdscr);
+ 
+  wtitle = newwin(1, 0, 0, 0);
+  wattrset(wtitle, attrs[HUE_reverse]);
+  mvwhline(wtitle, 0, 0, ' ', COLS);
+  mvwaddstr(wtitle, 0, 1, "pwnsjp-interactive " K_VERSION);
+  
+  wscroll = newwin(LINES-2, 1, 1, c_menu_width+2);
+  struct scrollbar_t scrollbar;
+  memset(&scrollbar, 0, sizeof(scrollbar));
+  scrollbar.window = wscroll;
+  scrollbar.height = LINES-2;
+  ui_show_scrollbar(&scrollbar);
   
   wmenu = newwin(LINES-3, c_menu_width, 2, 1);
 
   wview = newwin(LINES-3, 0, 2, c_menu_width+4);
-  mvwaddstr(wview, 0, 0, "Proszê czekaæ, trwa budowanie indeksu..."); // FIXME: locale dependent
+  char* message = ustr_to_str(L"Prosz\u0119 czeka\u0107, trwa budowanie indeksu...");
+  mvwaddstr(wview, 0, 0, message);
+  free(message);
+ 
+  wstatus = newwin(0, 0, LINES-1, 0);
+  ui_show_statusline(true);
   
-  ui_redraw_statusline(true);
-  
-  wnoutrefresh(wscreen);
-  wnoutrefresh(wmenu);
-  wnoutrefresh(wview);
-
+  unsigned int i;
+  for (i=0; i<w_count; i++)
+    wnoutrefresh(windows[i]);
   doupdate();
   
   return true;
 }
-
-#define KEY_ESC 0x1b
 
 struct view_t;
 
@@ -105,11 +164,12 @@ struct menu_t
 {
   struct io_t* io;
   struct view_t* view;
+  struct scrollbar_t scrollbar;
   unsigned int width;
   unsigned int height;
   unsigned int entry_no;
   int entry_page_no;
-  char search[c_search_limit];
+  wchar_t search[c_search_limit];
   unsigned int search_len;
   unsigned int search_pos;
 };
@@ -118,6 +178,7 @@ struct view_t
 {
   struct io_t* io;
   struct menu_t* menu;
+  struct scrollbar_t scrollbar;
   char* content;
   bool content_needfree;
   unsigned int lines;
@@ -127,10 +188,15 @@ struct view_t
   unsigned int entry_no;
 };
 
-static bool ui_search(struct menu_t *menu)
+static inline bool ui_search(struct menu_t *menu)
 {
+  assert(menu != NULL);
+  assert(menu->io != NULL);
+
   unsigned int prev = menu->entry_no;
-  menu->entry_no = io_locate(menu->io, menu->search);
+  char* search = ustr_to_str(menu->search);
+  menu->entry_no = io_locate(menu->io, search);
+  free(search);
   if (prev == menu->entry_no)
     return false;
   if 
@@ -140,16 +206,33 @@ static bool ui_search(struct menu_t *menu)
   return true;
 }
 
-static void ui_redraw_menu(struct menu_t *menu)
+static void ui_show_menu(struct menu_t *menu)
 {
   unsigned int i, j;
+  bool almostfound;
+  
+  assert(menu != NULL);
+  assert(menu->io != NULL);
+  
+  wchar_t* hide = str_to_ustr(menu->io->iitems[menu->entry_no].entry);
+  wchar_t* seek = menu->search;
+  i = wcslen(hide);
+  j = wcslen(seek);
+  if (i < j)
+    almostfound = false;
+  else
+  {
+    hide[j] = L'\0';
+    almostfound = wcscoll(hide, seek) == 0;
+  }
+  free(hide);
 
   werase(wmenu);
-  wattrset(wmenu, A_BOLD);
+  wattrset(wmenu, almostfound ? A_BOLD : A_NORMAL);
   waddch(wmenu, '[');
   mvwhline(wmenu, 0, 1, '_', menu->width-2);
   mvwaddch(wmenu, 0, menu->width-1, ']');
-  mvwaddstr(wmenu, 0, 1, menu->search);
+  mvwaddwstr(wmenu, 0, 1, menu->search);
   if (menu->entry_no >= menu->entry_page_no + menu->height)
     menu->entry_page_no += menu->height;
   if ((unsigned int)(menu->entry_page_no + menu->height) > menu->io->isize)
@@ -167,6 +250,9 @@ static void ui_redraw_menu(struct menu_t *menu)
   wattrset(wmenu, A_NORMAL);
   wmove(wmenu, 0, 1+menu->search_pos);
   wnoutrefresh(wmenu);
+
+  menu->scrollbar.position = menu->entry_no;
+  ui_show_scrollbar(&menu->scrollbar);
 }
 
 static void ui_show_content(struct view_t *view)
@@ -192,13 +278,13 @@ static void ui_show_content(struct view_t *view)
   }
   else
   {
-    if (view->position < 0)
-      view->position = 0;
     if 
       ( view->position + view->height > 0 &&
         (unsigned int)(view->position + view->height) > view->lines 
       )
       view->position = view->lines - view->height;
+    if (view->position < 0)
+      view->position = 0;
   }
 
   char *left, *right;
@@ -215,8 +301,9 @@ static void ui_show_content(struct view_t *view)
 #define flush() \
   do { \
     int len = right-left; \
-    if (len > xlimit) cr(); \
-    xlimit -= len; \
+    int width = strnwidth(left, len); \
+    if ((width > xlimit) || (width < 3 && xlimit < 7)) cr(); \
+    xlimit -= width; \
     if (canwrite()) \
       waddnstr(wview, left, len); \
     if (xlimit <= 0) cr(); \
@@ -228,13 +315,13 @@ static void ui_show_content(struct view_t *view)
     xlimit = view->width; \
     if (canwrite()) \
     { \
-      ylimit--; \
+      if (--ylimit <= 0) goto exceed; \
       waddch(wview, '\n'); \
     } \
     y++; \
   } while (false)
   
-  while (*right && ylimit > 0)
+  while (*right)
   {
     if (esc)
     {
@@ -245,7 +332,7 @@ static void ui_show_content(struct view_t *view)
     else 
     switch (*right)
     {
-    case KEY_ESC:
+    case '\x1b':
       esc = true;
       flush();
       left++;
@@ -270,7 +357,9 @@ static void ui_show_content(struct view_t *view)
     }
     right++;
   }
-  flush();
+exceed:
+  if (ylimit > 0)
+    flush();
 #undef canwrite
 #undef flush
 #undef cr
@@ -281,78 +370,89 @@ static void ui_show_content(struct view_t *view)
     return ui_show_content(view);
   }
 
-  wnoutrefresh(wscreen);
   wnoutrefresh(wview);
 
+  if (view->height > view->lines)
+    view->scrollbar.range = 0;
+  else
+    view->scrollbar.range = view->lines - view->height;
+  view->scrollbar.position = view->position;
+  ui_show_scrollbar(&view->scrollbar);
+  
   ui_restore_cursor();
 }
 
-inline void ui_react_menu(struct menu_t *menu, int ch)
+static void ui_react_menu(struct menu_t *menu, wchar_t ch)
 {
+  assert(menu != NULL);
+  
+#define reject(p) \
+  do if (p) { beep(); return; } while(false)
+
+  unsigned int i;
+  
   switch (ch)
   {
   case KEY_DC:
-    if (menu->search_pos >= menu->search_len)
-    {
-      beep();
-      break;
-    }
+    reject(menu->search_pos >= menu->search_len);
     menu->search_pos++;
-  case '\b':
-  case '\x7f':
+  case -L'\b':
+  case -L'\x7f':
   case KEY_BACKSPACE:
-    if (menu->search_len > 0 && menu->search_pos > 0)
-    {
-      unsigned int i;
-      for (i=menu->search_pos-1; i<menu->search_len; i++)
-        menu->search[i]=menu->search[i+1];
-      menu->search_len--;
-      menu->search_pos--;
-      if (ui_search(menu))
-        ui_show_content(menu->view);
-      ui_redraw_menu(menu);
-      doupdate();
-    }
-    else
-      beep();
+    reject(menu->search_len == 0 || menu->search_pos == 0);
+    for (i=menu->search_pos-1; i<menu->search_len; i++)
+      menu->search[i]=menu->search[i+1];
+    menu->search_len--;
+    menu->search_pos--;
+    if (ui_search(menu))
+      ui_show_content(menu->view);
+    ui_show_menu(menu);
+    doupdate();
+    break;
+  case L'@'-L'A': // Control + A
+    reject(menu->search_pos == 0);
+    menu->search_pos = 0;
+    ui_show_menu(menu);
+    doupdate();
+    break;
+  case L'@'-L'E': // Control + E
+    reject(menu->search_pos >= menu->search_len);
+    menu->search_pos = menu->search_len;
+    ui_show_menu(menu);
+    doupdate();
     break;
   case KEY_RIGHT:
-    if (menu->search_pos >= menu->search_len)
-    {
-      beep();
-      break;
-    }
+    reject(menu->search_pos >= menu->search_len);
     menu->search_pos += 2;
-    ui_redraw_menu(menu);
-    doupdate();
   case KEY_LEFT:
-    if (menu->search_pos <= 0)
-      beep();
-    else
-    {
-      menu->search_pos--;
-      ui_redraw_menu(menu);
-      doupdate();
-    }
+    reject(menu->search_pos == 0);
+    menu->search_pos--;
+    ui_show_menu(menu);
+    doupdate();
+    break;
+  case KEY_HOME:
+    reject(menu->entry_no == 0);
+    menu->entry_page_no = menu->entry_no = 0;
+    ui_show_content(menu->view);
+    ui_show_menu(menu);
+    doupdate();
+    break;
+  case KEY_END:
+    reject(menu->entry_no == menu->io->isize-1);
+    menu->entry_page_no = menu->entry_no = menu->io->isize-1;
+    ui_show_content(menu->view);
+    ui_show_menu(menu);
+    doupdate();
     break;
   case KEY_UP:
-    if (menu->entry_no > 0)
-      menu->entry_no -= 2;
-    else
-    {
-      beep();
-      break;
-    }
+    reject(menu->entry_no == 0);
+    menu->entry_no -= 2;
   case KEY_DOWN:
-    if (menu->entry_no + 1 >= menu->io->isize)
-      beep();
-    else
-    {
-      menu->entry_no++;
-      ui_show_content(menu->view);
-      ui_redraw_menu(menu);
-      doupdate();
-    }
+    reject(menu->entry_no + 1 >= menu->io->isize);
+    menu->entry_no++;
+    ui_show_content(menu->view);
+    ui_show_menu(menu);
+    doupdate();
     break;
   case KEY_NPAGE:
     menu->entry_no += menu->height;
@@ -362,7 +462,7 @@ inline void ui_react_menu(struct menu_t *menu, int ch)
       beep();
     }
     ui_show_content(menu->view);
-    ui_redraw_menu(menu);
+    ui_show_menu(menu);
     doupdate();
     break;
   case KEY_PPAGE:
@@ -374,16 +474,15 @@ inline void ui_react_menu(struct menu_t *menu, int ch)
     else
       menu->entry_no -= menu->height;
     ui_show_content(menu->view);
-    ui_redraw_menu(menu);
+    ui_show_menu(menu);
     doupdate();
     break;
   default:
-    if (!isprint(ch) || (unsigned int)ch >= 0x100 || menu->search_len >= c_search_limit)
-    {
-      beep();
-      break;
-    }
-    unsigned int i;
+    reject 
+      ( (ch = -ch) < L'\0' ||
+        !iswprint(ch) ||
+        wcwidth(ch) != 1 ||
+        menu->search_len >= c_search_limit );
     for (i=menu->search_len; i>menu->search_pos; i--)
       menu->search[i]=menu->search[i-1];
     menu->search[menu->search_pos] = ch;
@@ -391,13 +490,16 @@ inline void ui_react_menu(struct menu_t *menu, int ch)
     menu->search_pos++;
     if (ui_search(menu))
       ui_show_content(menu->view);
-    ui_redraw_menu(menu);
+    ui_show_menu(menu);
     doupdate();
   }
+#undef reject
 }
 
-inline void ui_react_view(struct view_t *view, int ch)
+static inline void ui_react_view(struct view_t *view, wchar_t ch)
 {
+  assert(view!=NULL);
+
   /* TODO: add some beeps */
   switch (ch)
   {
@@ -405,6 +507,16 @@ inline void ui_react_view(struct view_t *view, int ch)
     view->position -= 2;
   case KEY_DOWN:
     view->position++;
+    ui_show_content(view);
+    doupdate();
+    break;
+  case KEY_HOME:
+    view->position=0;
+    ui_show_content(view);
+    doupdate();
+    break;
+  case KEY_END:
+    view->position = INT_MAX;
     ui_show_content(view);
     doupdate();
     break;
@@ -424,11 +536,7 @@ inline void ui_react_view(struct view_t *view, int ch)
 void ui_start(struct io_t *io)
 {
   assert(is_term);
-  assert(wscreen!=NULL && wmenu!=NULL && wview!=NULL);
-  assert(io!=NULL);
-  
-  werase(wview);
-  wrefresh(wview);
+  assert(io != NULL);
 
   bool activemenu = true;
   struct menu_t menu;
@@ -440,39 +548,72 @@ void ui_start(struct io_t *io)
   menu.view = &view;
   menu.width = c_menu_width;
   menu.height = LINES - 4; // FIXME: this could be negative
+  menu.scrollbar.height = LINES - 2;
+  menu.scrollbar.range = io->isize-1;
+  menu.scrollbar.window = wscroll;
   
   view.io = io;
   view.menu = &menu;
   view.width = COLS - c_menu_width - 5; // FIXME
   view.height = LINES - 3; // FIXME: this could be negative
+  view.scrollbar.height = LINES - 2;
+  view.scrollbar.window = wscroll;
+  view.scrollbar.disabled = true;
   
   ui_show_content(&view);
-  ui_redraw_menu(&menu);
+  ui_show_menu(&menu);
   doupdate();
- 
+  curs_set(1);
+  
   bool doexit = false;
   
   while (!doexit)
   {
-    int ch;
-    ch = getch();
+    wint_t chi;
+    int r = get_wch(&chi);
+    wchar_t ch = chi;
+    switch (r)
+    {
+    case OK:
+      if (ch > L'\0')
+      {
+        ch = -ch;
+        break;
+      }
+    case ERR:
+      ch = L'\0';
+      break;
+    default:
+      ;
+    }
     switch (ch)
     {
-    case ERR:
+    case L'\0':
       break;
-    case '\t':
+    case -L'\t':
       activemenu = !activemenu;
-      ui_redraw_statusline(activemenu);
+      menu.scrollbar.disabled = !activemenu;
+      view.scrollbar.disabled = activemenu;
+      ui_show_statusline(activemenu);
+      if (activemenu)
+        ui_show_scrollbar(&menu.scrollbar);
+      else
+        ui_show_content(&view);
       doupdate();
+      curs_set(activemenu);
       break;
-    case KEY_ESC:
-      ch = wgetch(wmenu);
-      if (ch == KEY_ESC || ch == ERR)
-        doexit = true;
+    case -L'\x1b': // Escape
+      r = get_wch(&chi);
+      ch = chi;
+      if (r != ERR && ch != L'\x1b')
+        break;
+    case L'@'-L'C': // Control + C
+    case L'@'-L'\\': // Control + Backslash
+      doexit = true;
       break;
     case KEY_ENTER:
-    case '\n':
-    case '\r':
+    case -L'\n':
+    case -L'\r':
       ui_show_content(&view);
       doupdate();
     default:
@@ -489,11 +630,11 @@ void ui_start(struct io_t *io)
 
 void ui_stop(void)
 {
-  assert(wscreen!=NULL && wmenu!=NULL && wview!=NULL);
-  delwin(wmenu);
-  delwin(wview);
-  werase(wscreen);
-  wrefresh(wscreen);
+  unsigned int i;
+  for (i=0; i<=w_count; i++)
+    delwin(windows[i]);
+  erase();
+  refresh();
   endwin();
 }
 

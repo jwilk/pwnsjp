@@ -1,3 +1,9 @@
+/* Copyright (C) 2005 Jakub Wilk
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published 
+ * by the Free Software Foundation.
+ */
+
 #include "common.h"
 
 #ifndef IO_H
@@ -34,13 +40,13 @@ struct io_t
   unsigned char* cbuffer;
 };
 
-bool io_init(struct io_t *io, char* filename);
+bool io_init(struct io_t *io, const char* filename);
 bool io_validate(struct io_t *io);
 bool io_prepareindex(struct io_t *io);
 bool io_buildindex(struct io_t *io);
 void io_read(struct io_t *io, size_t indexno);
 bool io_fine(struct io_t *io);
-unsigned int io_locate(struct io_t *io, char* search);
+unsigned int io_locate(struct io_t *io, const char* search);
 
 #endif
 

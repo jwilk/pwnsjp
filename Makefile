@@ -1,6 +1,6 @@
-M_VERSION = 0.333
+M_VERSION = 0.336
 
-M_BUILD_HEADERS = no	# yes | no
+M_BUILD_HEADERS = yes	# yes | no
 M_DEBUG = no			# yes | no
 M_PROFILE = no			# yes | no
 M_COMPILER = gcc		# gcc | icc
@@ -14,7 +14,7 @@ CC = $(strip ${M_COMPILER})
 CFLAGS = \
 	$(CFLAGS_opt) $(CFLAGS_wrn) $(CFLAGS_std) $(CFLAGS_dbg)
 
-CFLAGS_opt := -O3
+CFLAGS_opt := -O3 -fstrict-aliasing -finline-limit=1200
 CFLAGS_ld  := -lz -lncursesw
 CFLAGS_dbg :=
 STRIP = strip -s
@@ -24,7 +24,7 @@ ifeq ($(strip ${M_DEBUG}),yes)
 	STRIP = @true
 endif
 ifeq ($(strip ${M_COMPILER}),gcc)
-	CFLAGS_wrn := -W -Wall
+	CFLAGS_wrn := -W -Wall -Winline
 	CFLAGS_std := --std=gnu99
 	ifeq ($(strip ${M_PROFILE}),yes)
 		CFLAGS_dbg += -pg
@@ -44,20 +44,13 @@ ifeq ($(strip ${K_VALIDATE_DATAFILE}),yes)
 	CFLAGS_def += -DK_VALIDATE_DATAFILE
 endif
 
-HFILES = \
-	cmap-cp1250.h cmap-iso8859-16.h cmap-iso8859-2.h cmap-usascii.h \
-	entity.h entity-hash.h \
-	config.h html.h io.h terminfo.h ui.h unicode.h \
-	byteorder.h hue.h validate.h \
-	common.h
-
-CFILES = config.c html.c hue.c io.c main.c terminfo.c ui.c unicode.c
+HFILES = $(wildcard *.h)
+CFILES = $(wildcard *.c)
 OFILES = $(CFILES:.c=.o)
+MAKEFILES = Makefile $(wildcard Makefile.*)
+SOURCEFILES = $(CFILES) $(HFILES) $(MAKEFILES)
 
-DISTFILES = \
-	README \
-	Makefile Makefile.dep Makefile.conf \
-	$(HFILES) $(CFILES) script/ data/
+DISTFILES = README $(SOURCEFILES) script/ data/
 
 all: pwnsjp pwnsjpi tags
 
@@ -94,27 +87,14 @@ pwnsjp: $(OFILES)
 	$(STRIP) ${@}
 
 ifeq ($(strip ${M_BUILD_HEADERS}),yes)
-
-cmap-cp1250.h: data/cmap-cp1250.gz script/cmap-cp1250.h.in
-	zcat ${<} | script/cmap-cp1250.h.in > ${@}
-
-cmap-iso8859-2.h: data/cmap-iso8859-2.gz script/cmap-iso8859-n.h.in
-	zcat ${<} | script/cmap-iso8859-n.h.in 2 > ${@}
-
-cmap-iso8859-16.h: data/cmap-iso8859-16.gz script/cmap-iso8859-n.h.in
-	zcat ${<} | script/cmap-iso8859-n.h.in 16 > ${@}
-
-cmap-usascii.h: script/cmap-usascii.h.in
-	script/cmap-usascii.h.in > ${@}
-
-entity.h: data/entities.dat script/entity.h.in
-	script/entity.h.in < ${<} > ${@}
-
-entity-hash.h: data/entities.dat script/entity-hash.h.in
-	script/entity-hash.h.in < ${<} > ${@}
-	
+include Makefile.hdr
 endif
-	
-.PHONY: all clean test ui-test dist
+
+
+stats:
+	@echo $(shell cat ${SOURCEFILES} script/* | wc -l) lines.
+	@echo $(shell cat ${SOURCEFILES} script/* | wc -c) bytes.
+
+.PHONY: all clean test ui-test dist stats
 
 # vim:ts=4

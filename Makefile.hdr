@@ -1,0 +1,32 @@
+COPYRIGHT = data/copyright.inc.h
+GENCOPYRIGHT = grep -v '^//' $(COPYRIGHT)
+
+AUTOHFILES = $(wildcard cmap-*.h) $(wildcard entity*.h)
+
+$(AUTOHFILES): $(COPYRIGHT)
+
+cmap-cp1250.h: data/cmap-cp1250.gz script/cmap-cp1250.h.in
+	$(GENCOPYRIGHT) > ${@}
+	zcat ${<} | script/cmap-cp1250.h.in >> ${@}
+
+cmap-iso8859-2.h: data/cmap-iso8859-2.gz script/cmap-iso8859-n.h.in
+	$(GENCOPYRIGHT) > ${@}
+	zcat ${<} | script/cmap-iso8859-n.h.in 2 >> ${@}
+
+cmap-iso8859-16.h: data/cmap-iso8859-16.gz script/cmap-iso8859-n.h.in
+	$(GENCOPYRIGHT) > ${@}
+	zcat ${<} | script/cmap-iso8859-n.h.in 16 >> ${@}
+
+cmap-usascii.h: script/cmap-usascii.h.in
+	$(GENCOPYRIGHT) > ${@}
+	script/cmap-usascii.h.in >> ${@}
+
+entity.h: data/entities.dat script/entity.h.in
+	$(GENCOPYRIGHT) > ${@}
+	script/entity.h.in < ${<} >> ${@}
+
+entity-hash.h: data/entities.dat script/entity-hash.h.in
+	$(GENCOPYRIGHT) > ${@}
+	script/entity-hash.h.in < ${<} >> ${@}
+
+# vim:ts=4

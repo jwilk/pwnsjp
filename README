@@ -1,8 +1,8 @@
  _ ____ __ ___ _  ___(*)_ __
 | '_ \ V  V / ' \(_-<| | '_ \
 | .__/\_/\_/|_||_/__// | .__/
-|_|= wersja 0.330 =|__/|_|===
-==== |2005-02-17| ===========
+|_|= wersja 0.336 =|__/|_|===
+==== |2005-02-19| ===========
 
 *pwnsjp* to interfejs do trzytomowego _S³ownika jêzyka polskiego_
 Wydawnictwa Naukowego PWN, który niegdy¶ zosta³ do³±czony do Gazety
@@ -16,7 +16,8 @@ Plik ten ma 107 564 724 bajów, a programy `md5sum' i `sha1sum' mówi± o nim:
   (sha1) 89bf99c22089252caaa315ae906306c75a73dc9b
 
 Program powinien daæ siê skompilowaæ i uruchomiæ na ka¿dej maszynie 
-z systemem uniksopodobnym systemem operacyjnym. 
+z systemem uniksopodobnym systemem operacyjnym (o ile tylko spe³nione
+zostan± wymagania kompilacji; patrz ni¿ej).
 Wszak¿e zosta³ przetestowany jedynie na Debianie Sarge i procesorze
 little-endianowym.
 
@@ -32,14 +33,14 @@ Do kompilacji potrzeba:
     przetestowano z wersjami 1.2.1 i 1.2.2
  -- biblioteki ncursesw (ncurses z obs³ug± unikodu);
     przetestowano z wersj± 5.4
- -- perla, ale tylko w razie konieczno¶ci od¶wie¿enia niektórych
-    generowanych automatycznie plików nag³ówkowych 
-    (czyli NIE w przypadku kompilacji niemodyfikowanej wersji);
-    przetestowano z wersjami 5.8.4 i 5.8.5
- -- programu konwert, ale tylko w razie konieczno¶ci od¶wie¿enia pliku
-    nag³ówkowego `cmap-usascii.h' (czyli NIE w przypadku kompilacji
-    niemodyfikowanej wersji);
-    przetestowano z wersj± 1.8
+ -- w razie konieczno¶ci od¶wie¿enia niektórych generowanych automatycznie
+    plików nag³ówkowych (czyli NIE w przypadku kompilacji niemodyfikowanej
+    wersji), dodatkowo:
+     -- perla w wersji co najmniej 5.6.1;
+        przetestowano z wersjami 5.8.4 i 5.8.5
+     -- programu konwert; przetestowano z wersj± 1.8
+        _lub_
+        programu links lub elinks; przetestowano z elinks 0.9.2rc4
 
 Kompilacja polega na dostosowaniu do swoich potrzeb pliku `Makefile.conf'
 (oraz, ewentualnie, `Makefile') i odpaleniu polecenia `make'.
@@ -71,6 +72,8 @@ Licencja:
   w wersji 2.
 
 Dziennik (ha, ha) zmian:
+  -- 2005-02-19 (0.335)
+     wersja interaktywna jest ju¿ u¿ywalna
   -- 2005-02-17
      subtelnie poprawione renderowanie HTML-u;
      poszczególne has³a s± wyra¼nie od siebie oddzielane;
@@ -82,8 +85,8 @@ Dziennik (ha, ha) zmian:
      podówczas pierwsz± literê kodu napisano
 
 B³êdy, przemy¶lenia, TODO:
+  -- wersja interaktywna nie reaguje na zmiany wieloko¶ci terminala
   -- czy na pewno zadzia³a na procesorze big-endianowym?
-  -- potrzebna wersja interaktywna
   -- kolory s± niekonfigurowalne
   -- wizualizacja HTML-u jest kiepska
   -- budowanie indeksu jest *stanowczo* zbyt wolne, mo¿e nale¿y budowaæ

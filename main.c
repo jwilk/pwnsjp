@@ -1,3 +1,9 @@
+/* Copyright (C) 2005 Jakub Wilk
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published 
+ * by the Free Software Foundation.
+ */
+
 #include "common.h"
 #include <unistd.h>
 #include <errno.h>
@@ -6,13 +12,6 @@
 #include <sys/types.h>
 
 #include <regex.h>
-
-#ifndef K_DATA_PATH
-#  define K_DATA_PATH "./slo.win"
-#endif
-#ifndef K_VERSION
-#  define K_VERSION "<devel>"
-#endif
 
 #include "byteorder.h"
 #include "config.h"
@@ -92,9 +91,15 @@ int main(int argc, char **argv)
     ;
   }
   
-
   unicode_init();
 
+#if 0
+  char* s = ustr_to_str(L"Z\u017c\u00f3\u0142kn\u0105\u0107by");
+  int len = strlen(s)-2;
+  debug("width(\"%s\", %d) = %u\n", s, len, strnwidth(s, len));
+  free(s);
+#endif
+  
 #define try(s) do { if (!(s)) eabort(__FILE__, __LINE__, ""); } while(0)
 #define tri(s, err) do { if (!(s)) eabort(__FILE__, __LINE__, err); } while(0)
   

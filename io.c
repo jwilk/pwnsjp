@@ -1,3 +1,9 @@
+/* Copyright (C) 2005 Jakub Wilk
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published 
+ * by the Free Software Foundation.
+ */
+
 #include "common.h"
 #include "io.h"
 #include "unicode.h"
@@ -7,7 +13,7 @@
 
 #include <zlib.h>
 
-bool io_init(struct io_t *io, char* filename)
+bool io_init(struct io_t *io, const char* filename)
 {
   debug("data file = \"%s\"\n", filename);
   io->file = fopen(filename, "rb");
@@ -152,7 +158,7 @@ inline static void iitem_qsort(struct io_iitem_t* table, size_t count)
   iitems_qsort(table, table+(count-1));
 }
 
-unsigned int io_locate(struct io_t *io, char* search)
+unsigned int io_locate(struct io_t *io, const char* search)
 {
   struct io_iitem_t *l, *r, *m;
   

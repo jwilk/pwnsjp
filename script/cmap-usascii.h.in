@@ -1,20 +1,43 @@
-#!/bin/sh
-echo "#ifndef CMAP_USASCII_H"
-echo "#define CMAP_USASCII_H"
-echo
-echo -n 'static const unsigned char* rev_usascii[0xe0] = { "\xa0", '
-(
-  for i in `seq 161 383`
-  do
-    echo "&#$i;"
-  done 
-) |
-konwert html-ascii |
-  sed -re 's/"/\\"/; s/(.*)$/"\1",/;' | 
-  tr "\n" " " |
-  sed -re 's/, $//'
-echo " };"
-echo
-echo "#endif"
+#!/usr/bin/perl
+use File::Temp qw/ tempfile unlink0 /;
 
-# vim: ts=2 sw=2 et ft=sh
+$use_konwert = 0;
+
+($fh, $tmpfname) = tempfile();
+
+print "#ifndef CMAP_USASCII_H\n".
+      "#define CMAP_USASCII_H\n\n".
+      'static const unsigned char* rev_usascii[0xe0] = { "\xa0", ';
+
+if (!$use_konwert)
+  { print $fh '<html><body>'; }
+foreach $i (0xa1 .. 0x17f)
+  { 
+    printf $fh "&#%d;\n", $i; 
+    if (!$use_konwert)
+      { print $fh '<br />' };
+  }
+if (!$use_konwert)
+  { print $fh '</body></html>'; }
+
+if ($use_konwert)
+ { open CO, "konwert html-ascii < $tmpfname 2>&1 |"; }
+else
+ { open CO, "links -stdin -dump < $tmpfname 2>&1 |"; }
+$s='';
+while (<CO>)
+{
+  chop;
+  s/"/\\"/; 
+  s/^ *(.*)$/"\1", /;
+  $s.=$_;
+}
+$s =~ s/, $//;
+
+print $s.
+      " };\n\n".
+      "#endif\n";
+
+unlink0 $fh, $tmpfname;
+
+# vim: ts=2 sw=2 et ft=perl

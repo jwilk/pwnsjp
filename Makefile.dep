@@ -5,6 +5,6 @@ io.o: io.c common.h io.h unicode.h config.h byteorder.h
 main.o: main.c common.h byteorder.h config.h html.h hue.h io.h terminfo.h \
   ui.h unicode.h validate.h
 terminfo.o: terminfo.c common.h terminfo.h
-ui.o: ui.c common.h ui.h io.h hue.h html.h terminfo.h
-unicode.o: unicode.c common.h cmap-cp1250.h cmap-usascii.h \
+ui.o: ui.c common.h ui.h io.h html.h hue.h terminfo.h unicode.h
+unicode.o: unicode.c common.h unicode.h cmap-cp1250.h cmap-usascii.h \
   cmap-iso8859-2.h cmap-iso8859-16.h entity.h entity-hash.h config.h

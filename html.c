@@ -1,3 +1,9 @@
+/* Copyright (C) 2005 Jakub Wilk
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published 
+ * by the Free Software Foundation.
+ */
+
 #include "common.h"
 #include "html.h"
 
@@ -19,13 +25,13 @@ char* html_strip(char *str)
   char result[2*len];
   bool first = true;
   bool ignorep = true;
-  bool color = false;
+  unsigned int colorstack = 0; // TODO: a more sophisticated stack
   
   head=tail=str;
   appendix=result;
 #define a(t) do *(appendix++)=t; while (0)
 #define as(t) do { strcpy(appendix, t); while (*appendix) appendix++; } while (0)
-#define ac(t) do { strcpy(appendix, hueset[t]); while (*appendix) appendix++; } while (0)
+#define ac(t) do if (colorstack==0) { strcpy(appendix, hueset[t]); while (*appendix) appendix++; } while (0)
 #define sync() do head = tail+1; while(0)
   for (head=tail=str; *tail; tail++)
   switch(state)
@@ -74,26 +80,27 @@ char* html_strip(char *str)
         }
         else
           ac(HUE_bold);
+        colorstack++;
       }
-      else if (!strcasecmp(head, "tr1") && !color)
+      else if (!strcasecmp(head, "tr1"))
       {
         ac(HUE_highlight);
-        color = true;
+        colorstack++;
       }
       else if (!strcasecmp(head, "font color=#ff0000"))
       {
         ac(HUE_phraze);
-        color = true;
+        colorstack++;
       }
       else if (!strcasecmp(head, "font color=#fa8d00"))
       {
         ac(HUE_misc);
-        color = true;
+        colorstack++;
       }
-      else if (!strcasecmp(head, "i") && !color)
+      else if (!strcasecmp(head, "i"))
       {
         ac(HUE_italic);
-        color = true;
+        colorstack++;
       }
       else if (!strcasecmp(head, "sup"))
         a('^');
@@ -103,11 +110,8 @@ char* html_strip(char *str)
         as("&sqrt;");
       else if (!strncasecmp(head, "a href=", 7))
       {
-        if (!color)
-        {
-          ac(HUE_hyperlink);
-          color = true;
-        }
+        ac(HUE_hyperlink);
+        colorstack++;
       }
       sync();
     }
@@ -127,8 +131,8 @@ char* html_strip(char *str)
           !strcasecmp(head, "font") 
         )
       {
-        ac(HUE_default);
-        color = false;
+        if (colorstack > 0 && --colorstack == 0)
+          ac(HUE_default);
       }
       else if (!strcasecmp(head, "p"))
         while(tail[1] == ' ')

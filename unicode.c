@@ -1,4 +1,12 @@
+/* Copyright (C) 2005 Jakub Wilk
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published 
+ * by the Free Software Foundation.
+ */
+
 #include "common.h"
+#include "unicode.h"
+
 #include <langinfo.h>
 #include <locale.h>
 
@@ -34,7 +42,7 @@ void unicode_init(void)
       cmap = cmap_iso885916;
   }
   else
-    debug("unable to set locale!");
+    debug("unable to set locale!\n");
 }
 
 static const char* entity_grep(const unsigned char *str, wchar_t *result)
@@ -86,17 +94,18 @@ static unsigned char* ustr_fallback_ascii(const wchar_t *ustr, unsigned int us)
   {
     if (ustr[i] < 0x00a0)
       a(ustr[i]);
-    else if (ustr[i] < 0x017f)
+    else if (ustr[i] < 0x0180)
     {
+      unsigned int j = ustr[i]-0xa0;
       unsigned char code=0;
       if (us == 2)
-        code=rev_iso88592[ustr[i]-0x00a0];
+        code=rev_iso88592[j];
       else if (us == 16)
-        code=rev_iso885916[ustr[i]-0x00a0];
+        code=rev_iso885916[j];
       if (code != 0)
         a(code);
       else
-        as(rev_usascii[ustr[i]-0x00a0]);
+        as(rev_usascii[j]);
     }
     else
     {
@@ -119,14 +128,24 @@ static unsigned char* ustr_fallback_ascii(const wchar_t *ustr, unsigned int us)
 static unsigned char* ustr_fallback_sys(const wchar_t *ustr)
 {
   int lim = 1 + wcstombs(NULL, ustr, 0);
-  unsigned char* result = malloc(lim);
+  unsigned char* result = malloc(lim * sizeof(unsigned char));
   if (wcstombs(result, ustr, lim) == (size_t)(-1))
     return strdup("{wcstombs failed!}");
   else
     return result;
 }
 
-static unsigned char* ustr_to_str(const wchar_t *ustr)
+wchar_t* str_to_ustr(const unsigned char *str)
+{
+  int lim = 1 + mbstowcs(NULL, str, 0);
+  wchar_t* result = malloc(lim * sizeof(wchar_t));
+  if (mbstowcs(result, str, lim) == (size_t)(-1))
+    return wcsdup(L"{mbstowcs failed!}");
+  else
+    return result;
+}
+
+unsigned char* ustr_to_str(const wchar_t *ustr)
 {
   switch(cmap)
   {
@@ -137,7 +156,8 @@ static unsigned char* ustr_to_str(const wchar_t *ustr)
     case cmap_utf8:
       return ustr_fallback_sys(ustr);
   }
-  return "{invalid character map}"; // this should not happen
+  assert("invalid character map" == NULL);
+  return NULL; // suppress compiler warning
 }
 
 char* pwnstr_to_str(const char *str)
@@ -146,6 +166,29 @@ char* pwnstr_to_str(const char *str)
   char* result = ustr_to_str(ustr);
   free(ustr);
   return result;
+}
+
+size_t strnwidth(const unsigned char *str, size_t len)
+{
+  size_t i, width = 0;
+  // FIXME: it _might_ produce wrong results (yet I presume it won't)
+  if (cmap == cmap_utf8)
+  {
+    for (i=0; i<len; i++, str++)
+      if (*str == '\0')
+        break;
+      else if ((*str & 0xc0) != 0x80)
+        width++;
+  }
+  else
+  {
+    for (i=0; i<len; i++, str++)
+      if (*str == '\0')
+        break;
+      else
+        width++;
+  }
+  return width;
 }
 
 // vim: ts=2 sw=2 et
