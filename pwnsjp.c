@@ -154,33 +154,6 @@ static char* trim_html(char *str)
   return pwnstr_to_str(result);
 }
 
-static int int32_compare(const void *i, const void *j)
-{
-  return (*(int32_t*)i)-(*(int32_t*)j);
-}
-
-static void uint32qsort(uint32_t* offsets, size_t count)
-{
-  qsort(offsets, count, 4, int32_compare);
-}
-
-#if 0
-static void uint32isort(int32_t* offsets, unsigned int count)
-{
-  unsigned int i, j;
-  int32_t tmp;
-  for (i=2; i<count; i++)
-  for (j=i-1; j!=(unsigned int)-1; j--)
-  {
-    if (offsets[j] <= offsets[j+1])
-      break;
-    tmp = offsets[j+1];
-    offsets[j+1] = offsets[j];
-    offsets[j] = tmp;
-  }
-}
-#endif
-
 static void version(void)
 {
   fprintf(stderr,
@@ -267,9 +240,9 @@ int main(int argc, char **argv)
   }
   
 #ifdef K_VALIDATE_DATAFILE
-  if (pwnio.size != datafile_size)
+  if (pwnio.file_size != datafile_size)
   {
-    fprintf(stderr, "Invalid data file size: %u, should be %u.\n", pwnio.size, datafile_size);
+    fprintf(stderr, "Invalid data file size: %u, should be %u.\n", pwnio.file_size, datafile_size);
     return EXIT_FAILURE;
   }
   if (!pwnio_validate(&pwnio))
@@ -282,62 +255,31 @@ int main(int argc, char **argv)
   tri ( pwnio.size < (1<<28), "Unexpectedly long data file" );
 #endif
 
-  struct header_t 
+  if (!pwnio_prepareindex(&pwnio))
   {
-    uint32_t __tmp1;
-    uint32_t __tmp2;
-    uint32_t word_count;
-    uint32_t index_base;
-    uint32_t words_base;
-  };
-
-  struct header_t header;
-  try ( fseek(pwnio.file, 0x10, SEEK_SET) == 0 );
-  try ( fread(&header, sizeof(header), 1, pwnio.file) == 1 );
-  
-  header.word_count = le2cpu(header.word_count);
-  debug("word count = %d\n", header.word_count);
-
-  header.index_base = le2cpu(header.index_base);
-  debug("index #1 base = 0x%08x\n", header.index_base);
-  
-  header.index_base += sizeof(uint32_t)*header.word_count;
-  debug("index #2 base = 0x%08x\n", header.index_base);
-  
-  header.words_base = le2cpu(header.words_base);
-  debug("words base = 0x%08x\n", header.words_base);
-  tri ( header.word_count >= (1<<15), "Unexpectedly few words" );
-  tri ( header.word_count <= (1<<17), "Unexpectedly many words" );
-  
-  uint32_t offsets[header.word_count];
-  try ( fseek(pwnio.file, header.index_base, SEEK_SET) >= 0 );
-  try ( fread(offsets, sizeof(uint32_t), header.word_count, pwnio.file) == header.word_count );
-
-  for (i=0; i<header.word_count; i++)
-    offsets[i] = le2cpu(offsets[i]) & 0x07ffffff;
-  uint32qsort(offsets, header.word_count);
-
-  unsigned int size, maxsize = 1024;
-  for (i=0; i<header.word_count-1; i++)
-  {
-    size = offsets[i+1]-offsets[i];
-    if (size > maxsize)
-      maxsize = size;
+    fprintf(stderr, "Unable to prepare index.\n");
+    return EXIT_FAILURE;
   }
-
-  debug("max entry size = %u\n", maxsize);
-  tri ( maxsize <= (1<<16), "Unexpectedly long entries" );
   
-  char wordbuffer[(maxsize|0x07)+1];
-  if (!config.conf_tabi)
-  for (i=0; i<header.word_count-1; i++)
+  tri ( pwnio.word_count >= (1<<15), "Indecently few words" );
+  tri ( pwnio.word_count <= (1<<17), "Indecently many words" );
+
+  if (!pwnio_buildindex(&pwnio))
   {
-    size=offsets[i+1]-offsets[i];
+    fprintf(stderr, "Unable to build index.\n");
+    return EXIT_FAILURE;
+  }
+ 
+  char wordbuffer[pwnio.max_entry_size];
+  if (!config.conf_tabi)
+  for (i=0; i<pwnio.word_count-1; i++)
+  {
+    unsigned int size = pwnio.offsets[i+1]-pwnio.offsets[i];
     unsigned long dsize = size << 3;
     bool zipped = false;
     char debuffer[dsize], *tbuffer;
     memset(debuffer, 0, dsize); 
-    try ( fseek(pwnio.file, header.words_base + offsets[i], SEEK_SET) == 0 );
+    try ( fseek(pwnio.file, pwnio.header->words_base + pwnio.offsets[i], SEEK_SET) == 0 );
     try ( fread(wordbuffer, size, 1, pwnio.file) == 1 );
     char* localstr = wordbuffer + 12;
     bool dofree = false;
@@ -359,8 +301,8 @@ int main(int argc, char **argv)
       debug(
         "\b\b<\n  localstr = %s\n  offset = %08x (file:%08x)\n  length = %06x\n>\n", 
         localstr, 
-        offsets[i],
-        header.words_base + offsets[i],
+        pwnio.offsets[i],
+        pwnio.header->words_base + pwnio.offsets[i],
         size);
       if (config.conf_entry_only)
         tbuffer = localstr;
