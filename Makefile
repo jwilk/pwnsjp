@@ -28,21 +28,30 @@ ifeq ($(strip ${M_COMPILER}),gcc)
 		STRIP = true
 	endif
 endif
+ifeq ($(strip ${M_COMPILER}),icc)
+	CFLAGS_wrn :=
+	CFLAGS_std := -c99
+endif
 
 CFLAGS_def = -DK_VERSION="\"$(strip ${M_VERSION})\""
 ifdef K_DATA_PATH
 	CFLAGS_def += -DK_DATA_PATH="\"$(strip {K_DATA_PATH})\""
 endif
-ifeq (${strip $(K_VALIDATE_DATAFILE)},yes)
+ifeq ($(strip ${K_VALIDATE_DATAFILE}),yes)
 	CFLAGS_def += -DK_VALIDATE_DATAFILE
 endif
 
 HFILES = \
-	cmap-cp1250.h cmap-iso8859-2.h cmap-usascii.h \
+	cmap-cp1250.h cmap-iso8859-16.h cmap-iso8859-2.h cmap-usascii.h \
 	entity.h entity-hash.h \
-	validate.h byteorder.h
+	validate.h byteorder.h \
+	config.h terminfo.h unicode.h \
+	common.h
 
-DISTFILES = Makefile Makefile.conf $(HFILES) script/ data/ pwnsjp.c 
+CFILES = config.c pwnsjp.c terminfo.c unicode.c
+OFILES = $(CFILES:.c=.o)
+
+DISTFILES = Makefile Makefile.conf $(HFILES) $(CFILES) script/ data/
 
 all: pwnsjp
 
@@ -61,7 +70,7 @@ dist: distclean $(HFILES)
 %.o: %.c $(HFILES)
 	$(CC) $(CFLAGS) $(CFLAGS_def) -c ${<} -o ${@}
 
-pwnsjp: pwnsjp.o
+pwnsjp: $(OFILES)
 	$(CC) $(CFLAGS) $(CFLAGS_ld) ${^} -o ${@}
 	$(STRIP) ${@}
 
@@ -70,8 +79,11 @@ ifeq ($(strip ${M_BUILD_HEADERS}),yes)
 cmap-cp1250.h: data/cmap-cp1250.gz script/cmap-cp1250.h.in
 	zcat ${<} | script/cmap-cp1250.h.in > ${@}
 
-cmap-iso8859-2.h: data/cmap-iso8859-2.gz script/cmap-iso8859-2.h.in
-	zcat ${<} | script/cmap-iso8859-2.h.in > ${@}
+cmap-iso8859-2.h: data/cmap-iso8859-2.gz script/cmap-iso8859-n.h.in
+	zcat ${<} | script/cmap-iso8859-n.h.in 2 > ${@}
+
+cmap-iso8859-16.h: data/cmap-iso8859-16.gz script/cmap-iso8859-n.h.in
+	zcat ${<} | script/cmap-iso8859-n.h.in 16 > ${@}
 
 cmap-usascii.h: script/cmap-usascii.h.in
 	script/cmap-usascii.h.in > ${@}

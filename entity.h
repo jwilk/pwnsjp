@@ -73,9 +73,10 @@ static const struct entity entity_list[] =
   { .name = "dolnagw", .value = 0x2605, .str = "<*>" },
   { .name = "quotup", .value = 0x8221, .str = "\'\'" },
   { .name = "quotlw", .value = 0x8222, .str = ",," },
-  { .name = "larroa", .value = 0x10000061, .str = "a->" },
-  { .name = "bvec", .value = 0x10000062, .str = "b->" },
-  { .name = NULL,   .value = 0x0000, .str = NULL }
+  { .name = "larroa", .value = 0x10000061, .str = NULL },
+  { .name = "bvec", .value = 0x10000062, .str = NULL },
+  { .name = "__vector__", .value = 0x20d7, .str = "->" },
+  { .name = NULL, .value = 0x0000, .str = NULL }
 };
 
 #endif

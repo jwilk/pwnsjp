@@ -1,6 +1,6 @@
 #!/usr/bin/perl
-$hashsize=0x90;
-@coeff=(187, 64, 123, 7, 95, 163, 79, 124, 206, 96);
+$hashsize=0x88;
+@coeff=(171, 251, 155, 61, 92, 101, 229, 154, 189, 194);
 $coeffi=$#coeff;
 
 sub compute_hash

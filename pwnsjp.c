@@ -1,29 +1,15 @@
-#include <stdarg.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "common.h"
+
 #include <unistd.h>
 
 #include <errno.h>
-#include <getopt.h>
-
-#include <langinfo.h>
-#include <locale.h>
 
 #include <fcntl.h>
 #include <sys/types.h>
 
 #include <regex.h>
-#include <string.h>
-#include <wchar.h>
-
-#include <term.h>
 
 #include <zlib.h>
-
-typedef int bool;
-#define true 1
-#define false 0
 
 #ifndef K_DATA_PATH
 #  define K_DATA_PATH "./slo.win"
@@ -32,67 +18,11 @@ typedef int bool;
 #  define K_VERSION "<devel>"
 #endif
 
-#include "cmap-cp1250.h"
-#include "cmap-usascii.h"
-#include "cmap-iso8859-2.h"
-
-#include "entity.h"
-#include "entity-hash.h"
-
-#include "validate.h"
-
 #include "byteorder.h"
-
-static struct
-{
-  enum
-  {
-    action_seek = 0,
-    action_help,
-    action_version
-  } action;
-  bool conf_debug;
-  bool conf_deep;
-  bool conf_entry_only;
-  bool conf_quick;
-  bool conf_raw;
-  bool conf_color;
-} config;
-
-static inline void debug(const char *message, ...)
-{
-  va_list ap;
-  va_start(ap, message);
-  if (config.conf_debug)
-  {
-    fprintf(stderr, "| ");
-    vfprintf(stderr, message, ap);
-  }
-  va_end(ap);
-}
-
-static enum { cmap_usascii, cmap_iso88592, cmap_utf8 } cmap = cmap_usascii;
-
-static char* pwnstr_to_str(const char *str);
-
-static char* tput(const char *str)
-{
-  static char buffer[12];
-  buffer[0] = '\0';
-  if (config.conf_color)
-  {
-    unsigned int c;
-    if (sscanf(str, "setaf %u", &c) > 0 && c <= 7)
-      sprintf(buffer, "\x1b[3%um", c);
-    else if (sscanf(str, "setab %u", &c) > 0 && c <= 7)
-      sprintf(buffer, "\x1b[4%um", c);
-    else if (strcmp(str, "bold") == 0)
-      strcat(buffer, "\x1B[1m");
-    else if (strcmp(str, "sgr0") == 0)
-      strcat(buffer, "\x1B[0m");
-  }
-  return buffer;
-}
+#include "config.h"
+#include "terminfo.h"
+#include "unicode.h"
+#include "validate.h"
 
 static char* trim_html(char *str)
 // Warning: characters of `str' are destroyed!
@@ -109,7 +39,6 @@ static char* trim_html(char *str)
   char result[2*len];
   bool first = true;
   bool color = false;
-  unsigned int t1, t2;
   
   head=tail=str;
   appendix=result;
@@ -148,22 +77,22 @@ static char* trim_html(char *str)
       {
         if (first)
         {
-          as(tput("setab 5"));
+          as(term_setab[5]);
           first = false;
           color = true;
         }
-        as(tput("bold"));
+        as(term_bold);
       }
       else if (!strcasecmp(head, "tr1") && !color)
       {
-        as(tput("setab 5"));
-        as(tput("bold"));
+        as(term_setab[5]);
+        as(term_bold);
         color = true;
       }
       else if (!strcasecmp(head, "font color=#ff0000"))
       {
-        as(tput("setaf 1"));
-        as(tput("bold"));
+        as(term_setaf[1]);
+        as(term_bold);
         color = true;
       }
 /*    else if (!strcasecmp(head, "font color=#fa8d00"))
@@ -174,7 +103,7 @@ static char* trim_html(char *str)
       } */
       else if (!strcasecmp(head, "i") && !color)
       {
-        as(tput("setaf 1"));
+        as(term_setaf[1]);
         color = true;
       }
       else if (!strcasecmp(head, "sup"))
@@ -183,11 +112,11 @@ static char* trim_html(char *str)
         a('_');
       else if (!strcasecmp(head, "sqrt"))
         as("&sqrt;");
-      else if (sscanf(head, "A HREF=\"%u,%u\"", &t1, &t2) > 0 || !strcasecmp(head, "q"))
+      else if (!strncasecmp(head, "a href=", 7))
       {
         if (!color)
         {
-          as(tput("setaf 6"));
+          as(term_setaf[6]);
           color = true;
         }
       }
@@ -209,7 +138,7 @@ static char* trim_html(char *str)
           !strcasecmp(head, "font") 
         )
       {
-        as(tput("sgr0"));
+        as(term_sgr0);
         color = false;
       }
       else if (!strcasecmp(head, "p"))
@@ -224,112 +153,6 @@ static char* trim_html(char *str)
 #undef as
 #undef sync
   return pwnstr_to_str(result);
-}
-
-static inline const char* entity_grep(const char *str, wchar_t *result)
-{
-  unsigned int hash = 0;
-  int i, j;
-  for(j=0; j<hash_coeff_count && str[j]!=0 && str[j]!=';'; j++)
-    hash ^= str[j]+hash_coeff[j];
-  if ( (i = entity_hash[hash % hash_size]) >= 0 )
-  {
-    *result = entity_list[i].value;
-    return str+j;
-  }
-  return str;
-}
-
-static wchar_t* pwnstr_to_ustr(const char *str)
-{
-  size_t i;
-  wchar_t* result = calloc(1+strlen(str), sizeof(wchar_t));
-  for (i=0; *str; str++, i++)
-  {
-    result[i]=cp1250[(uint8_t)(*str)];
-    if (result[i] == '&')
-      str = entity_grep(str+1, result+i);
-    else if (result[i] & 0x10000000)
-    {
-      result[i] &= 0xffff;
-      result[++i] = 0x20d7;
-    }
-  }
-  result[i] = 0;
-  return result;
-}
-
-static inline char* ustr_fallback_ascii(const wchar_t *ustr, int us)
-{
-  int i, len = wcslen(ustr), biglen=4*(len+1);
-  char result[biglen], *appendix;
-  memset(result, 0, biglen); 
-  appendix = result;
-#define a(t) do *(appendix++)=t; while (0)
-#define as(t) do { strcpy(appendix, t); while (*appendix) appendix++; } while (0)
-  for (i=0; i<len; i++)
-  {
-    if (ustr[i] < 0x00a0)
-      a(ustr[i]);
-    else if (ustr[i] < 0x017f)
-    {
-      char code=0;
-      if (us)
-        code=rev_iso88592[ustr[i]-0x00a0];
-      if (code)
-        a(code);
-      else
-        as(rev_usascii[ustr[i]-0x00a0]);
-    }
-    else
-    {
-      char *ename;
-      int j;
-      for (j=0; (ename = entity_list[j].name); j++)
-      if (ustr[i] == entity_list[j].value && entity_list[j].str)
-      {
-        as(entity_list[j].str);
-        break;
-      }
-      if (!ename)
-        a('?');
-    }
-  }
-#undef a
-#undef as
-  return strdup(result);
-}
-
-static inline char* ustr_fallback_sys(const wchar_t *ustr)
-{
-  int lim = 1 + wcstombs(NULL, ustr, 0);
-  char* result = malloc(lim);
-  if (wcstombs(result, ustr, lim) == (size_t)(-1))
-    return strdup("<wcstombs failed!>");
-  else
-    return result;
-}
-
-static char* ustr_to_str(const wchar_t *ustr)
-{
-  switch(cmap)
-  {
-    case cmap_usascii:
-      return ustr_fallback_ascii(ustr, 0);
-    case cmap_iso88592:
-      return ustr_fallback_ascii(ustr, 1);
-    case cmap_utf8:
-      return ustr_fallback_sys(ustr);
-  }
-  return "<invalid character map>"; // this should not happen
-}
-
-static char* pwnstr_to_str(const char *str)
-{
-  wchar_t* ustr = pwnstr_to_ustr(str);
-  char* result = ustr_to_str(ustr);
-  free(ustr);
-  return result;
 }
 
 static inline int int32_compare(const void *i, const void *j)
@@ -377,61 +200,6 @@ inline void usage(void)
     "  -v, --version\n\n");
 }
 
-static inline char* parse_options(int argc, char **argv)
-{
-  static struct option gopts[]=
-  {
-    { "debug",      0, 0, 'D' },
-    { "deep",       0, 0, 'd' },
-    { "entry-only", 0, 0, 'e' },
-    { "help",       0, 0, 'h' },
-    { "quick",      0, 0, 'Q' },
-    { "raw",        0, 0, 'R' },
-    { "version",    0, 0, 'v' },
-    { NULL,         0, 0, '\0' }
-  };
-
-  memset(&config, sizeof(config), 0);
-  if (isatty(STDOUT_FILENO))
-    config.conf_color = true;
- 
-  while (true)
-  {
-    int i = 0;
-    int c = getopt_long(argc, argv, "dehvDQR", gopts, &i);
-    if (c < 0)
-      break;
-    if (c == 0)
-      c = gopts[i].val;
-    switch (c)
-    {
-    case 'd':
-      config.conf_deep = true;
-      break;
-    case 'e':
-      config.conf_entry_only = true;
-      break;
-    case 'h':
-      config.action = action_help;
-      break;
-    case 'v':
-      config.action = action_version;
-      break;
-    case 'D':
-      config.conf_debug = true;
-      break;
-    case 'Q':
-      config.conf_quick = true;
-      break;
-    case 'R':
-      config.conf_raw = true;
-      break;
-     }
-  }
-  return
-    (optind<=argc)?argv[optind]:NULL;
-}
-
 void eabort(char* fstr, int line, char* errstr)
 {
   if (fstr == NULL)
@@ -440,22 +208,6 @@ void eabort(char* fstr, int line, char* errstr)
     errstr = strerror(errno);
   fprintf(stderr, "%s[%d]: %s\n", fstr, line, errstr);
   exit(EXIT_FAILURE);
-}
-
-inline void guess_cmap(void)
-{
-  char *locale = setlocale(LC_ALL, "");
-  if (locale)
-  {
-    debug("set locale to: <%s>\n", locale);
-    char *codeset = nl_langinfo(CODESET);
-    if (!strcmp(codeset, "UTF-8"))
-      cmap = cmap_utf8;
-    else if (!strcmp(codeset, "ISO-8859-2"))
-      cmap = cmap_iso88592;
-  }
-  else
-    debug("unable to set locale!");
 }
 
 inline void regex_free(regex_t *regex)
@@ -489,7 +241,9 @@ int main(int argc, char **argv)
     uint32_t words_base;
   } header;
   unsigned int i;
-  
+ 
+  term_init();
+
   char* pattern = parse_options(argc, argv);
   switch (config.action)
   {
@@ -503,7 +257,7 @@ int main(int argc, char **argv)
     ;
   }
 
-  guess_cmap();
+  unicode_init();
 
 #define try(s) do { if (!(s)) eabort(__FILE__, __LINE__, ""); } while(0)
 #define tri(s, err) do { if (!(s)) eabort(__FILE__, __LINE__, err); } while(0)
