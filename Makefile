@@ -1,9 +1,12 @@
-M_VERSION = 0.290
+M_VERSION = 0.330
 
 M_BUILD_HEADERS = no	# yes | no
 M_DEBUG = no			# yes | no
 M_PROFILE = no			# yes | no
 M_COMPILER = gcc		# gcc | icc
+
+FAKEROOT := $(shell which fakeroot | head -1)
+CTAGS := $(shell which ctags | head -1)
 
 include Makefile.conf
 
@@ -18,7 +21,7 @@ STRIP = strip -s
 ifeq ($(strip ${M_DEBUG}),yes)
 	CFLAGS_opt := -O0
 	CFLAGS_dbg += -g
-	STRIP = true
+	STRIP = @true
 endif
 ifeq ($(strip ${M_COMPILER}),gcc)
 	CFLAGS_wrn := -W -Wall
@@ -33,7 +36,7 @@ ifeq ($(strip ${M_COMPILER}),icc)
 	CFLAGS_std := -c99
 endif
 
-CFLAGS_def = -DK_VERSION="\"$(strip ${M_VERSION})\""
+CFLAGS_def = -DK_VERSION='"$(strip ${M_VERSION})"'
 ifdef K_DATA_PATH
 	CFLAGS_def += -DK_DATA_PATH="\"$(strip {K_DATA_PATH})\""
 endif
@@ -44,11 +47,11 @@ endif
 HFILES = \
 	cmap-cp1250.h cmap-iso8859-16.h cmap-iso8859-2.h cmap-usascii.h \
 	entity.h entity-hash.h \
-	validate.h byteorder.h \
-	config.h pwnio.h terminfo.h unicode.h \
+	config.h html.h io.h terminfo.h ui.h unicode.h \
+	byteorder.h hue.h validate.h \
 	common.h
 
-CFILES = config.c pwnio.c pwnsjp.c terminfo.c unicode.c
+CFILES = config.c html.c hue.c io.c main.c terminfo.c ui.c unicode.c
 OFILES = $(CFILES:.c=.o)
 
 DISTFILES = \
@@ -56,24 +59,35 @@ DISTFILES = \
 	Makefile Makefile.dep Makefile.conf \
 	$(HFILES) $(CFILES) script/ data/
 
-all: pwnsjp
+all: pwnsjp pwnsjpi tags
 
+tags: $(CFILES) $(HFILES)
+ifneq ($(CTAGS),)
+	@echo 'ctags <...>'
+	@ctags ${^}
+else
+	@touch ${@}
+endif
+		
 clean:
-	rm -f pwnsjp *.o gmon.out a.out
+	rm -f pwnsjp pwnsjpi *.o gmon.out a.out pwnsjp-*.tar* tags
+
+ui-test: pwnsjpi
+	LC_ALL=pl_PL ./pwnsjpi
 
 test: pwnsjp
 	./pwnsjp --debug 'ab(neg|om)'
 
-distclean:
-	rm -f pwnsjp-*.tar.*
-
-dist: distclean $(HFILES)
-	fakeroot tar -chjf pwnsjp-$(M_VERSION).tar.bz2 $(DISTFILES)
+dist: $(HFILES)
+	$(FAKEROOT) tar -chjf pwnsjp-$(M_VERSION).tar.bz2 $(DISTFILES)
 
 include Makefile.dep
 
 %.o:
 	$(CC) $(CFLAGS) $(CFLAGS_def) -c ${<} -o ${@}
+
+pwnsjpi: pwnsjp
+	ln -sf pwnsjp pwnsjpi
 
 pwnsjp: $(OFILES)
 	$(CC) $(CFLAGS) $(CFLAGS_ld) ${^} -o ${@}
@@ -101,6 +115,6 @@ entity-hash.h: data/entities.dat script/entity-hash.h.in
 	
 endif
 	
-.PHONY: all clean test dist distclean
+.PHONY: all clean test ui-test dist
 
 # vim:ts=4

@@ -13,6 +13,7 @@ char* parse_options(int argc, char **argv)
     { "debug",      0, 0, 'D' },
     { "deep",       0, 0, 'd' },
     { "entry-only", 0, 0, 'e' },
+    { "ui",         0, 0, 'i' },
     { "help",       0, 0, 'h' },
     { "quick",      0, 0, 'Q' },
     { "raw",        0, 0, 'R' },
@@ -22,13 +23,21 @@ char* parse_options(int argc, char **argv)
 
   memset(&config, sizeof(config), 0);
 
+  assert(argc>0 && argv!=NULL && *argv!=NULL && **argv!='\0');
+  char* tmp;
+  tmp=*argv;
+  while (*tmp) tmp++;
+  tmp--;
+  if (*tmp=='i')
+    config.conf_ui = true;
+
   if (is_term)
     config.conf_color = true;
  
   while (true)
   {
     int i = 0;
-    int c = getopt_long(argc, argv, "dehvDQRT", gopts, &i);
+    int c = getopt_long(argc, argv, "dehivDQRT", gopts, &i);
     if (c < 0)
       break;
     if (c == 0)
@@ -43,6 +52,9 @@ char* parse_options(int argc, char **argv)
       break;
     case 'h':
       config.action = action_help;
+      break;
+    case 'i':
+      config.conf_ui = !config.conf_ui;
       break;
     case 'v':
       config.action = action_version;

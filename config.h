@@ -18,6 +18,7 @@ struct config_t
   bool conf_quick;
   bool conf_raw;
   bool conf_tabi;
+  bool conf_ui;
 };
 
 char* parse_options(int, char **);

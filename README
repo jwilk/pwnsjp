@@ -1,8 +1,8 @@
  _ ____ __ ___ _  ___(*)_ __
 | '_ \ V  V / ' \(_-<| | '_ \
 | .__/\_/\_/|_||_/__// | .__/
-|_|= wersja 0.290 =|__/|_|===
-==== |2005-02-03| ===========
+|_|= wersja 0.330 =|__/|_|===
+==== |2005-02-17| ===========
 
 *pwnsjp* to interfejs do trzytomowego _S³ownika jêzyka polskiego_
 Wydawnictwa Naukowego PWN, który niegdy¶ zosta³ do³±czony do Gazety
@@ -67,19 +67,24 @@ Licencja:
   w wersji 2.
 
 Dziennik (ha, ha) zmian:
-  -- 2005-01-03 (-----)
-     podówczas pierwsz± literê kodu napisano;
+  -- 2005-02-17 (0.330)
+     subtelnie poprawione renderowanie HTML-u;
+     poszczególne has³a s± wyra¼nie od siebie oddzielane;
+     indeks jest przebudowywany jeszcze g³êbiej (i jeszcze wolnej)
   -- 2005-02-03 (0.290)
-     za górami, za lasami udostêpnion± pierwsz± wersjê
+     za górami, za lasami publicznie udostêpniono kod
+  -- 2005-01-03 (-----)
+     podówczas pierwsz± literê kodu napisano
 
 B³êdy, przemy¶lenia, TODO:
   -- czy na pewno zadzia³a na procesorze big-endianowym?
   -- potrzebna wersja interaktywna
   -- kolory s± nie konfigurowalne
   -- wizualizacja HTML-u jest kiepska
-  -- budowanie indeksu jest stanowczo zbyt wolne, mo¿e nale¿y budowaæ 
+  -- budowanie indeksu jest *stanowczo* zbyt wolne, mo¿e nale¿y budowaæ
      go podczas instalacji? przy okazji mo¿na by zdekompresowaæ ma³e 
      co nieco
   -- co ciekawego jest w plikach `sjptom1.dat', ..., `sjptom3.dat'?
+     (przypuszczalnie nic, zw³aszcza je¿eli chodzi o ten ostatni)
 
 # vim:tw=76 ts=2 sw=2 et fenc=iso-8859-2
