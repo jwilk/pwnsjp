@@ -2,7 +2,7 @@
 #include "terminfo.h"
 
 #include <unistd.h>
-#include <term.h>
+#include <ncursesw/term.h>
 
 bool is_term = false;
 
@@ -13,7 +13,7 @@ char* term_bold;
 
 static char* term_getstr(const char *str)
 {
-  char* result = tigetstr(str);
+  char* result = tigetstr((char*) str);
   if (result == NULL || result == (char*)-1)
     return "";
   else

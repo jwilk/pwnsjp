@@ -1,19 +1,20 @@
 #ifndef HUE_H
 #define HUE_H
 
-#define HUE_count     10
+#define HUE_count     0x0b
 
-#define HUE_default   0
-#define HUE_tluafed   0
-#define HUE_bold      1
-#define HUE_reverse   2
-#define HUE_title     3
-#define HUE_boldtitle 4
-#define HUE_highlight 5
-#define HUE_hyperlink 6
-#define HUE_italic    7
-#define HUE_misc      8
-#define HUE_phraze    9
+#define HUE_default   0x00
+#define HUE_tluafed   0x00
+#define HUE_bold      0x01
+#define HUE_reverse   0x02
+#define HUE_title     0x03
+#define HUE_boldtitle 0x04
+#define HUE_highlight 0x05
+#define HUE_hyperlink 0x06
+#define HUE_italic    0x07
+#define HUE_misc      0x08
+#define HUE_phraze    0x09
+#define HUE_dimmed    0x0a
 
 extern char* hueset[HUE_count];
 

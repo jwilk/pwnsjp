@@ -27,15 +27,19 @@ Do kompilacji potrzeba:
     icc >= 8.0);
     przetestowano z gcc 3.3, gcc 3.4, icc 8.0
  -- biblioteki GNU libc;
-    przetestowano z wersj± 2.3.2
+    przetestowano z wersjami 2.3.2 i 2.3.4
  -- biblioteki zlib;
-    przetestowano z wersj± 1.2.2
- -- biblioteki ncurses;
+    przetestowano z wersjami 1.2.1 i 1.2.2
+ -- biblioteki ncursesw (ncurses z obs³ug± unikodu);
     przetestowano z wersj± 5.4
  -- perla, ale tylko w razie konieczno¶ci od¶wie¿enia niektórych
     generowanych automatycznie plików nag³ówkowych 
     (czyli NIE w przypadku kompilacji niemodyfikowanej wersji);
-    przetestowano z wersj± 5.8.4
+    przetestowano z wersjami 5.8.4 i 5.8.5
+ -- programu konwert, ale tylko w razie konieczno¶ci od¶wie¿enia pliku
+    nag³ówkowego `cmap-usascii.h' (czyli NIE w przypadku kompilacji
+    niemodyfikowanej wersji);
+    przetestowano z wersj± 1.8
 
 Kompilacja polega na dostosowaniu do swoich potrzeb pliku `Makefile.conf'
 (oraz, ewentualnie, `Makefile') i odpaleniu polecenia `make'.
@@ -67,10 +71,11 @@ Licencja:
   w wersji 2.
 
 Dziennik (ha, ha) zmian:
-  -- 2005-02-17 (0.330)
+  -- 2005-02-17
      subtelnie poprawione renderowanie HTML-u;
      poszczególne has³a s± wyra¼nie od siebie oddzielane;
-     indeks jest przebudowywany jeszcze g³êbiej (i jeszcze wolnej)
+     indeks jest przebudowywany jeszcze g³êbiej (i jeszcze wolnej);
+     zal±¿ek wersji interaktywnej
   -- 2005-02-03 (0.290)
      za górami, za lasami publicznie udostêpniono kod
   -- 2005-01-03 (-----)
@@ -79,7 +84,7 @@ Dziennik (ha, ha) zmian:
 B³êdy, przemy¶lenia, TODO:
   -- czy na pewno zadzia³a na procesorze big-endianowym?
   -- potrzebna wersja interaktywna
-  -- kolory s± nie konfigurowalne
+  -- kolory s± niekonfigurowalne
   -- wizualizacja HTML-u jest kiepska
   -- budowanie indeksu jest *stanowczo* zbyt wolne, mo¿e nale¿y budowaæ
      go podczas instalacji? przy okazji mo¿na by zdekompresowaæ ma³e 

@@ -26,7 +26,7 @@ char* html_strip(char *str)
 #define a(t) do *(appendix++)=t; while (0)
 #define as(t) do { strcpy(appendix, t); while (*appendix) appendix++; } while (0)
 #define ac(t) do { strcpy(appendix, hueset[t]); while (*appendix) appendix++; } while (0)
-#define sync do head = tail+1; while(0)
+#define sync() do head = tail+1; while(0)
   for (head=tail=str; *tail; tail++)
   switch(state)
   {
@@ -85,11 +85,11 @@ char* html_strip(char *str)
         ac(HUE_phraze);
         color = true;
       }
-/*    else if (!strcasecmp(head, "font color=#fa8d00"))
+      else if (!strcasecmp(head, "font color=#fa8d00"))
       {
         ac(HUE_misc);
         color = true;
-      } */
+      }
       else if (!strcasecmp(head, "i") && !color)
       {
         ac(HUE_italic);
@@ -109,7 +109,7 @@ char* html_strip(char *str)
           color = true;
         }
       }
-      sync;
+      sync();
     }
     break;
   case s_html_close:
@@ -133,7 +133,7 @@ char* html_strip(char *str)
       else if (!strcasecmp(head, "p"))
         while(tail[1] == ' ')
           tail++;
-      sync;
+      sync();
     }
     break;
   }

@@ -1,4 +1,4 @@
-M_VERSION = 0.330
+M_VERSION = 0.333
 
 M_BUILD_HEADERS = no	# yes | no
 M_DEBUG = no			# yes | no
@@ -15,7 +15,7 @@ CFLAGS = \
 	$(CFLAGS_opt) $(CFLAGS_wrn) $(CFLAGS_std) $(CFLAGS_dbg)
 
 CFLAGS_opt := -O3
-CFLAGS_ld  := -lz -lncurses
+CFLAGS_ld  := -lz -lncursesw
 CFLAGS_dbg :=
 STRIP = strip -s
 ifeq ($(strip ${M_DEBUG}),yes)
