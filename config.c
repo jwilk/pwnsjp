@@ -4,7 +4,6 @@
  * by the Free Software Foundation.
  */
 
-#include "common.h"
 #include "config.h"
 #include <getopt.h>
 

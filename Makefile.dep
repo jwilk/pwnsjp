@@ -2,8 +2,9 @@ config.o: config.c common.h config.h terminfo.h
 html.o: html.c common.h html.h hue.h terminfo.h unicode.h
 hue.o: hue.c common.h hue.h terminfo.h
 io.o: io.c common.h io.h unicode.h config.h byteorder.h
-main.o: main.c common.h byteorder.h config.h html.h hue.h io.h terminfo.h \
-  ui.h unicode.h validate.h
+main.o: main.c common.h byteorder.h config.h html.h hue.h io.h regex.h \
+  terminfo.h ui.h unicode.h validate.h
+regex.o: regex.c common.h
 terminfo.o: terminfo.c common.h terminfo.h
 ui.o: ui.c common.h ui.h io.h html.h hue.h terminfo.h unicode.h
 unicode.o: unicode.c common.h unicode.h cmap-cp1250.h cmap-usascii.h \

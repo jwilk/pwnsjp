@@ -145,6 +145,15 @@ char* html_strip(char *str)
 #undef a
 #undef as
 #undef sync
+  if (result != '\0')
+  {
+    char *end = strchr(result, '\0');
+    do
+      end--;
+    while (*end <= ' ');
+    end++;
+    *end='\0';
+  }
   return pwnstr_to_str(result);
 }
 

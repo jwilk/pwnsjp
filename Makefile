@@ -1,4 +1,4 @@
-M_VERSION = 0.336
+M_VERSION = 0.339
 
 M_BUILD_HEADERS = yes	# yes | no
 M_DEBUG = no			# yes | no
@@ -14,20 +14,20 @@ CC = $(strip ${M_COMPILER})
 CFLAGS = \
 	$(CFLAGS_opt) $(CFLAGS_wrn) $(CFLAGS_std) $(CFLAGS_dbg)
 
-CFLAGS_opt := -O3 -fstrict-aliasing -finline-limit=1200
+CFLAGS_opt := -Os -fstrict-aliasing -finline-limit=1200
 CFLAGS_ld  := -lz -lncursesw
-CFLAGS_dbg :=
+CFLAGS_dbg := -DNDEBUG
 STRIP = strip -s
 ifeq ($(strip ${M_DEBUG}),yes)
 	CFLAGS_opt := -O0
-	CFLAGS_dbg += -g
+	CFLAGS_dbg := -g
 	STRIP = @true
 endif
 ifeq ($(strip ${M_COMPILER}),gcc)
 	CFLAGS_wrn := -W -Wall -Winline
 	CFLAGS_std := --std=gnu99
 	ifeq ($(strip ${M_PROFILE}),yes)
-		CFLAGS_dbg += -pg
+		CFLAGS_dbg += -pg -DNDEBUG
 		STRIP = true
 	endif
 endif
@@ -36,7 +36,8 @@ ifeq ($(strip ${M_COMPILER}),icc)
 	CFLAGS_std := -c99
 endif
 
-CFLAGS_def = -DK_VERSION='"$(strip ${M_VERSION})"'
+CFLAGS_def =
+CFLAGS_def += -DK_VERSION='"$(strip ${M_VERSION})"'
 ifdef K_DATA_PATH
 	CFLAGS_def += -DK_DATA_PATH="\"$(strip {K_DATA_PATH})\""
 endif
@@ -56,20 +57,20 @@ all: pwnsjp pwnsjpi tags
 
 tags: $(CFILES) $(HFILES)
 ifneq ($(CTAGS),)
-	@echo 'ctags <...>'
+	@echo 'ctags *.c *.h'
 	@ctags ${^}
 else
 	@touch ${@}
 endif
 		
 clean:
-	rm -f pwnsjp pwnsjpi *.o gmon.out a.out pwnsjp-*.tar* tags
+	rm -f pwnsjp pwnsjpi *.da *.s *.o gmon.out a.out pwnsjp-*.tar* tags
 
 ui-test: pwnsjpi
 	LC_ALL=pl_PL ./pwnsjpi
 
 test: pwnsjp
-	./pwnsjp --debug 'ab(neg|om)'
+	./pwnsjp --debug '^ab(neg|om)'
 
 dist: $(HFILES)
 	$(FAKEROOT) tar -chjf pwnsjp-$(M_VERSION).tar.bz2 $(DISTFILES)
@@ -77,13 +78,15 @@ dist: $(HFILES)
 include Makefile.dep
 
 %.o:
-	$(CC) $(CFLAGS) $(CFLAGS_def) -c ${<} -o ${@}
+	@echo $(CC) '(...)' -c ${<} -o ${@}
+	@$(CC) $(CFLAGS) $(CFLAGS_def) -c ${<} -o ${@}
 
 pwnsjpi: pwnsjp
 	ln -sf pwnsjp pwnsjpi
 
 pwnsjp: $(OFILES)
-	$(CC) $(CFLAGS) $(CFLAGS_ld) ${^} -o ${@}
+	@echo $(CC) '(...)' $(CFLAGS_ld) ${^} -o ${@}
+	@$(CC) $(CFLAGS) $(CFLAGS_ld) ${^} -o ${@}
 	$(STRIP) ${@}
 
 ifeq ($(strip ${M_BUILD_HEADERS}),yes)

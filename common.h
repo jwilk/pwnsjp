@@ -17,8 +17,7 @@
 #include <string.h>
 
 #define debug(s, ...) \
-  do \
-  { \
+  do { \
     if (config.conf_debug) \
     { \
       fprintf(stderr, "| "); \

@@ -4,12 +4,15 @@
  * by the Free Software Foundation.
  */
 
-#include "common.h"
-
 #include "io.h"
+
+#ifndef UI_H
+#define UI_H
 
 bool ui_prepare(void);
 void ui_start(struct io_t*);
 void ui_stop(void);
+
+#endif
 
 // vim: ts=2 sw=2 et

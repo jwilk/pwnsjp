@@ -27,12 +27,18 @@ static enum
   cmap_utf8       = -1
 } cmap = cmap_usascii;
 
+static enum
+{
+  coll_posix = 0,
+  coll_unknown = -1
+} coll = coll_unknown;
+
 void unicode_init(void)
 {
   char *locale = setlocale(LC_ALL, "");
   if (locale)
   {
-    debug("set locale to: <%s>\n", locale);
+    debug("LC_ALL = \"%s\"\n", locale);
     char *codeset = nl_langinfo(CODESET);
     if (!strcmp(codeset, "UTF-8"))
       cmap = cmap_utf8;
@@ -40,6 +46,13 @@ void unicode_init(void)
       cmap = cmap_iso88592;
     else if (!strcmp(codeset, "ISO-8859-16"))
       cmap = cmap_iso885916;
+    char* collstr = setlocale(LC_COLLATE, NULL);
+    if (collstr != NULL)
+    {
+      if (!strcmp(collstr, "C") || !strcmp(collstr, "POSIX"))
+        coll = coll_posix;
+      debug("LC_COLLATE = \"%s\" (%sPOSIX)\n", collstr, coll == coll_posix ? "" : "non-");
+    }
   }
   else
     debug("unable to set locale!\n");
@@ -189,6 +202,19 @@ size_t strnwidth(const unsigned char *str, size_t len)
         width++;
   }
   return width;
+}
+
+unsigned char* strxform(const unsigned char *str)
+{
+  int lim = 1 + strxfrm(NULL, str, 0);
+  unsigned char* result = malloc(lim);
+  strxfrm(result, str, lim);
+  return result;
+}
+
+inline bool posix_coll(void)
+{
+  return coll == coll_posix; 
 }
 
 // vim: ts=2 sw=2 et

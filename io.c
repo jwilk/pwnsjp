@@ -13,7 +13,7 @@
 
 #include <zlib.h>
 
-bool io_init(struct io_t *io, const char* filename)
+bool io_init(struct io_t *io, const unsigned char* filename)
 {
   debug("data file = \"%s\"\n", filename);
   io->file = fopen(filename, "rb");
@@ -68,25 +68,26 @@ bool io_prepareindex(struct io_t *io)
 #undef hsize
 }
 
+#define swap(w, v) do { temp = w; w = v; v = temp; } while(false)
+
 static void uint32sqsort(uint32_t *l, uint32_t *r)
 {
   uint32_t *i, *j;
   uint32_t p, temp;
-  size_t dist;
+  int dist;
   
-  do
+  while (true)
   {
-    i = l;
-    j = r;
     dist = r-l;
     if (dist < 32)
     {
       for (i=l+1; i<=r; i++)
       for (j=i-1; j>=l && j[0]>j[1]; j--)
-        // swap(i[0], j[0]):
-        temp = j[1], j[1] = j[0], j[0] = temp;
+        swap(j[0], j[1]);
       return;
     }
+    i = l;
+    j = r;
     p = l[dist/2];
     do
     {
@@ -94,8 +95,7 @@ static void uint32sqsort(uint32_t *l, uint32_t *r)
       while (*j>p) j--;
       if (i <= j)
       {
-        // swap(*i, *j):
-        temp = *i, *i = *j, *j = temp;
+        swap(*i, *j);
         i++, j--;
       }
     }
@@ -105,73 +105,120 @@ static void uint32sqsort(uint32_t *l, uint32_t *r)
       uint32sqsort(l, j);
     l = i;
   }
-  while (i < r);
 }
 
-inline static void uint32qsort(uint32_t* table, size_t count)
+inline static void uint32sort(uint32_t* table, size_t count)
 {
   uint32sqsort(table, table+(count-1));
 }
 
+#define gt(w, v) (strcmp(w, v) > 0)
+#define isort() \
+  do { \
+    if (dist < 64) \
+    { \
+      for (i=l+1; i<=r; i++) \
+      for (j=i-1; j>=l && gt(j[0].xentry, j[1].xentry); j--) \
+        swap(j[0], j[1]); \
+      return; \
+    } \
+  } while(false);
+
 static void iitems_qsort(struct io_iitem_t *l, struct io_iitem_t *r)
 {
-  struct io_iitem_t *i, *j;
-  struct io_iitem_t p, temp;
-  size_t dist;
-  
-  do
+  register unsigned char* p;
+  register struct io_iitem_t *i, *j;
+  struct io_iitem_t temp;
+  int dist;
+
+  while(true)
   {
+    dist = r - l;
+    isort();
     i = l;
     j = r;
-    dist = r-l;
-    if (dist < 32)
-    {
-      for (i=l+1; i<=r; i++)
-      for (j=i-1; j>=l && strcoll(j[0].entry, j[1].entry)>0; j--)
-        // swap(i[0], j[0]):
-        temp = j[1], j[1] = j[0], j[0] = temp;
-      return;
-    }
-    p = l[dist/2];
+    p = l[dist/2].xentry;
     do
     {
-      while (strcoll(i->entry, p.entry) < 0) i++;
-      while (strcoll(j->entry, p.entry) > 0) j--;
+      while (gt(p, i->xentry)) i++;
+      while (gt(j->xentry, p)) j--;
       if (i <= j)
       {
-        // swap(*i, *j):
-        temp = *i, *i = *j, *j = temp;
+        swap(*i, *j);
         i++, j--;
       }
     }
     while (i < j);
+
     if (l < j)
       iitems_qsort(l, j);
     l = i;
   }
-  while (i < r);
-
 }
 
-inline static void iitem_qsort(struct io_iitem_t* table, size_t count)
+static void iitems_qsort_l(struct io_iitem_t *l, struct io_iitem_t *r)
 {
-  iitems_qsort(table, table+(count-1));
+  register unsigned char* p;
+  register struct io_iitem_t *i, *j;
+  struct io_iitem_t temp;
+  int dist;
+
+  while(true)
+  {
+    dist = r - l;
+    isort();
+    swap(l[dist/2], r[0]);
+    p = temp.xentry;
+    i = l-1;
+    for (j=l; j<=r; j++)
+      if (!gt(j->xentry, p))
+      {
+        i++;
+        swap(*i, *j);
+      }
+    if (i >= r)
+      i--;
+    if (l < j)
+      iitems_qsort_l(l, i);
+    l = i+1;
+  }
 }
 
-unsigned int io_locate(struct io_t *io, const char* search)
+#undef gt
+#undef swap
+
+inline static void iitem_sort(struct io_iitem_t* table, size_t count)
+{
+#if defined(MERGESORT)
+#error Merge sort has not been implemented (as yet)
+#elif defined(LOMUTO)
+  // table[count] == +oo
+  iitems_qsort_l(table, table + count);
+#else
+  // table[count] == +oo
+  iitems_qsort(table, table + count);
+#endif
+}
+
+unsigned int io_locate(struct io_t *io, const unsigned char* search)
 {
   struct io_iitem_t *l, *r, *m;
+ 
+  unsigned char* xsearch = strxform(search);
   
   l = io->iitems;
   r = l + io->isize-1;
   while (r > l)
   {
     m = l + (r-l)/2;
-    if (strcoll(search, m->entry) > 0)
+    if (strcmp(xsearch, m->xentry) > 0)
       l = m+1;
     else
       r = m;
   }
+
+  free(xsearch);
+  
   assert(l >= io->iitems);
   assert(l < io->iitems + io->isize);
   return l - io->iitems;
@@ -216,7 +263,7 @@ bool io_buildindex(struct io_t *io)
   if (fread(offsets, sizeof(uint32_t), io->isize, io->file) != io->isize)
     return false;
  
-  io->iitems = calloc(io->isize-2, sizeof(struct io_iitem_t));
+  io->iitems = calloc(io->isize-1, sizeof(struct io_iitem_t));
   if (io->iitems == NULL)
   {
     free(offsets);
@@ -226,7 +273,7 @@ bool io_buildindex(struct io_t *io)
   unsigned int i;
   for (i=0; i<io->isize; i++)
     offsets[i] = le2cpu(offsets[i]) & 0x07ffffff;
-  uint32qsort(offsets, io->isize);
+  uint32sort(offsets, io->isize);
 
   io->isize -= 2;
   
@@ -250,8 +297,10 @@ bool io_buildindex(struct io_t *io)
   if (io->cbuffer == NULL)
     return false;
  
-  struct io_iitem_t* iitem = io->iitems;
-  for (i=0; i<io->isize; i++, iitem++)
+  struct io_iitem_t* iitem;
+
+#define forallitems for (i=0, iitem=io->iitems; i<io->isize; i++, iitem++)
+  forallitems
   {
     char wordbuffer[io->csize], *dataptr;
     unsigned int diffsize;
@@ -264,8 +313,8 @@ bool io_buildindex(struct io_t *io)
     iitem->entry = 
       config.conf_quick ? 
         strdup(dataptr) : 
-        pwnstr_to_str(dataptr); 
-    dataptr += strlen(dataptr) + 2;
+        pwnstr_to_str(dataptr);
+    dataptr = strchr(dataptr, '\0') + 2;
     if (*dataptr < ' ')
     {
       dataptr += (*dataptr) + 1;
@@ -275,16 +324,36 @@ bool io_buildindex(struct io_t *io)
     iitem->size -= diffsize;
     iitem->offset += diffsize;
   }
- 
-  iitem_qsort(io->iitems, io->isize);
-
-  for (i=0; i<io->isize-1; i++)
+  if (posix_coll())
+    forallitems iitem->xentry = iitem->entry;
+  else
+    forallitems iitem->xentry = strxform(iitem->entry);
+  
+  unsigned int len, maxlen = 0;
+  forallitems
   {
-    if (strcoll(io->iitems[i+1].entry, io->iitems[i].entry) < 0)
-    {
-      fprintf(stderr, "\"%s\" < \"%s\"\n", io->iitems[i+1].entry, io->iitems[i].entry);
-    }
+    len = strlen(iitem->xentry);
+    if (len > maxlen) 
+      len = maxlen;
   }
+  unsigned char *plusinf; // +oo == "\xff\xff...\xff"
+  plusinf = malloc(maxlen+1);
+  memset(plusinf, -1, maxlen);
+  plusinf[maxlen]='\0';
+  iitem->entry = iitem->xentry = plusinf;
+
+#if 0  
+  forallitems
+  {
+    printf("%s\n", iitem->entry);
+    if (strcmp(iitem[1].xentry, iitem->xentry) < 0)
+      printf("\n");
+  }
+#endif
+
+#undef forallitems
+  
+  iitem_sort(io->iitems, io->isize);
   
   return true;
 }
@@ -297,8 +366,12 @@ bool io_fine(struct io_t *io)
   {
     unsigned int i;
     struct io_iitem_t* iitem = io->iitems;
-    for (i=0; i<io->isize; i++, iitem++)
+    for (i=0; i<=io->isize; i++, iitem++)
+    {
+      if (iitem->xentry != iitem->entry)
+        free(iitem->xentry);
       free(iitem->entry);
+    }
     free(io->iitems);
   }
   return fclose(io->file) == 0;

@@ -32,23 +32,8 @@ static int attrs[HUE_count];
 #define c_menu_width 24
 #define c_search_limit 18
 
-void ui_cursor(bool store)
-{
-  static int y, x;
-  if (store)
-    getsyx(y, x);
-  else
-    setsyx(y, x);
-}
-
-#define ui_store_cursor() \
-  do ui_cursor(true); while(false)
-#define ui_restore_cursor() \
-  do ui_cursor(false); while(false)
-
 void ui_show_statusline(bool activemenu)
 {
-  ui_store_cursor();
   wattrset(wstatus, attrs[HUE_default]);
   mvwaddch(wstatus, 0, c_menu_width+2, activemenu ? ACS_LRCORNER : ACS_LLCORNER);
   wattrset(wstatus, attrs[activemenu ? HUE_default : HUE_dimmed]);
@@ -56,14 +41,14 @@ void ui_show_statusline(bool activemenu)
   wattrset(wstatus, attrs[!activemenu ? HUE_default : HUE_dimmed]);
   mvwhline(wstatus, 0, c_menu_width+3, ACS_HLINE, COLS-c_menu_width-3);
   wnoutrefresh(wstatus);
-  ui_restore_cursor();
 }
 
 struct scrollbar_t
 {
   WINDOW* window;
   unsigned int range;
-  unsigned int position;
+  unsigned int start;
+  unsigned int stop;
   unsigned int height;
   bool disabled;
 };
@@ -73,23 +58,19 @@ static void ui_show_scrollbar(struct scrollbar_t *scrollbar)
   if (scrollbar->disabled)
     return;
   unsigned int height = scrollbar->height;
-  ui_store_cursor();
   wattrset(scrollbar->window, attrs[HUE_default]);
   mvwvline(scrollbar->window, 0, 0, ACS_VLINE, height);
   if (scrollbar->range > 0)
   {
     height--;
     unsigned int range = scrollbar->range;
-    unsigned int start = (range/2 + height*scrollbar->position)/range;
-    unsigned int stop = (range/2 + height*(1+scrollbar->position))/range;
-    unsigned int size = stop - start;
-    if (size == 0)
-      size++;
-    mvwvline(scrollbar->window, start, 0, ACS_CKBOARD, size);
+    unsigned int start = (range/2 + height*scrollbar->start)/range;
+//               start = round ( height * start/range )
+    unsigned int stop = (range/2 + height*scrollbar->stop)/range;
+//               stop = round ( height * stop/range )
+    mvwvline(scrollbar->window, start, 0, ACS_CKBOARD, stop-start+1);
   }
   wnoutrefresh(scrollbar->window);
-  wrefresh(wview); // !
-  ui_restore_cursor();
 }
 
 #define COLOR_DEFAULT (-1)
@@ -116,7 +97,7 @@ inline bool ui_prepare(void)
   build_attr(tluafed, WHITE, DEFAULT, 0);
   attrs[HUE_misc] = attrs[HUE_default];
   attrs[HUE_bold] = attrs[HUE_default] | A_BOLD;
-  build_attr(reverse, BLACK, WHITE, 0);
+  attrs[HUE_reverse] = attrs[HUE_default] | A_REVERSE;
   build_attr(title, WHITE, BLUE, 0);
   attrs[HUE_boldtitle] = attrs[HUE_title] | A_BOLD;
   build_attr(highlight, WHITE, MAGENTA, A_BOLD);
@@ -142,7 +123,7 @@ inline bool ui_prepare(void)
   
   wmenu = newwin(LINES-3, c_menu_width, 2, 1);
 
-  wview = newwin(LINES-3, 0, 2, c_menu_width+4);
+  wview = newwin(LINES-3, COLS-c_menu_width-5, 2, c_menu_width+4);
   char* message = ustr_to_str(L"Prosz\u0119 czeka\u0107, trwa budowanie indeksu...");
   mvwaddstr(wview, 0, 0, message);
   free(message);
@@ -181,8 +162,9 @@ struct view_t
   struct scrollbar_t scrollbar;
   char* content;
   bool content_needfree;
-  unsigned int lines;
+  bool raw;
   int position;
+  unsigned int lines;
   unsigned int width;
   unsigned int height;
   unsigned int entry_no;
@@ -204,6 +186,18 @@ static inline bool ui_search(struct menu_t *menu)
       menu->entry_no < (unsigned int)menu->entry_page_no )
     menu->entry_page_no = menu->entry_no;
   return true;
+}
+
+static void ui_hide_menu_cursor(void)
+{
+  curs_set(0);
+}
+
+static void ui_show_menu_cursor(struct menu_t *menu)
+{
+  curs_set(1);
+  wmove(wmenu, 0, 1+menu->search_pos);
+  wnoutrefresh(wmenu);
 }
 
 static void ui_show_menu(struct menu_t *menu)
@@ -248,21 +242,19 @@ static void ui_show_menu(struct menu_t *menu)
     mvwaddnstr(wmenu, i+1, 1, menu->io->iitems[j].entry, menu->width-2);
   }
   wattrset(wmenu, A_NORMAL);
-  wmove(wmenu, 0, 1+menu->search_pos);
-  wnoutrefresh(wmenu);
 
-  menu->scrollbar.position = menu->entry_no;
+  menu->scrollbar.start = menu->scrollbar.stop = menu->entry_no;
   ui_show_scrollbar(&menu->scrollbar);
+  
+  ui_show_menu_cursor(menu);
 }
 
 static void ui_show_content(struct view_t *view)
 {
-  ui_store_cursor();
   wattrset(wview, A_NORMAL);
   werase(wview);
 
   bool needrestart = false;
-  int lines = 0;
   
   if (view->content == NULL || view->entry_no != view->menu->entry_no)
   {
@@ -270,11 +262,21 @@ static void ui_show_content(struct view_t *view)
       free(view->content);
     view->entry_no = view->menu->entry_no;
     io_read(view->io, view->entry_no);
-    view->content_needfree = true;
-    view->content = html_strip(view->io->cbuffer);
-    view->lines = 0;
-    view->position = 0;
-    needrestart = true;
+    if (view->raw)
+    {
+      view->content_needfree = false;
+      view->content = view->io->cbuffer;
+      view->lines = (strlen(view->content) + view->width - 1) / view->width;
+      view->position = 0;
+    }
+    else
+    {
+      view->content_needfree = true;
+      view->content = html_strip(view->io->cbuffer);
+      view->lines = 0;
+      view->position = 0;
+      needrestart = true;
+    }
   }
   else
   {
@@ -285,24 +287,53 @@ static void ui_show_content(struct view_t *view)
       view->position = view->lines - view->height;
     if (view->position < 0)
       view->position = 0;
+    
+    assert(view->position >= 0);
+    assert(view->height > view->lines || view->position + view->height <= view->lines);
   }
-
-  char *left, *right;
   
-  int xlimit, y, ylimit;
-  xlimit = view->width;
-  ylimit = needrestart ? INT_MAX : view->height;
-  y = 0;
+  int lines = 1;
+ 
+  if (view->raw)
+  {
+    int attr = A_BOLD;
+    unsigned char* s = view->content + view->position*view->width;
+    unsigned int x, lim;
+    lim = view->height*view->width;
+    for (x=0; x<lim && *s; x++, s++)
+    {
+      chtype ch;
+      if (*s == '<') 
+        attr = A_NORMAL; 
+      if (*s < ' ')
+        ch = '$' | A_REVERSE;
+      else if (*s >= 0x7f)
+        ch = '.' | A_REVERSE;
+      else
+        ch = *s;
+      waddch(wview, ch | attr);
+      if (*s == '>')
+        attr = A_BOLD;
+    }
+  }
+  else
+  {
+    char *left, *right;
+    
+    int xlimit, y, ylimit;
+    xlimit = view->width;
+    ylimit = needrestart ? INT_MAX : view->height;
+    y = 0;
 
-  left = right = view->content;
-  bool esc = false;
+    left = right = view->content;
+    bool esc = false;
 
 #define canwrite() (y >= view->position)
 #define flush() \
   do { \
     int len = right-left; \
     int width = strnwidth(left, len); \
-    if ((width > xlimit) || (width < 3 && xlimit < 7)) cr(); \
+    if ((width >= xlimit) || (width < 3 && xlimit < 7)) cr(); \
     xlimit -= width; \
     if (canwrite()) \
       waddnstr(wview, left, len); \
@@ -321,65 +352,69 @@ static void ui_show_content(struct view_t *view)
     y++; \
   } while (false)
   
-  while (*right)
-  {
-    if (esc)
+    while (*right)
     {
-      assert(*right >= '0' && *right < 'z');
-      wattrset(wview, attrs[*right - '0']);
-      esc = false;
-    }
-    else 
-    switch (*right)
-    {
-    case '\x1b':
-      esc = true;
-      flush();
-      left++;
-      break;
-    case ' ':
-      flush();
-      if (xlimit > 2)
+      if (esc)
       {
-        xlimit--;
-        if (canwrite())
-          waddch(wview, ' ');
-      } 
-      else
+        assert(*right >= '0' && *right < 'z');
+        wattrset(wview, attrs[*right - '0']);
+        esc = false;
+      }
+      else 
+      switch (*right)
+      {
+      case '\x1b':
+        esc = true;
+        flush();
+        left++;
+        break;
+      case ' ':
+        flush();
+        if (xlimit == 0)
+          break;
+        if (xlimit > 2)
+        {
+          xlimit--;
+          if (canwrite())
+            waddch(wview, ' ');
+        } 
+        else
+          cr();
+        break;
+      case '\n':
+        flush();
         cr();
-      break;
-    case '\n':
-      flush();
-      cr();
-      break;
-    default:
-      ;
+        break;
+      default:
+        ;
+      }
+      right++;
     }
-    right++;
-  }
 exceed:
-  if (ylimit > 0)
-    flush();
+    if (ylimit > 0)
+      flush();
+    if (xlimit > 0)
+      lines++;
 #undef canwrite
 #undef flush
 #undef cr
 
-  if (needrestart)
-  {
-    view->lines = lines;
-    return ui_show_content(view);
+    if (needrestart)
+    {
+      view->lines = lines;
+      return ui_show_content(view);
+    }
   }
-
+  
   wnoutrefresh(wview);
 
   if (view->height > view->lines)
     view->scrollbar.range = 0;
   else
-    view->scrollbar.range = view->lines - view->height;
-  view->scrollbar.position = view->position;
+    view->scrollbar.range = view->lines;
+  view->scrollbar.start = view->position;
+  view->scrollbar.stop = view->position + view->height;
   ui_show_scrollbar(&view->scrollbar);
-  
-  ui_restore_cursor();
 }
 
 static void ui_react_menu(struct menu_t *menu, wchar_t ch)
@@ -506,6 +541,9 @@ static inline void ui_react_view(struct view_t *view, wchar_t ch)
   case KEY_UP:
     view->position -= 2;
   case KEY_DOWN:
+  case KEY_ENTER:
+  case -L'\n':
+  case -L'\r':
     view->position++;
     ui_show_content(view);
     doupdate();
@@ -524,6 +562,15 @@ static inline void ui_react_view(struct view_t *view, wchar_t ch)
     view->position -= 2*view->height;
   case KEY_NPAGE:
     view->position += view->height;
+    ui_show_content(view);
+    doupdate();
+    break;
+  case -L'\\':
+    if (view->content_needfree && view->content != NULL)
+      free(view->content);
+    view->content = NULL;
+    view->content_needfree = false;
+    view->raw = !view->raw;
     ui_show_content(view);
     doupdate();
     break;
@@ -563,7 +610,6 @@ void ui_start(struct io_t *io)
   ui_show_content(&view);
   ui_show_menu(&menu);
   doupdate();
-  curs_set(1);
   
   bool doexit = false;
   
@@ -596,11 +642,16 @@ void ui_start(struct io_t *io)
       view.scrollbar.disabled = activemenu;
       ui_show_statusline(activemenu);
       if (activemenu)
+      {
         ui_show_scrollbar(&menu.scrollbar);
+        ui_show_menu_cursor(&menu);
+      }
       else
+      {
         ui_show_content(&view);
+        ui_hide_menu_cursor();
+      }
       doupdate();
-      curs_set(activemenu);
       break;
     case -L'\x1b': // Escape
       r = get_wch(&chi);
@@ -611,11 +662,6 @@ void ui_start(struct io_t *io)
     case L'@'-L'\\': // Control + Backslash
       doexit = true;
       break;
-    case KEY_ENTER:
-    case -L'\n':
-    case -L'\r':
-      ui_show_content(&view);
-      doupdate();
     default:
       if (activemenu)
         ui_react_menu(&menu, ch);

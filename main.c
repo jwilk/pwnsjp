@@ -11,13 +11,12 @@
 #include <fcntl.h>
 #include <sys/types.h>
 
-#include <regex.h>
-
 #include "byteorder.h"
 #include "config.h"
 #include "html.h"
 #include "hue.h"
 #include "io.h"
+#include "regex.h"
 #include "terminfo.h"
 #include "ui.h"
 #include "unicode.h"
@@ -50,35 +49,11 @@ static void eabort(char* fstr, int line, char* errstr)
   exit(EXIT_FAILURE);
 }
 
-static void regex_free(regex_t *regex)
-{
-  regfree(regex);
-}
-
-static bool regex_compile(regex_t *regex, char* pattern)
-{
-  if (pattern != NULL)
-  {
-    debug("pattern = \"%s\"\n", pattern);
-    return
-      regcomp(regex, pattern, REG_NOSUB | REG_EXTENDED | REG_ICASE) == 0;
-  }
-  debug("pattern = NULL\n");
-  return true;
-}
-
-static bool regex_match(regex_t *regex, char *string)
-{
-  return regexec(regex, string, 0, NULL, 0) == 0;
-}
-      
 int main(int argc, char **argv)
 {
-  unsigned int i;
- 
   term_init();
 
-  char* pattern = parse_options(argc, argv);
+  unsigned char* pattern = parse_options(argc, argv);
   switch (config.action)
   {
   case action_help:
@@ -92,13 +67,6 @@ int main(int argc, char **argv)
   }
   
   unicode_init();
-
-#if 0
-  char* s = ustr_to_str(L"Z\u017c\u00f3\u0142kn\u0105\u0107by");
-  int len = strlen(s)-2;
-  debug("width(\"%s\", %d) = %u\n", s, len, strnwidth(s, len));
-  free(s);
-#endif
   
 #define try(s) do { if (!(s)) eabort(__FILE__, __LINE__, ""); } while(0)
 #define tri(s, err) do { if (!(s)) eabort(__FILE__, __LINE__, err); } while(0)
@@ -160,20 +128,30 @@ int main(int argc, char **argv)
   else
   {
     hue_setup_terminfo();
-    
-    struct io_iitem_t* iitem = io.iitems;
-    for (i=0; i<io.isize; i++, iitem++)
+
+    unsigned int i = 0;
+    unsigned char* bspattern = NULL;
+    if (!config.conf_deep)
+    {
+      bspattern = pattern_head(pattern);
+      if (bspattern)
+        i = io_locate(&io, bspattern);
+    }
+
+    struct io_iitem_t* iitem;
+    unsigned int pmc = 0;
+    for (iitem = io.iitems + i; i<io.isize; i++, iitem++)
     {
       char *tbuffer;
-      if (config.conf_deep || !pattern || regex_match(&regex, iitem->entry))
+      bool doesmatch = true;
+      if (config.conf_deep || !pattern || (doesmatch = regex_match(&regex, iitem->entry)))
       {
-        bool dofree = false;
         debug(
-          "\b\b<\n  localstr = %s\n  offset = %08x (file:%08x)\n  length = %06x\n>\n", 
+          "localstr = \"%s\" ; location = %08x + %06x\n", 
           iitem->entry, 
           iitem->offset,
-          io.header->words_base + iitem->offset,
           iitem->size);
+        bool dofree = false;
         if (config.conf_entry_only)
           tbuffer = iitem->entry;
         else 
@@ -188,6 +166,7 @@ int main(int argc, char **argv)
         }
         if (!config.conf_deep || !pattern || regex_match(&regex, tbuffer))
         {
+          pmc++;
           if (!config.conf_entry_only)
             printf("%s\n::: %s%s%s :::%s\n\n", 
               hueset[HUE_title], 
@@ -200,7 +179,14 @@ int main(int argc, char **argv)
         if (dofree)
           free(tbuffer);
       }
+#if 0
+      else if (!doesmatch && bspattern != NULL && pmc > 0)
+        break;
+#endif
     }
+    if (bspattern != NULL)
+      free(bspattern);
+    debug("number of matches = %u\n", pmc);
   }
 
   try ( io_fine(&io) );

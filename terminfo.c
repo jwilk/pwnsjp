@@ -56,26 +56,40 @@ void term_init(void)
   is_term = true;
   
   term_sgr0 = strdup(term_getstr("sgr0"));
+  assert(term_sgr0 != NULL);
+
   term_bold = strdup(term_getstr("bold"));
+  assert(term_bold != NULL);
   
   memset(term_setaf, 0, sizeof(term_setaf));
   memset(term_setab, 0, sizeof(term_setab));
   
   s0 = term_getstr("setaf");
   if (*s0 != '\0')
-  for (j=0; j<8; j++)
-  {
-    term_setaf[j] = tparm(s0, j);
-    term_setaf[j] = strdup(term_setaf[j]==NULL?"":term_setaf[j]);
-  }
+    for (j=0; j<8; j++)
+    {
+      term_setaf[j] = tparm(s0, j);
+      term_setaf[j] = strdup(term_setaf[j]==NULL?"":term_setaf[j]);
+      if (term_setaf[j] == NULL)
+        term_setaf[j] = strdup("");
+    }
+  else
+    for (j=0; j<8; j++)
+      term_setaf[j] = strdup("");
   
   s0 = term_getstr("setab");
   if (*s0 != '\0')
-  for (j=0; j<8; j++)
-  {
-    term_setab[j] = tparm(s0, j);
-    term_setab[j] = strdup(term_setab[j]==NULL?"":term_setab[j]);
-  }
+    for (j=0; j<8; j++)
+    {
+      term_setab[j] = tparm(s0, j);
+      term_setab[j] = strdup(term_setab[j]==NULL?"":term_setab[j]);
+      if (term_setab[j] == NULL)
+        term_setab[j] = strdup("");
+    }
+  else
+    for (j=0; j<8; j++)
+      term_setab[j] = strdup("");
+
   atexit(term_quit);
 }
 
