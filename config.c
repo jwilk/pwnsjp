@@ -1,7 +1,7 @@
 #include "common.h"
+#include "config.h"
 #include <getopt.h>
 
-#include "config.h"
 #include "terminfo.h"
 
 struct config_t config;

@@ -1,7 +1,7 @@
 #include "common.h"
 #include "pwnio.h"
-#include "config.h"
 
+#include "config.h"
 #include "byteorder.h"
 
 bool pwnio_init(struct pwnio_t *pwnio, char* filename)
@@ -56,32 +56,48 @@ bool pwnio_prepareindex(struct pwnio_t *pwnio)
   return true;
 }
 
-static int int32_compare(const void *i, const void *j)
+static void uint32sqsort(uint32_t *l, uint32_t *r)
 {
-  return (*(int32_t*)i)-(*(int32_t*)j);
-}
-
-static void uint32qsort(uint32_t* offsets, size_t count)
-{
-  qsort(offsets, count, 4, int32_compare);
-}
-
-#if 0
-static void uint32isort(int32_t* offsets, unsigned int count)
-{
-  unsigned int i, j;
-  int32_t tmp;
-  for (i=2; i<count; i++)
-  for (j=i-1; j!=(unsigned int)-1; j--)
+  uint32_t *i, *j;
+  uint32_t p, temp, dist;
+  
+  do
   {
-    if (offsets[j] <= offsets[j+1])
-      break;
-    tmp = offsets[j+1];
-    offsets[j+1] = offsets[j];
-    offsets[j] = tmp;
+    i = l;
+    j = r;
+    dist = r-l;
+    if (dist < 32)
+    {
+      for (i=l+1; i<=r; i++)
+      for (j=i-1; j>=l && j[0]>j[1]; j--)
+        // swap(i[0], j[0]):
+        temp = j[1], j[1] = j[0], j[0] = temp;
+      return;
+    }
+    p = l[dist/2];
+    do
+    {
+      while (*i<p) i++;
+      while (*j>p) j--;
+      if (i <= j)
+      {
+        // swap(*i, *j):
+        temp = *i, *i = *j, *j = temp;
+        i++, j--;
+      }
+    }
+    while (i <= j);
+    if (l < j)
+      uint32sqsort(l, j);
+    l = i;
   }
+  while (i < r);
 }
-#endif
+
+inline static void uint32qsort(uint32_t* table, size_t count)
+{
+  uint32sqsort(table, table+(count-1));
+}
 
 bool pwnio_buildindex(struct pwnio_t *pwnio)
 {
@@ -108,7 +124,7 @@ bool pwnio_buildindex(struct pwnio_t *pwnio)
   if (maxsize > (1<<16))
     return false;
   pwnio->max_entry_size = (maxsize|0xff)+1;
-  pwnio->entry = malloc(sizeof(pwnio->max_entry_size));
+  pwnio->entry = malloc(pwnio->max_entry_size << 3);
   return (pwnio->entry != NULL);
 }
 
@@ -119,5 +135,36 @@ bool pwnio_fine(struct pwnio_t *pwnio)
   free(pwnio->entry);
   return fclose(pwnio->file) == 0;
 }
+
+/*
+bool pwnio_read(struct pwnio_t *pwnio, unsigned int entryno, unsigned char** res_entry, unsigned char** res_contents)
+{
+  assert(entryno >= 0);
+  assert(entryno < 0);
+  unsigned int size = pwnio->offsets[i+1]-pwnio->offsets[i];
+  unsigned char buffer[size];
+  bool zipped = false;
+  if (fseek(pwnio->file, pwnio->header->words_base + pwnio->offsets[i], SEEK_SET) != 0)
+    return false;
+  if (fread(buffer, size, 1, pwnio->file) != 1)
+    return false;
+  strcpy(pwnio->entry, buffer + 12);
+  *res_entry = pwnio->entry;
+  unsigned int entry_len = strlen(pwnio->entry);
+  *res_contents = pwnio_entry + entry_len;
+  if (config->conf_entry_only)
+  {
+    **res_contents = '\0';
+    return true;
+  }
+  char* zipdata = buffer + entry_len + 2;
+  bool zipped = false;
+  if (*zipdata < ' ')
+  {
+    zipdata += (*zipdata) + 1;
+    zipped = true;
+  }
+}
+*/
 
 // vim: ts=2 sw=2 et

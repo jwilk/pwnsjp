@@ -1,7 +1,6 @@
 #include "common.h"
 #include <langinfo.h>
 #include <locale.h>
-#include <wchar.h>
 
 #include "cmap-cp1250.h"
 #include "cmap-usascii.h"

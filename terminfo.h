@@ -1,5 +1,4 @@
 #include "common.h"
-#include <term.h>
 
 #ifndef TERMINFO_H
 #define TERMINFO_H

@@ -17,9 +17,9 @@ struct pwnio_t
   FILE* file;
   size_t file_size;
   unsigned int word_count;
-  unsigned int max_entry_size;
-  struct header_t *header;
   uint32_t* offsets;
+  struct header_t* header;
+  unsigned int max_entry_size;
   char* entry;
 };
 

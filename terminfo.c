@@ -1,7 +1,8 @@
 #include "common.h"
-#include <unistd.h>
-
 #include "terminfo.h"
+
+#include <unistd.h>
+#include <term.h>
 
 bool is_term = false;
 
