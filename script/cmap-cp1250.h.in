@@ -2,9 +2,9 @@
 print "#include <wchar.h>\n\n".
       "#ifndef CMAP_CP1250_H\n".
       "#define CMAP_CP1250_H\n\n". 
-      "static const wchar_t cp1250[0x100] = {";
+      "static const wchar_t cp1250[0x80] = {";
 
-foreach $cp (0 .. 0xff)
+foreach $cp (0x80 .. 0xff)
   { $s{$cp}="0000"; }
 while(<STDIN>)
 {
@@ -15,7 +15,7 @@ while(<STDIN>)
   $uni=lc $uni;
   $s{$cp}=$uni;
 }
-foreach $cp (0 .. 0xfe)
+foreach $cp (0x80 .. 0xfe)
   { printf "0x%s, ", $s{$cp} };
 printf "0x%s};\n\n", $s{0xff};
 

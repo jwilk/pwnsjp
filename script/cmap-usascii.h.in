@@ -2,7 +2,7 @@
 echo "#ifndef CMAP_USASCII_H"
 echo "#define CMAP_USASCII_H"
 echo
-echo -n 'static const char* rev_usascii[0xe0] = { "\xa0", '
+echo -n 'static const unsigned char* rev_usascii[0xe0] = { "\xa0", '
 (
   for i in `seq 161 383`
   do

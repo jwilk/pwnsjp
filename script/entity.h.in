@@ -4,9 +4,9 @@ print "#include <wchar.h>\n\n".
       "#define ENTITY_H\n\n".
       "struct entity\n".
       "{\n".
-      "  char* name;\n".
+      "  unsigned char* name;\n".
       "  wchar_t value;\n".
-      "  char* str;\n".
+      "  unsigned char* str;\n".
       "};\n\n".
       "static const struct entity entity_list[] =\n".
       "{\n";

@@ -5,9 +5,9 @@
 
 struct entity
 {
-  char* name;
+  unsigned char* name;
   wchar_t value;
-  char* str;
+  unsigned char* str;
 };
 
 static const struct entity entity_list[] =

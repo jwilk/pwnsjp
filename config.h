@@ -11,12 +11,13 @@ struct config_t
     action_help,
     action_version
   } action;
+  bool conf_color;
   bool conf_debug;
   bool conf_deep;
   bool conf_entry_only;
   bool conf_quick;
   bool conf_raw;
-  bool conf_color;
+  bool conf_tabi;
 };
 
 char* parse_options(int, char **);

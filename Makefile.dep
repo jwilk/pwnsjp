@@ -1,0 +1,7 @@
+config.o: config.c common.h config.h terminfo.h
+pwnio.o: pwnio.c pwnio.h common.h config.h
+pwnsjp.o: pwnsjp.c common.h byteorder.h config.h pwnio.h terminfo.h \
+  unicode.h validate.h
+terminfo.o: terminfo.c common.h terminfo.h
+unicode.o: unicode.c common.h cmap-cp1250.h cmap-usascii.h \
+  cmap-iso8859-2.h cmap-iso8859-16.h entity.h entity-hash.h config.h

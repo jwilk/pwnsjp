@@ -10,7 +10,7 @@ char* term_setab[8];
 char* term_sgr0;
 char* term_bold;
 
-static inline char* term_getstr(const char *str)
+static char* term_getstr(const char *str)
 {
   char* result = tigetstr(str);
   if (result == NULL || result == (char*)-1)

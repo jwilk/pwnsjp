@@ -1,7 +1,5 @@
 #include "common.h"
-
 #include <unistd.h>
-
 #include <errno.h>
 
 #include <fcntl.h>
@@ -20,6 +18,7 @@
 
 #include "byteorder.h"
 #include "config.h"
+#include "pwnio.h"
 #include "terminfo.h"
 #include "unicode.h"
 #include "validate.h"
@@ -155,18 +154,18 @@ static char* trim_html(char *str)
   return pwnstr_to_str(result);
 }
 
-static inline int int32_compare(const void *i, const void *j)
+static int int32_compare(const void *i, const void *j)
 {
   return (*(int32_t*)i)-(*(int32_t*)j);
 }
 
-static inline void uint32qsort(uint32_t* offsets, size_t count)
+static void uint32qsort(uint32_t* offsets, size_t count)
 {
   qsort(offsets, count, 4, int32_compare);
 }
 
 #if 0
-static inline void uint32isort(int32_t* offsets, unsigned int count)
+static void uint32isort(int32_t* offsets, unsigned int count)
 {
   unsigned int i, j;
   int32_t tmp;
@@ -182,14 +181,14 @@ static inline void uint32isort(int32_t* offsets, unsigned int count)
 }
 #endif
 
-inline void version(void)
+static void version(void)
 {
   fprintf(stderr,
     "pwnsjp, version %s\n\n",
     K_VERSION);
 }
 
-inline void usage(void)
+static void usage(void)
 {
   fprintf(stderr,
     "Usage: pwnsjp [OPTIONS] PATTERN\n\n"
@@ -200,7 +199,7 @@ inline void usage(void)
     "  -v, --version\n\n");
 }
 
-void eabort(char* fstr, int line, char* errstr)
+static void eabort(char* fstr, int line, char* errstr)
 {
   if (fstr == NULL)
     fstr = "?";
@@ -210,12 +209,12 @@ void eabort(char* fstr, int line, char* errstr)
   exit(EXIT_FAILURE);
 }
 
-inline void regex_free(regex_t *regex)
+static void regex_free(regex_t *regex)
 {
   regfree(regex);
 }
 
-inline bool regex_compile(regex_t *regex, char* pattern)
+static bool regex_compile(regex_t *regex, char* pattern)
 {
   if (pattern != NULL)
   {
@@ -227,19 +226,14 @@ inline bool regex_compile(regex_t *regex, char* pattern)
   return true;
 }
 
-inline bool regex_match(regex_t *regex, char *string)
+static bool regex_match(regex_t *regex, char *string)
 {
   return regexec(regex, string, 0, NULL, 0) == 0;
 }
       
 int main(int argc, char **argv)
 {
-  struct 
-  {
-    uint32_t word_count;
-    uint32_t index_base;
-    uint32_t words_base;
-  } header;
+ 
   unsigned int i;
  
   term_init();
@@ -265,34 +259,42 @@ int main(int argc, char **argv)
   regex_t regex;
   tri ( regex_compile(&regex, pattern), "Invalid pattern" );
  
-  debug("data file = \"%s\"\n", K_DATA_PATH);
-  FILE* f = fopen(K_DATA_PATH, "rb");
-  try ( f != NULL );
-  try ( fseek(f, 0, SEEK_END) == 0 );
-  unsigned int size = ftell(f);
-  debug("data file size = %u MiB\n", size>>20);
-#ifdef K_VALIDATE_DATAFILE
-  if (size != datafile_size)
+  struct pwnio_t pwnio;
+  if (!pwnio_init(&pwnio, K_DATA_PATH))
   {
-    fprintf(stderr, "Invalid data file size: %u, should be %u.\n", size, datafile_size);
+    fprintf(stderr, "Unable to open data file.\n");
     return EXIT_FAILURE;
   }
+  
+#ifdef K_VALIDATE_DATAFILE
+  if (pwnio.size != datafile_size)
   {
-    uint8_t sig[2];
-    try ( fseek(f, 0, SEEK_SET) == 0 );
-    if ( fread(sig, 1, sizeof(sig), f) != sizeof(sig) || sig[0]!='G' || sig[1]!='W' )
-    {
-      fprintf(stderr, "Invalid data file signature: %02x%02x, should be 4787.\n", sig[0], sig[1]);
-      return EXIT_FAILURE;
-    }
+    fprintf(stderr, "Invalid data file size: %u, should be %u.\n", pwnio.size, datafile_size);
+    return EXIT_FAILURE;
+  }
+  if (!pwnio_validate(&pwnio))
+  {
+    fprintf(stderr, "Invalid data file signature.\n");
+    return EXIT_FAILURE;
   }
 #else
-  tri ( size > (1<<26), "Unexpectedly short data file" );
-  tri ( size < (1<<28), "Unexpectedly long data file" );
+  tri ( pwnio.size > (1<<26), "Unexpectedly short data file" );
+  tri ( pwnio.size < (1<<28), "Unexpectedly long data file" );
 #endif
-  try ( fseek(f, 0x18, SEEK_SET) == 0 );
-  try ( fread(&header, sizeof(header), 1, f) == 1 );
 
+  struct header_t 
+  {
+    uint32_t __tmp1;
+    uint32_t __tmp2;
+    uint32_t word_count;
+    uint32_t index_base;
+    uint32_t words_base;
+  };
+
+  struct header_t header;
+  try ( fseek(pwnio.file, 0x10, SEEK_SET) == 0 );
+  try ( fread(&header, sizeof(header), 1, pwnio.file) == 1 );
+  
   header.word_count = le2cpu(header.word_count);
   debug("word count = %d\n", header.word_count);
 
@@ -308,25 +310,26 @@ int main(int argc, char **argv)
   tri ( header.word_count <= (1<<17), "Unexpectedly many words" );
   
   uint32_t offsets[header.word_count];
-  try ( fseek(f, header.index_base, SEEK_SET) >= 0 );
-  try ( fread(offsets, sizeof(uint32_t), header.word_count, f) == header.word_count );
- 
+  try ( fseek(pwnio.file, header.index_base, SEEK_SET) >= 0 );
+  try ( fread(offsets, sizeof(uint32_t), header.word_count, pwnio.file) == header.word_count );
+
   for (i=0; i<header.word_count; i++)
     offsets[i] = le2cpu(offsets[i]) & 0x07ffffff;
   uint32qsort(offsets, header.word_count);
 
-  unsigned int maxsize=1024;
+  unsigned int size, maxsize = 1024;
   for (i=0; i<header.word_count-1; i++)
   {
-    size=offsets[i+1]-offsets[i];
-    if (size>maxsize)
-      maxsize=size;
+    size = offsets[i+1]-offsets[i];
+    if (size > maxsize)
+      maxsize = size;
   }
 
   debug("max entry size = %u\n", maxsize);
   tri ( maxsize <= (1<<16), "Unexpectedly long entries" );
   
   char wordbuffer[(maxsize|0x07)+1];
+  if (!config.conf_tabi)
   for (i=0; i<header.word_count-1; i++)
   {
     size=offsets[i+1]-offsets[i];
@@ -334,8 +337,8 @@ int main(int argc, char **argv)
     bool zipped = false;
     char debuffer[dsize], *tbuffer;
     memset(debuffer, 0, dsize); 
-    try ( fseek(f, header.words_base + offsets[i], SEEK_SET) == 0 );
-    try ( fread(wordbuffer, size, 1, f) == 1 );
+    try ( fseek(pwnio.file, header.words_base + offsets[i], SEEK_SET) == 0 );
+    try ( fread(wordbuffer, size, 1, pwnio.file) == 1 );
     char* localstr = wordbuffer + 12;
     bool dofree = false;
     if (!config.conf_quick)
@@ -354,10 +357,11 @@ int main(int argc, char **argv)
     {
       bool dofree = false;
       debug(
-        "\b\b<\n  localstr = %s\n  offset = %08x : %08x\n>\n", 
+        "\b\b<\n  localstr = %s\n  offset = %08x (file:%08x)\n  length = %06x\n>\n", 
         localstr, 
         offsets[i],
-        header.words_base + offsets[i]);
+        header.words_base + offsets[i],
+        size);
       if (config.conf_entry_only)
         tbuffer = localstr;
       else 
@@ -383,9 +387,9 @@ int main(int argc, char **argv)
     if (dofree)
       free(localstr);
   }
-  
-  try ( fclose(f) == 0 );
 
+  try ( pwnio_fine(&pwnio) );
+  
   if (pattern)
     regex_free(&regex);
 

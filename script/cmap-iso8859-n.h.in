@@ -2,7 +2,7 @@
 $n = shift;
 print "#ifndef CMAP_ISO8859_${n}_H\n".
       "#define CMAP_ISO8859_${n}_H\n\n". 
-      "static const char rev_iso8859${n}[0xe0] = \"";
+      "static const unsigned char rev_iso8859${n}[0xe0] = \"";
 
 foreach $uni (0xa0 .. 0x17f)
   { $s{$uni}=0; }

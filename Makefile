@@ -29,7 +29,7 @@ ifeq ($(strip ${M_COMPILER}),gcc)
 	endif
 endif
 ifeq ($(strip ${M_COMPILER}),icc)
-	CFLAGS_wrn :=
+	CFLAGS_wrn := -w
 	CFLAGS_std := -c99
 endif
 
@@ -45,13 +45,13 @@ HFILES = \
 	cmap-cp1250.h cmap-iso8859-16.h cmap-iso8859-2.h cmap-usascii.h \
 	entity.h entity-hash.h \
 	validate.h byteorder.h \
-	config.h terminfo.h unicode.h \
+	config.h pwnio.h terminfo.h unicode.h \
 	common.h
 
-CFILES = config.c pwnsjp.c terminfo.c unicode.c
+CFILES = config.c pwnio.c pwnsjp.c terminfo.c unicode.c
 OFILES = $(CFILES:.c=.o)
 
-DISTFILES = Makefile Makefile.conf $(HFILES) $(CFILES) script/ data/
+DISTFILES = Makefile Makefile.dep Makefile.conf $(HFILES) $(CFILES) script/ data/
 
 all: pwnsjp
 
@@ -67,7 +67,9 @@ distclean:
 dist: distclean $(HFILES)
 	fakeroot tar -chjf pwnsjp-$(M_VERSION).tar.bz2 $(DISTFILES)
 
-%.o: %.c $(HFILES)
+include Makefile.dep
+
+%.o:
 	$(CC) $(CFLAGS) $(CFLAGS_def) -c ${<} -o ${@}
 
 pwnsjp: $(OFILES)

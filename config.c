@@ -28,7 +28,7 @@ char* parse_options(int argc, char **argv)
   while (true)
   {
     int i = 0;
-    int c = getopt_long(argc, argv, "dehvDQR", gopts, &i);
+    int c = getopt_long(argc, argv, "dehvDQRT", gopts, &i);
     if (c < 0)
       break;
     if (c == 0)
@@ -56,7 +56,10 @@ char* parse_options(int argc, char **argv)
     case 'R':
       config.conf_raw = true;
       break;
-     }
+    case 'T':
+      config.conf_tabi = true;
+      break;
+    }
   }
   return
     (optind<=argc)?argv[optind]:NULL;
