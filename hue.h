@@ -22,7 +22,9 @@
 #define HUE_phraze    0x09
 #define HUE_dimmed    0x0a
 
-extern char* hueset[HUE_count];
+#define HUE(x) ( hueset[HUE_##x] )
+
+extern unsigned char* hueset[HUE_count];
 
 void hue_setup_curses(void);
 void hue_setup_terminfo(void);

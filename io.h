@@ -11,17 +11,17 @@
 
 struct io_header_t
 {
-  uint32_t __tmp1;
-  uint32_t __tmp2;
+  uint32_t __tmp[5];
   uint32_t __word_count;
   uint32_t index_base;
   uint32_t words_base;
+  uint32_t __tmq[5];
 }; 
 
 struct io_iitem_t
 {
-  unsigned char* entry;
   unsigned char* xentry;
+  unsigned char* entry;
   uint32_t offset;
   unsigned int size : 30;
   unsigned int zipped : 1;

@@ -13,10 +13,10 @@ void term_init(void);
 
 extern bool is_term;
 
-extern char* term_setaf[8];
-extern char* term_setab[8];
-extern char* term_sgr0;
-extern char* term_bold;
+extern unsigned char* term_setaf[8];
+extern unsigned char* term_setab[8];
+extern unsigned char* term_sgr0;
+extern unsigned char* term_bold;
 
 #endif
 

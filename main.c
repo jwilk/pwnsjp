@@ -39,7 +39,7 @@ static void usage(void)
     "  -v, --version\n\n");
 }
 
-static void eabort(char* fstr, int line, char* errstr)
+static void eabort(unsigned char* fstr, int line, unsigned char* errstr)
 {
   if (fstr == NULL)
     fstr = "?";
@@ -142,7 +142,7 @@ int main(int argc, char **argv)
     unsigned int pmc = 0;
     for (iitem = io.iitems + i; i<io.isize; i++, iitem++)
     {
-      char *tbuffer;
+      unsigned char *tbuffer;
       bool doesmatch = true;
       if (config.conf_deep || !pattern || (doesmatch = regex_match(&regex, iitem->entry)))
       {

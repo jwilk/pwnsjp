@@ -16,6 +16,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef NDEBUG
+
+#define debug(s, ...) while (0)
+
+#else
+
 #define debug(s, ...) \
   do { \
     if (config.conf_debug) \
@@ -24,6 +30,8 @@
       fprintf(stderr, s, ## __VA_ARGS__); \
     } \
   } while(0)
+
+#endif
 
 #ifndef K_DATA_PATH
 #  define K_DATA_PATH "./slo.win"

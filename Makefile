@@ -1,4 +1,4 @@
-M_VERSION = 0.345
+M_VERSION = 0.355
 
 M_BUILD_HEADERS = yes	# yes | no
 M_DEBUG = no			# yes | no
@@ -78,21 +78,18 @@ endif
 
 include Makefile.dep
 
-$(OFILES): %.o: %.c
-	@echo $(CC) '(...)' -c ${<} -o ${@}
-	@$(CC) $(CFLAGS) $(CFLAGS_def) -c ${<} -o ${@}
-
 pwnsjpi: pwnsjp
 	ln -sf pwnsjp pwnsjpi
 
-.PHONY: cflags
-cflags:
+pwnsjp: $(OFILES)
 	@echo CFLAGS = $(CFLAGS)
-
-pwnsjp: cflags $(OFILES)
-	@echo $(CC) '(...)' $(CFLAGS_ld) $(OFILES) -o ${@}
-	@$(CC) $(CFLAGS) $(CFLAGS_ld) $(OFILES) -o ${@}
+	@echo $(CC) '(...)' $(CFLAGS_ld) ${^} -o ${@}
+	@$(CC) $(CFLAGS) $(CFLAGS_ld) ${^} -o ${@}
 	$(STRIP) ${@}
+
+$(OFILES): %.o: %.c
+	@echo $(CC) '(...)' -c ${<} -o ${@}
+	@$(CC) $(CFLAGS) $(CFLAGS_def) -c ${<} -o ${@}
 
 ifeq ($(strip ${M_BUILD_HEADERS}),yes)
 include Makefile.hdr

@@ -12,15 +12,15 @@
 
 bool is_term = false;
 
-char* term_setaf[8];
-char* term_setab[8];
-char* term_sgr0;
-char* term_bold;
+unsigned char* term_setaf[8];
+unsigned char* term_setab[8];
+unsigned char* term_sgr0;
+unsigned char* term_bold;
 
-static char* term_getstr(const char *str)
+static unsigned char* term_getstr(const unsigned char *str)
 {
-  char* result = tigetstr((char*) str);
-  if (result == NULL || result == (char*)-1)
+  unsigned char* result = tigetstr((char*) str);
+  if (result == NULL || result == (unsigned char*)-1)
     return "";
   else
     return result;
@@ -28,7 +28,7 @@ static char* term_getstr(const char *str)
 
 void term_quit(void)
 {
-  int j;
+  unsigned int j;
   free(term_sgr0);
   free(term_bold);
   for (j=0; j<8; j++)
@@ -39,8 +39,9 @@ void term_quit(void)
 
 void term_init(void)
 {
-  char* s0;
-  int err, j;
+  unsigned char *s0;
+  int err;
+  unsigned int j;
 
   if (!isatty(STDOUT_FILENO) || setupterm(NULL, STDOUT_FILENO, &err) != 0)
   {
@@ -69,7 +70,7 @@ void term_init(void)
     for (j=0; j<8; j++)
     {
       term_setaf[j] = tparm(s0, j);
-      term_setaf[j] = strdup(term_setaf[j]==NULL?"":term_setaf[j]);
+      term_setaf[j] = strdup(term_setaf[j]==NULL ? (unsigned char*)"" : term_setaf[j]);
       if (term_setaf[j] == NULL)
         term_setaf[j] = strdup("");
     }
@@ -82,7 +83,7 @@ void term_init(void)
     for (j=0; j<8; j++)
     {
       term_setab[j] = tparm(s0, j);
-      term_setab[j] = strdup(term_setab[j]==NULL?"":term_setab[j]);
+      term_setab[j] = strdup(term_setab[j]==NULL ? (unsigned char*)"" : term_setab[j]);
       if (term_setab[j] == NULL)
         term_setab[j] = strdup("");
     }

@@ -124,7 +124,7 @@ inline bool ui_prepare(void)
   wmenu = newwin(LINES-3, c_menu_width, 2, 1);
 
   wview = newwin(LINES-3, COLS-c_menu_width-5, 2, c_menu_width+4);
-  char* message = ustr_to_str(L"Prosz\x0119 czeka\x0107, trwa budowanie indeksu...");
+  unsigned char* message = ustr_to_str(L"Prosz\x0119 czeka\x0107, trwa budowanie indeksu...");
   mvwaddstr(wview, 0, 0, message);
   free(message);
  
@@ -160,7 +160,7 @@ struct view_t
   struct io_t* io;
   struct menu_t* menu;
   struct scrollbar_t scrollbar;
-  char* content;
+  unsigned char* content;
   bool content_needfree;
   bool raw;
   int position;
@@ -176,7 +176,7 @@ static inline bool ui_search(struct menu_t *menu)
   assert(menu->io != NULL);
 
   unsigned int prev = menu->entry_no;
-  char* search = ustr_to_str(menu->search);
+  unsigned char* search = ustr_to_str(menu->search);
   menu->entry_no = io_locate(menu->io, search);
   free(search);
   if (prev == menu->entry_no)
@@ -318,7 +318,7 @@ static void ui_show_content(struct view_t *view)
   }
   else
   {
-    char *left, *right;
+    unsigned char *left, *right;
     
     int xlimit, y, ylimit;
     xlimit = view->width;

@@ -11,7 +11,29 @@
 #include "terminfo.h"
 #include "unicode.h"
 
-char* html_strip(char *str)
+/*
+ * List of unhandled tags:
+ *  - <above>
+ *  - <font color=#23b002>
+ *  - <font color=#3030bf>
+ *  - <j>
+ *  - <przysl>
+ *  - <s>
+ *  - <term z=puste>
+ * List of ignored tags:
+ *  - <font size=-1>
+ *  - <font size=5>
+ *  - <g>
+ *  - <glo>
+ *  - <k>
+ *  - <l>
+ *  - <math>
+ *  - <q>
+ *  - <r1>
+ *  - <small>
+ */
+
+unsigned char* html_strip(unsigned char *str)
 {
   enum
   {
@@ -20,19 +42,36 @@ char* html_strip(char *str)
     s_html_open,
     s_html_close
   } state = s_default;
-  char *head, *tail, *appendix;
+  unsigned char *head, *tail, *appendix;
   int len = strlen(str);
-  char result[2*len];
   bool first = true;
   bool ignorep = true;
-  unsigned int colorstack = 0; // TODO: a more sophisticated stack
+  unsigned int cplace = 0;
+  unsigned int cstack = 0;
   
-  head=tail=str;
-  appendix=result;
-#define a(t) do *appendix++ = t; while (0)
-#define as(t) do { strcpy(appendix, t); while (*appendix) appendix++; } while (0)
-#define ac(t) do if (colorstack==0) { strcpy(appendix, hueset[t]); while (*appendix) appendix++; } while (0)
-#define sync() do head = tail+1; while(0)
+  unsigned char result[4*len];
+  appendix = result;
+
+#define a(t) ( *appendix++ = t )
+#define as(t) \
+  do { strcpy(appendix, t); while (*appendix) appendix++; } while (0)
+#define cpush(t) \
+  do { \
+    if (cstack == cplace) \
+      as(t); \
+    cstack++; \
+  } while (0)
+#define cpush2(t) \
+  do { as(t); cplace = cstack; cstack++; } while(0)
+#define cpop() \
+  do { \
+    if (cstack > 0 && --cstack == cplace ) \
+      as(HUE(tluafed)); \
+  } while (0)
+#define sync() ( head = tail+1 )
+#define nhave(s, n) ( !strncasecmp(head, s, n) )
+#define have(s) ( !strcasecmp(head, s) )
+  
   for (head=tail=str; *tail; tail++)
   switch(state)
   {
@@ -56,63 +95,51 @@ char* html_strip(char *str)
       state = s_html_open;
     break;
   case s_html_open:
-    if (*tail=='>') 
+    if (*tail == '>') 
     {
-      state=s_default;
-      *tail='\0';
-      if (!strcasecmp(head, "p"))
+      state = s_default;
+      *tail = '\0';
+      if (have("p"))
       {
         if (ignorep)
-          ignorep=false;
+          ignorep = false;
         else
           a('\n');
       }
-      else if ((ignorep=false) || !strcasecmp(head, "p style=\"tab\""))
+      else if ((ignorep=false) || have("p style=\"tab\""))
         as("\n   ");
-      else if (!strcasecmp(head, "br"))
+      else if (have("br"))
         a('\n');
-      else if (!strcasecmp(head, "b"))
+      else if (have("b"))
       {
         if (first)
         {
-          ac(HUE_highlight);
+          cpush2(HUE(highlight));
           first = false;
         }
         else
-          ac(HUE_bold);
-        colorstack++;
+          cpush2(HUE(bold));
       }
-      else if (!strcasecmp(head, "tr1"))
-      {
-        ac(HUE_highlight);
-        colorstack++;
-      }
-      else if (!strcasecmp(head, "font color=#ff0000"))
-      {
-        ac(HUE_phraze);
-        colorstack++;
-      }
-      else if (!strcasecmp(head, "font color=#fa8d00"))
-      {
-        ac(HUE_misc);
-        colorstack++;
-      }
-      else if (!strcasecmp(head, "i"))
-      {
-        ac(HUE_italic);
-        colorstack++;
-      }
-      else if (!strcasecmp(head, "sup"))
+      else if (have("tr1"))
+        cpush2(HUE(highlight));
+      else if (have("font color=#ff0000") || have("font color=red"))
+        cpush2(HUE(phraze));
+      else if (have("font color=#fa8d00"))
+        cpush2(HUE(misc));
+      else if (nhave("font", 4))
+        cpush("");
+      else if (have("i"))
+        cpush(HUE(italic));
+      else if (have("big"))
+        cpush2(HUE(highlight));
+      else if (have("sup"))
         a('^');
-      else if (!strcasecmp(head, "sub"))
+      else if (have("sub"))
         a('_');
-      else if (!strcasecmp(head, "sqrt"))
+      else if (have("sqrt"))
         as("&sqrt;");
-      else if (!strncasecmp(head, "a href=", 7))
-      {
-        ac(HUE_hyperlink);
-        colorstack++;
-      }
+      else if (nhave("a href=", 7))
+        cpush(HUE(hyperlink));
       sync();
     }
     break;
@@ -121,38 +148,34 @@ char* html_strip(char *str)
     {
       *tail = '\0';
       state = s_default;
-      if 
-        (
-          !strcasecmp(head, "a") || 
-          !strcasecmp(head, "b") || 
-          !strcasecmp(head, "i") || 
-          !strcasecmp(head, "q") || 
-          !strcasecmp(head, "tr1") || 
-          !strcasecmp(head, "font") 
-        )
-      {
-        if (colorstack > 0 && --colorstack == 0)
-          ac(HUE_default);
-      }
-      else if (!strcasecmp(head, "p"))
+      if (have("a") || have("b") || have("i") || have("big") || have("tr1") || have("font"))
+        cpop();
+      else if (have("p"))
         while(tail[1] == ' ')
           tail++;
       sync();
     }
     break;
   }
+  as(HUE(tluafed));
   a('\0');
+
 #undef a
 #undef as
 #undef sync
-  if (result != '\0')
+#undef cpush
+#undef cpush2
+#undef cpop
+#undef have
+#undef nhave
+  
+  if (*result != '\0')
   {
-    char *end = strchr(result, '\0');
+    unsigned char *end = strchr(result, '\0');
     do
       end--;
     while (*end <= ' ');
-    end++;
-    *end='\0';
+    *++end = '\0';
   }
   return pwnstr_to_str(result);
 }

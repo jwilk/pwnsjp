@@ -37,11 +37,11 @@ static enum
 
 void unicode_init(void)
 {
-  char *locale = setlocale(LC_ALL, "");
+  unsigned char *locale = setlocale(LC_ALL, "");
   if (locale)
   {
     debug("LC_ALL = \"%s\"\n", locale);
-    char *codeset = nl_langinfo(CODESET);
+    unsigned char *codeset = nl_langinfo(CODESET);
     if (!strcmp(codeset, "UTF-8"))
       cmap = cmap_utf8;
     else if (!strcmp(codeset, "ISO-8859-2"))
@@ -54,7 +54,7 @@ void unicode_init(void)
       cmap = cmap_iso885916;
       rev_iso8859n = rev_iso885916;
     }
-    char* collstr = setlocale(LC_COLLATE, NULL);
+    unsigned char* collstr = setlocale(LC_COLLATE, NULL);
     if (collstr != NULL)
     {
       if (!strcmp(collstr, "C") || !strcmp(collstr, "POSIX"))
@@ -66,7 +66,7 @@ void unicode_init(void)
     debug("unable to set locale!\n");
 }
 
-static const char* entity_grep(const unsigned char *str, wchar_t *result)
+static const unsigned char* entity_grep(const unsigned char *str, wchar_t *result)
 {
   unsigned int hash = 0;
   int i, j;
@@ -108,7 +108,7 @@ static unsigned char* ustr_fallback_ascii(const wchar_t *ustr)
   unsigned char result[biglen], *appendix;
   memset(result, 0, biglen); 
   appendix = result;
-#define a(t) do *appendix++ = t; while (0)
+#define a(t) ( *appendix++ = t )
 #define as(t) do { strcpy(appendix, t); while (*appendix) appendix++; } while (0)
   for (i=0; i<len; i++)
   {
@@ -178,7 +178,7 @@ unsigned char* ustr_to_str(const wchar_t *ustr)
   return NULL; // suppress compiler warnings
 }
 
-char* pwnstr_to_str(const unsigned char *str)
+unsigned char* pwnstr_to_str(const unsigned char *str)
 {
   wchar_t* ustr = pwnstr_to_ustr(str);
   unsigned char* result = ustr_to_str(ustr);
