@@ -1,7 +1,7 @@
-M_VERSION = 0.339
+M_VERSION = 0.340
 
 M_BUILD_HEADERS = yes	# yes | no
-M_DEBUG = no			# yes | no
+M_DEBUG = yes			# yes | no
 M_PROFILE = no			# yes | no
 M_COMPILER = gcc		# gcc | icc
 
@@ -14,7 +14,7 @@ CC = $(strip ${M_COMPILER})
 CFLAGS = \
 	$(CFLAGS_opt) $(CFLAGS_wrn) $(CFLAGS_std) $(CFLAGS_dbg)
 
-CFLAGS_opt := -Os -fstrict-aliasing -finline-limit=1200
+CFLAGS_opt := -O3 -fstrict-aliasing -finline-limit=1200
 CFLAGS_ld  := -lz -lncursesw
 CFLAGS_dbg := -DNDEBUG
 STRIP = strip -s

@@ -187,16 +187,117 @@ static void iitems_qsort_l(struct io_iitem_t *l, struct io_iitem_t *r)
 #undef gt
 #undef swap
 
-inline static void iitem_sort(struct io_iitem_t* table, size_t count)
+static void iitem_sort(struct io_iitem_t* table, size_t count)
 {
 #if defined(MERGESORT)
-#error Merge sort has not been implemented (as yet)
+
+// Doesn't work. And is unexpectedly slow.
+  
+  debug("mergesort = yes\n");
+  unsigned int buffs, blocks, blockc = 0;
+  buffs = blockc = 0;
+  blocks = 1;
+  struct io_iitem_t *iitem;
+  unsigned int i;
+
+#define forallitems for (i=0, iitem=table; i<count; i++, iitem++)
+  forallitems
+    if (strcmp(iitem[1].xentry, iitem->xentry) < 0)
+    {
+      blockc++;
+      if (blocks > buffs)
+        buffs = blocks;
+      blocks = 1;
+    }
+    else
+      blocks++;
+  
+  debug("mergesort blocks = %u\n", blockc);
+  unsigned int qlim = 2*(blockc + 1);
+  struct io_iitem_t* queue[qlim];
+  int qhead, qtail, qlen;
+  qlen = 0;
+  qhead = qtail = -1;
+  
+#define pop() (qlen--, qtail = (qtail+1) % qlim, queue[qtail])
+#define push(x) (qlen++, qhead = (qhead+1) % qlim, queue[qhead] = (x))
+  
+  push(table);
+  forallitems
+    if (strcmp(iitem[1].xentry, iitem->xentry) < 0)
+    {
+      push(iitem);
+      push(iitem+1);
+    }
+#undef forallitems
+
+  qlen--;
+  assert(--qhead > 0);
+  assert(qtail == -1);
+  
+  struct io_iitem_t* buffer = malloc(count*sizeof(struct io_iitem_t));
+  
+  while (qlen >= 4)
+  {
+    struct io_iitem_t *a, *al, *ah, *bl, *bh, *r;
+    al = pop(); ah = pop();
+    bl = pop(); bh = pop();
+    if (bl != ah+1)
+    {
+      push(al); push(ah);
+      al = bl; ah = bh;
+      bl = pop(); bh = pop();
+    }
+    assert(bh >= bl);
+    assert(bl == ah+1);
+    assert(ah >= al);
+    a = al;
+    r = buffer;
+    while (true)
+    {
+      if (bl > bh)
+      {
+        if (ah >= al)
+          memcpy(r, al, (ah-al)*sizeof(struct io_iitem_t));
+        break;
+      }
+      if (al > ah)
+      {
+        if (bh >= bl)
+          memcpy(r, bl, (bh-bl)*sizeof(struct io_iitem_t));
+        break;
+      }
+      if (strcmp(al->xentry, bl->xentry) < 0)
+      {
+        *r = *al;
+        r++; al++;
+      }
+      else
+      {
+        *r = *bl;
+        r++; bl++;
+      }
+    }
+    memcpy(a, buffer, (bh-a)*sizeof(struct io_iitem_t));
+    push(a);
+    push(bh);
+  }
+
+#undef push
+#undef pop
+
+  free(buffer);
+  
 #elif defined(LOMUTO)
-  // table[count] == +oo
-  iitems_qsort_l(table, table + count);
+
+  debug("quicksort = lomuto\n");
+  iitems_qsort_l(table, table + count - 1);
+
 #else
-  // table[count] == +oo
-  iitems_qsort(table, table + count);
+
+  debug("quicksort = yes\n");
+  iitems_qsort(table, table + count - 1);
+
 #endif
 }
 
@@ -341,7 +442,7 @@ bool io_buildindex(struct io_t *io)
   memset(plusinf, -1, maxlen);
   plusinf[maxlen]='\0';
   iitem->entry = iitem->xentry = plusinf;
-
+  
 #if 0  
   forallitems
   {
