@@ -22,7 +22,8 @@
 #include "cmap-usascii.h"
 #include "cmap-iso8859-2.h"
 
-#include "entities.h"
+#include "entity.h"
+#include "entity-hash.h"
 
 #define CMAP_USASCII  0
 #define CMAP_ISO88592 1
@@ -43,10 +44,12 @@ struct
   bool conf_debug;
   bool conf_deep;
   bool conf_entry_only;
+  bool conf_quick;
   bool conf_raw;
+  bool conf_color;
 } config;
 
-inline void debug(char *message, ...)
+inline void debug(const char *message, ...)
 {
   va_list ap;
   va_start(ap, message);
@@ -57,7 +60,15 @@ inline void debug(char *message, ...)
 
 int charmap = CMAP_USASCII;
 
-char* pwnstr_to_str(char *str);
+char* pwnstr_to_str(const char *str);
+
+inline const char* color(const char *str)
+{
+  if (config.conf_color)
+    return str;
+  else
+    return "";
+}
 
 char* trim_html(char *str)
 // Warning: characters of `str' are destroyed!
@@ -109,10 +120,10 @@ char* trim_html(char *str)
       {
         if (first)
         {
-          as("\x1b[45m");
+          as(color("\x1b[45m"));
           first = false;
         }
-        as("\x1b[1m");
+        as(color("\x1b[1m"));
       }
       sync;
     }
@@ -133,12 +144,10 @@ char* trim_html(char *str)
       *tail = '\0';
       state = s_default;
       if (!strcasecmp(head, "b"))
-        as("\x1b[22;49m");
+        as(color("\x1b[22;49m"));
       else if (!strcasecmp(head, "p"))
-      {
         while(tail[1] == ' ')
           tail++;
-      }
       sync;
     }
     break;
@@ -150,7 +159,21 @@ char* trim_html(char *str)
   return pwnstr_to_str(result);
 }
 
-wchar_t* pwnstr_to_ustr(char *str)
+inline const char* entity_grep(const char *str, wchar_t *result)
+{
+  unsigned int hash = 0;
+  int i, j;
+  for(j=0; j<hash_coeff_count && str[j]!=0 && str[j]!=';'; j++)
+    hash ^= str[j]+hash_coeff[j];
+  if ( (i = entity_hash[hash % hash_size]) >= 0 )
+  {
+    *result = entity_list[i].value;
+    return str+j;
+  }
+  return str;
+}
+
+wchar_t* pwnstr_to_ustr(const char *str)
 {
   size_t i;
   wchar_t* result = calloc(1+strlen(str), sizeof(wchar_t));
@@ -158,27 +181,12 @@ wchar_t* pwnstr_to_ustr(char *str)
   {
     result[i]=cp1250[(uint8_t)(*str)];
     if (result[i]=='&')
-    {
-      char* ename;
-      int j, k = 1;
-      for (j=0; (ename = entities[j].name); j++)
-      if (!strncmp(str+k, ename, strlen(ename)))
-      {
-        result[i] = entities[j].value;
-        break;
-      }
-      if (result[i] != '&')
-      {
-        do
-          str++;
-        while(*str && *str != ';');
-      }
-    }
+      str = entity_grep(str+1, result+i);
   }
   return result;
 }
 
-inline char* ustr_fallback_ascii(wchar_t *ustr, int us)
+inline char* ustr_fallback_ascii(const wchar_t *ustr, int us)
 {
   int i, len = wcslen(ustr), biglen=4*(len+1);
   char result[biglen], *appendix;
@@ -204,10 +212,10 @@ inline char* ustr_fallback_ascii(wchar_t *ustr, int us)
     {
       char *ename;
       int j;
-      for (j=0; (ename = entities[j].name); j++)
-      if (ustr[i] == entities[j].value && entities[j].str)
+      for (j=0; (ename = entity_list[j].name); j++)
+      if (ustr[i] == entity_list[j].value && entity_list[j].str)
       {
-        as(entities[j].str);
+        as(entity_list[j].str);
         break;
       }
       if (!ename)
@@ -218,7 +226,7 @@ inline char* ustr_fallback_ascii(wchar_t *ustr, int us)
   return strdup(result);
 }
 
-inline char* ustr_fallback_sys(wchar_t *ustr)
+inline char* ustr_fallback_sys(const wchar_t *ustr)
 {
   int lim = 1 + wcstombs(NULL, ustr, 0);
   char* result = malloc(lim);
@@ -228,7 +236,7 @@ inline char* ustr_fallback_sys(wchar_t *ustr)
     return result;
 }
 
-char* ustr_to_str(wchar_t *ustr)
+char* ustr_to_str(const wchar_t *ustr)
 {
   switch(charmap)
   {
@@ -242,7 +250,7 @@ char* ustr_to_str(wchar_t *ustr)
   return strdup("<unknown charmap>");
 }
 
-char* pwnstr_to_str(char *str)
+char* pwnstr_to_str(const char *str)
 {
   wchar_t* ustr = pwnstr_to_ustr(str);
   char* result = ustr_to_str(ustr);
@@ -250,9 +258,30 @@ char* pwnstr_to_str(char *str)
   return result;
 }
 
-int int32_compare(const void *i, const void *j)
+inline int int32_compare(const void *i, const void *j)
 {
   return (*(int32_t*)i)-(*(int32_t*)j);
+}
+
+inline void uint32qsort(uint32_t* offsets, size_t count)
+{
+  qsort(offsets, count, 4, int32_compare);
+}
+
+inline void uint32sort(int32_t* offsets, int count)
+{
+  int i, j;
+  int32_t tmp;
+  printf("count = %d\n", count);
+  for (i=1; i<count; i++)
+  for (j=i-1; j>=0; j--)
+  {
+    if (offsets[j]<=offsets[j+1])
+      break;
+    tmp=offsets[j+1];
+    offsets[j+1]=offsets[j];
+    offsets[j]=tmp;
+  }
 }
 
 inline char* parse_options(int argc, char **argv)
@@ -263,17 +292,20 @@ inline char* parse_options(int argc, char **argv)
     { "deep",       0, 0, 'd' },
     { "entry-only", 0, 0, 'e' },
     { "help",       0, 0, 'h' },
+    { "quick",      0, 0, 'Q' },
     { "raw",        0, 0, 'R' },
     { "version",    0, 0, 'v' },
     { NULL,         0, 0, '\0' }
   };
 
   memset(&config, sizeof(config), 0);
-  
+  if (isatty(STDOUT_FILENO))
+    config.conf_color = true;
+ 
   while (true)
   {
     int i = 0;
-    int c = getopt_long(argc, argv, "dehvDR", gopts, &i);
+    int c = getopt_long(argc, argv, "dehvDQR", gopts, &i);
     if (c < 0)
       break;
     if (c == 0)
@@ -295,10 +327,13 @@ inline char* parse_options(int argc, char **argv)
       case 'D':
         config.conf_debug = true;
         break;
+      case 'Q':
+        config.conf_quick = true;
+        break;
       case 'R':
         config.conf_raw = true;
         break;
-    }
+     }
   }
   return
     (optind<=argc)?argv[optind]:NULL;
@@ -326,23 +361,29 @@ int main(int argc, char **argv)
   char* match = parse_options(argc, argv);
   if (match)
     regcomp(&match_regex, match, REG_NOSUB | REG_EXTENDED | REG_ICASE);
- 
-  debug("Looking for: %s\n", match);
+
+  debug("looking for: %s\n", match);
   
   FILE* f = fopen("slo.win", "rb");
   fseek(f, 0x18L, SEEK_SET);
   fread(&header, sizeof(header), 1, f);
 
+  debug("word count = %d\n", header.word_count);
+  debug("index #1 base = 0x%08x\n", header.index_base);
+  header.index_base += sizeof(uint32_t)*header.word_count;
+  debug("index #2 base = 0x%08x\n", header.index_base);
+  debug("words base = 0x%08x\n", header.words_base);
+  
   uint32_t offsets[header.word_count+1];
   fseek(f, header.index_base, SEEK_SET);
-  fread(offsets, 4, header.word_count, f);
-
+  fread(offsets, sizeof(uint32_t), header.word_count, f);
+  
   for (i=0; i<header.word_count; i++)
     offsets[i] &= 0x07ffffff;
-  qsort(offsets, header.word_count, 4, int32_compare);
+  uint32qsort(offsets, header.word_count);
 
   unsigned int size, maxsize=1024;
-  for (i=0; i<header.word_count-2; i++)
+  for (i=0; i<header.word_count-1; i++)
   {
     size=offsets[i+1]-offsets[i];
     if (size>maxsize)
@@ -356,10 +397,16 @@ int main(int argc, char **argv)
     unsigned long dsize = 5*size;
     bool zipped = false;
     char debuffer[dsize], *tbuffer;
-    memset(debuffer, 0, 5*size); 
+    memset(debuffer, 0, dsize); 
     fseek(f, header.words_base + offsets[i], SEEK_SET);
     fread(wordbuffer, 1, size, f);
-    char* localstr=pwnstr_to_str(wordbuffer + 12);
+    char* localstr=wordbuffer + 12;
+    bool dofree = false;
+    if (!config.conf_quick)
+    {
+      localstr=pwnstr_to_str(localstr);
+      dofree=true;
+    }
     char* zipdata=wordbuffer + 12;
     zipdata+=strlen(zipdata) + 2;
     if (*zipdata < 20)
@@ -393,11 +440,12 @@ int main(int argc, char **argv)
         }
       }
       if (!config.conf_deep || !match || !regexec(&match_regex, tbuffer, 0, NULL, 0))
-        printf("%s\n\n", tbuffer);
+        printf("%s\n", tbuffer);
       if (dofree)
         free(tbuffer);
     }
-    free(localstr);
+    if (dofree)
+      free(localstr);
   }
   
   fclose(f);

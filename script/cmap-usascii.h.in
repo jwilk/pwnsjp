@@ -1,5 +1,8 @@
 #!/bin/sh
-echo -n 'char* rev_usascii[0xe0] = {"\xa0", '
+echo "#ifndef CMAP_USASCII_H"
+echo "#define CMAP_USASCII_H"
+echo
+echo -n 'char* rev_usascii[0xe0] = { "\xa0", '
 (
   for i in `seq 161 383`
   do
@@ -10,6 +13,8 @@ konwert html-ascii |
   sed -re 's/"/\\"/; s/(.*)$/"\1",/;' | 
   tr "\n" " " |
   sed -re 's/, $//'
-echo "};"
+echo " };"
+echo
+echo "#endif"
 
 # vim: ts=2 sw=2 et ft=sh

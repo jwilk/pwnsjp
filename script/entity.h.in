@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+print "#include <wchar.h>\n\n".
+      "#ifndef ENTITY_H\n".
+      "#define ENTITY_H\n\n".
+      "struct entity\n".
+      "{\n".
+      "  char* name;\n".
+      "  wchar_t value;\n".
+      "  char* str;\n".
+      "};\n\n".
+      "struct entity entity_list[] =\n".
+      "{\n";
+while(<STDIN>)
+{
+  chop;
+  next if /^\|/;
+  split /\t/;
+  printf "  { .name = \"%s\", .value = 0x%s, .str = %s },\n", @_[0], @_[1], @_[2], @_[3];
+}
+print "  { .name = NULL,   .value = 0x0000, .str = NULL }\n",
+      "};\n\n".
+      "#endif\n\n";
+
+# vim: ts=2 sw=2 et ft=perl

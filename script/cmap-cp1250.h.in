@@ -1,23 +1,24 @@
 #!/usr/bin/perl
-print "#include <wchar.h>\n";
-print "wchar_t cp1250[0x100] = {";
+print "#include <wchar.h>\n\n".
+      "#ifndef CMAP_CP1250_H\n".
+      "#define CMAP_CP1250_H\n\n". 
+      "wchar_t cp1250[0x100] = {";
 
-my $s,$null,$cp,$uni;
-for($cp=0; $cp<0x100; $cp++)
+foreach $cp (0 .. 0xff)
   { $s{$cp}="0000"; }
 while(<STDIN>)
 {
-  if ($_ =~ /^\<U/)
-  {
-    s/^\<U([0-9A-F]{4})\> *\/(x[0-9a-f]{2}).*/\1:0\2/;
-    ($uni,$cp) = split ':', $_;
-    $cp=eval $cp;
-    $uni=lc $uni;
-    $s{$cp}=$uni;
-  }
+  next if ($_ !~ /^\<U/);
+  s/^\<U([0-9A-F]{4})\> *\/(x[0-9a-f]{2}).*/\1:0\2/;
+  ($uni, $cp) = split /:/;
+  $cp=eval $cp;
+  $uni=lc $uni;
+  $s{$cp}=$uni;
 }
-for($cp=0; $cp<0xff; $cp++)
+foreach $cp (0 .. 0xfe)
   { printf "0x%s, ", $s{$cp} };
-printf "0x%s};\n", $s{0xff};
+printf "0x%s};\n\n", $s{0xff};
+
+print "#endif\n"
 
 # vim: ts=2 sw=2 et ft=perl

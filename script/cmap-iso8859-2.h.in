@@ -1,23 +1,22 @@
 #!/usr/bin/perl
-print "char rev_iso88592[0xe0] = \"";
+print "#ifndef CMAP_ISO8859_2_H\n".
+      "#define CMAP_ISO8859_2_H\n\n". 
+      "char rev_iso88592[0xe0] = \"";
 
-my $s,$null,$iso,$uni;
-for($uni=0xa0; $uni<0x17f; $uni++)
+foreach $uni (0xa0 .. 0x17f)
   { $s{$uni}=0; }
 
 while(<STDIN>)
 {
-  if ($_ =~ /^\<U/)
-  {
-    s/^\<U([0-9A-F]{4})\> *\/(x[0-9a-f]{2}).*/0x\1:0\2/;
-    ($uni,$iso) = split ':', $_;
-    $iso=eval $iso;
-    $uni=eval $uni;
-    $s{eval $uni}=$iso;
-  }
+  next if ($_ !~ /^\<U/);
+  s/^\<U([0-9A-F]{4})\> *\/(x[0-9a-f]{2}).*/0x\1:0\2/;
+  ($uni,$iso) = split /:/;
+  $iso=eval $iso;
+  $uni=eval $uni;
+  $s{eval $uni}=$iso;
 }
-for($uni=0xa0; $uni<0x17f; $uni++)
+foreach $uni (0xa0 .. 0x17f)
   { printf "\\x%02x", $s{$uni} };
-print "\";\n"
+print "\";\n\n#endif\n"
 
 # vim: ts=2 sw=2 et ft=perl
