@@ -73,7 +73,7 @@ static const struct entity entity_list[] =
   { .name = "##9553", .value = 0x2225, .str = "||" },
   { .name = "or", .value = 0x2228, .str = "|" },
   { .name = "s225", .value = 0x2329, .str = "<" },
-  { .name = "s241", .value = 0x232A, .str = ">" },
+  { .name = "s241", .value = 0x232a, .str = ">" },
   { .name = "#!0,127", .value = 0x25a1, .str = "#" },
   { .name = "s224", .value = 0x25c7, .str = "<>" },
   { .name = "dolnagw", .value = 0x2605, .str = "<*>" },

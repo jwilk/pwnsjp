@@ -23,8 +23,9 @@ struct io_iitem_t
   unsigned char* entry;
   unsigned char* xentry;
   uint32_t offset;
-  unsigned int size : 31;
+  unsigned int size : 30;
   unsigned int zipped : 1;
+  unsigned int stirring : 1;
 };
 
 struct io_t

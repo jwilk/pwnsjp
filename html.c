@@ -29,7 +29,7 @@ char* html_strip(char *str)
   
   head=tail=str;
   appendix=result;
-#define a(t) do *(appendix++)=t; while (0)
+#define a(t) do *appendix++ = t; while (0)
 #define as(t) do { strcpy(appendix, t); while (*appendix) appendix++; } while (0)
 #define ac(t) do if (colorstack==0) { strcpy(appendix, hueset[t]); while (*appendix) appendix++; } while (0)
 #define sync() do head = tail+1; while(0)

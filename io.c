@@ -112,7 +112,9 @@ inline static void uint32sort(uint32_t* table, size_t count)
   uint32sqsort(table, table+(count-1));
 }
 
+
 #define gt(w, v) (strcmp(w, v) > 0)
+
 #define isort() \
   do { \
     if (dist < 64) \
@@ -134,6 +136,7 @@ static void iitems_qsort(struct io_iitem_t *l, struct io_iitem_t *r)
   while(true)
   {
     dist = r - l;
+    assert(gt(r[1].xentry, r[0].xentry));
     isort();
     i = l;
     j = r;
@@ -166,6 +169,7 @@ static void iitems_qsort_l(struct io_iitem_t *l, struct io_iitem_t *r)
   while(true)
   {
     dist = r - l;
+    assert(gt(r[1].xentry, r[0].xentry));
     isort();
     swap(l[dist/2], r[0]);
     p = temp.xentry;
@@ -191,8 +195,6 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
 {
 #if defined(MERGESORT)
 
-// Doesn't work. And is unexpectedly slow.
-  
   debug("mergesort = yes\n");
   unsigned int buffs, blocks, blockc = 0;
   buffs = blockc = 0;
@@ -204,6 +206,7 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
   forallitems
     if (strcmp(iitem[1].xentry, iitem->xentry) < 0)
     {
+      iitem->stirring = 1;
       blockc++;
       if (blocks > buffs)
         buffs = blocks;
@@ -213,7 +216,7 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
       blocks++;
   
   debug("mergesort blocks = %u\n", blockc);
-  unsigned int qlim = 2*(blockc + 1);
+  unsigned int qlim = 2*(blockc + 2);
   struct io_iitem_t* queue[qlim];
   int qhead, qtail, qlen;
   qlen = 0;
@@ -224,16 +227,13 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
   
   push(table);
   forallitems
-    if (strcmp(iitem[1].xentry, iitem->xentry) < 0)
+    if (iitem->stirring)
     {
       push(iitem);
-      push(iitem+1);
+      push(iitem + 1);
     }
 #undef forallitems
-
-  qlen--;
-  assert(--qhead > 0);
-  assert(qtail == -1);
+  push(iitem);
   
   struct io_iitem_t* buffer = malloc(count*sizeof(struct io_iitem_t));
   
@@ -248,9 +248,6 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
       al = bl; ah = bh;
       bl = pop(); bh = pop();
     }
-    assert(bh >= bl);
-    assert(bl == ah+1);
-    assert(ah >= al);
     a = al;
     r = buffer;
     while (true)
@@ -258,27 +255,21 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
       if (bl > bh)
       {
         if (ah >= al)
-          memcpy(r, al, (ah-al)*sizeof(struct io_iitem_t));
+          memcpy(r, al, (1+ah-al)*sizeof(struct io_iitem_t));
         break;
       }
       if (al > ah)
       {
         if (bh >= bl)
-          memcpy(r, bl, (bh-bl)*sizeof(struct io_iitem_t));
+          memcpy(r, bl, (1+bh-bl)*sizeof(struct io_iitem_t));
         break;
       }
       if (strcmp(al->xentry, bl->xentry) < 0)
-      {
-        *r = *al;
-        r++; al++;
-      }
+        *r++ = *al++;
       else
-      {
-        *r = *bl;
-        r++; bl++;
-      }
+        *r++ = *bl++;
     }
-    memcpy(a, buffer, (bh-a)*sizeof(struct io_iitem_t));
+    memcpy(a, buffer, (1+bh-a)*sizeof(struct io_iitem_t));
     push(a);
     push(bh);
   }
@@ -293,7 +284,7 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
   debug("quicksort = lomuto\n");
   iitems_qsort_l(table, table + count - 1);
 
-#else
+#elif !defined(NOSORT)
 
   debug("quicksort = yes\n");
   iitems_qsort(table, table + count - 1);
@@ -342,7 +333,7 @@ void io_read(struct io_t *io, unsigned int indexno)
     return;
   }
   
-  long dsize = io->csize << 3;
+  unsigned long dsize = io->csize << 3;
   assert(io->cbuffer != NULL);
   if (iitem->zipped)
   {
@@ -435,7 +426,7 @@ bool io_buildindex(struct io_t *io)
   {
     len = strlen(iitem->xentry);
     if (len > maxlen) 
-      len = maxlen;
+      maxlen = len;
   }
   unsigned char *plusinf; // +oo == "\xff\xff...\xff"
   plusinf = malloc(maxlen+1);

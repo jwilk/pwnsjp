@@ -124,7 +124,7 @@ inline bool ui_prepare(void)
   wmenu = newwin(LINES-3, c_menu_width, 2, 1);
 
   wview = newwin(LINES-3, COLS-c_menu_width-5, 2, c_menu_width+4);
-  char* message = ustr_to_str(L"Prosz\u0119 czeka\u0107, trwa budowanie indeksu...");
+  char* message = ustr_to_str(L"Prosz\x0119 czeka\x0107, trwa budowanie indeksu...");
   mvwaddstr(wview, 0, 0, message);
   free(message);
  

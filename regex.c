@@ -40,10 +40,9 @@ inline unsigned char* pattern_head(const unsigned char* p)
   if (esc)
     switch (*p)
     {
-    case '\\': case '^': case '|': case '+': case ':': case '$': case '*': case '?': 
-    case '{': case '}': case '[': case ']': case '(': case ')':
-      *r = *p;
-      r++;
+    case '^': case '.': case '[': case ']': case '$': case '(': case ')': 
+    case '|': case '*': case '+': case '?': case '{': case '}': case '\\':
+      *r++ = *p;
       esc = false;
       break;
     default:
@@ -63,8 +62,7 @@ inline unsigned char* pattern_head(const unsigned char* p)
       r--;
       goto enough;
     default:
-      *r = *p;
-      r++;
+      *r++ = *p;
     }
 enough:
   *r = '\0';
