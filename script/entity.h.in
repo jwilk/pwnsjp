@@ -8,7 +8,7 @@ print "#include <wchar.h>\n\n".
       "  wchar_t value;\n".
       "  char* str;\n".
       "};\n\n".
-      "static struct entity entity_list[] =\n".
+      "static const struct entity entity_list[] =\n".
       "{\n";
 while(<STDIN>)
 {

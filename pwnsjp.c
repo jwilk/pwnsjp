@@ -17,10 +17,9 @@
 #include <string.h>
 #include <wchar.h>
 
-#include <zlib.h>
+#include <term.h>
 
-#include <endian.h>
-#include <byteswap.h>
+#include <zlib.h>
 
 typedef int bool;
 #define true 1
@@ -39,6 +38,10 @@ typedef int bool;
 
 #include "entity.h"
 #include "entity-hash.h"
+
+#include "validate.h"
+
+#include "byteorder.h"
 
 static struct
 {
@@ -72,12 +75,23 @@ static enum { cmap_usascii, cmap_iso88592, cmap_utf8 } cmap = cmap_usascii;
 
 static char* pwnstr_to_str(const char *str);
 
-static inline const char* color(const char *str)
+static char* tput(const char *str)
 {
+  static char buffer[12];
+  buffer[0] = '\0';
   if (config.conf_color)
-    return str;
-  else
-    return "";
+  {
+    unsigned int c;
+    if (sscanf(str, "setaf %u", &c) > 0 && c <= 7)
+      sprintf(buffer, "\x1b[3%um", c);
+    else if (sscanf(str, "setab %u", &c) > 0 && c <= 7)
+      sprintf(buffer, "\x1b[4%um", c);
+    else if (strcmp(str, "bold") == 0)
+      strcat(buffer, "\x1B[1m");
+    else if (strcmp(str, "sgr0") == 0)
+      strcat(buffer, "\x1B[0m");
+  }
+  return buffer;
 }
 
 static char* trim_html(char *str)
@@ -88,13 +102,15 @@ static char* trim_html(char *str)
     s_default,
     s_html_vague,
     s_html_open,
-    s_html_params,
     s_html_close
   } state = s_default;
   char *head, *tail, *appendix;
   int len = strlen(str);
   char result[2*len];
   bool first = true;
+  bool color = false;
+  unsigned int t1, t2;
+  
   head=tail=str;
   appendix=result;
 #define a(t) do *(appendix++)=t; while (0)
@@ -111,7 +127,7 @@ static char* trim_html(char *str)
     head++;
     break;
   case s_html_vague:
-    if (*tail=='/')
+    if (*tail == '/')
     {
       state = s_html_close;
       head++;
@@ -120,31 +136,61 @@ static char* trim_html(char *str)
       state = s_html_open;
     break;
   case s_html_open:
-    if (*tail==' ' || *tail=='>') 
+    if (*tail=='>') 
     {
-      state=(*tail==' ')?s_html_params:s_default;
+      state=s_default;
       *tail='\0';
-      if (!strcasecmp(head, "p") || !strcasecmp(head, "br"))
+      if (!strcasecmp(head, "p style=\"tab\""))
+        as("\n   ");
+      else if (!strcasecmp(head, "p") || !strcasecmp(head, "br"))
         a('\n');
       else if (!strcasecmp(head, "b"))
       {
         if (first)
         {
-          as(color("\x1b[45m"));
+          as(tput("setab 5"));
           first = false;
+          color = true;
         }
-        as(color("\x1b[1m"));
+        as(tput("bold"));
       }
-      sync;
-    }
-    break;
-  case s_html_params:
-    if (*tail == '>')
-    {
-      state = s_default;
-      *tail='\0';
-      if (!strcasecmp(head, "style=\"tab\""))
-        as("   ");
+      else if (!strcasecmp(head, "tr1") && !color)
+      {
+        as(tput("setab 5"));
+        as(tput("bold"));
+        color = true;
+      }
+      else if (!strcasecmp(head, "font color=#ff0000"))
+      {
+        as(tput("setaf 1"));
+        as(tput("bold"));
+        color = true;
+      }
+/*    else if (!strcasecmp(head, "font color=#fa8d00"))
+      {
+        as(tput("setaf 3"));
+        as(tput("bold"));
+        color = true;
+      } */
+      else if (!strcasecmp(head, "i") && !color)
+      {
+        as(tput("setaf 1"));
+        color = true;
+      }
+      else if (!strcasecmp(head, "sup"))
+        a('^');
+      else if (!strcasecmp(head, "sub"))
+        a('_');
+      else if (!strcasecmp(head, "sqrt"))
+        as("&sqrt;");
+      else if (sscanf(head, "A HREF=\"%u,%u\"", &t1, &t2) > 0 || !strcasecmp(head, "q"))
+      {
+        if (!color)
+        {
+          as(tput("setaf 6"));
+          color = true;
+        }
+      }
       sync;
     }
     break;
@@ -153,8 +199,19 @@ static char* trim_html(char *str)
     {
       *tail = '\0';
       state = s_default;
-      if (!strcasecmp(head, "b"))
-        as(color("\x1b[22;49m"));
+      if 
+        (
+          !strcasecmp(head, "a") || 
+          !strcasecmp(head, "b") || 
+          !strcasecmp(head, "i") || 
+          !strcasecmp(head, "q") || 
+          !strcasecmp(head, "tr1") || 
+          !strcasecmp(head, "font") 
+        )
+      {
+        as(tput("sgr0"));
+        color = false;
+      }
       else if (!strcasecmp(head, "p"))
         while(tail[1] == ' ')
           tail++;
@@ -190,9 +247,15 @@ static wchar_t* pwnstr_to_ustr(const char *str)
   for (i=0; *str; str++, i++)
   {
     result[i]=cp1250[(uint8_t)(*str)];
-    if (result[i]=='&')
+    if (result[i] == '&')
       str = entity_grep(str+1, result+i);
+    else if (result[i] & 0x10000000)
+    {
+      result[i] &= 0xffff;
+      result[++i] = 0x20d7;
+    }
   }
+  result[i] = 0;
   return result;
 }
 
@@ -342,27 +405,27 @@ static inline char* parse_options(int argc, char **argv)
       c = gopts[i].val;
     switch (c)
     {
-      case 'd':
-        config.conf_deep = true;
-        break;
-      case 'e':
-        config.conf_entry_only = true;
-        break;
-      case 'h':
-        config.action = action_help;
-        break;
-      case 'v':
-        config.action = action_version;
-        break;
-      case 'D':
-        config.conf_debug = true;
-        break;
-      case 'Q':
-        config.conf_quick = true;
-        break;
-      case 'R':
-        config.conf_raw = true;
-        break;
+    case 'd':
+      config.conf_deep = true;
+      break;
+    case 'e':
+      config.conf_entry_only = true;
+      break;
+    case 'h':
+      config.action = action_help;
+      break;
+    case 'v':
+      config.action = action_version;
+      break;
+    case 'D':
+      config.conf_debug = true;
+      break;
+    case 'Q':
+      config.conf_quick = true;
+      break;
+    case 'R':
+      config.conf_raw = true;
+      break;
      }
   }
   return
@@ -379,34 +442,8 @@ void eabort(char* fstr, int line, char* errstr)
   exit(EXIT_FAILURE);
 }
 
-#if __BYTE_ORDER == __LITTLE_ENDIAN
-#  define le2cpu(x) x
-#elif __BYTE_ORDER == __BIG_ENDIAN
-#  define le2cpu bswap_32
-#endif
-
-int main(int argc, char **argv)
+inline void guess_cmap(void)
 {
-  struct 
-  {
-    uint32_t word_count;
-    uint32_t index_base;
-    uint32_t words_base;
-  } header;
-  unsigned int i;
-  
-  char* match = parse_options(argc, argv);
-  if (config.action == action_help)
-  {
-    usage();
-    return EXIT_SUCCESS;
-  }
-  else if (config.action == action_version)
-  {
-    version();
-    return EXIT_SUCCESS;
-  }
-
   char *locale = setlocale(LC_ALL, "");
   if (locale)
   {
@@ -419,18 +456,60 @@ int main(int argc, char **argv)
   }
   else
     debug("unable to set locale!");
+}
+
+inline void regex_free(regex_t *regex)
+{
+  regfree(regex);
+}
+
+inline bool regex_compile(regex_t *regex, char* pattern)
+{
+  if (pattern != NULL)
+  {
+    debug("pattern = \"%s\"\n", pattern);
+    return
+      regcomp(regex, pattern, REG_NOSUB | REG_EXTENDED | REG_ICASE) == 0;
+  }
+  debug("pattern = NULL\n");
+  return true;
+}
+
+inline bool regex_match(regex_t *regex, char *string)
+{
+  return regexec(regex, string, 0, NULL, 0) == 0;
+}
+      
+int main(int argc, char **argv)
+{
+  struct 
+  {
+    uint32_t word_count;
+    uint32_t index_base;
+    uint32_t words_base;
+  } header;
+  unsigned int i;
+  
+  char* pattern = parse_options(argc, argv);
+  switch (config.action)
+  {
+  case action_help:
+    usage();
+    return EXIT_SUCCESS;
+  case action_version:
+    version();
+    return EXIT_SUCCESS;
+  case action_seek:
+    ;
+  }
+
+  guess_cmap();
 
 #define try(s) do { if (!(s)) eabort(__FILE__, __LINE__, ""); } while(0)
 #define tri(s, err) do { if (!(s)) eabort(__FILE__, __LINE__, err); } while(0)
   
-  regex_t match_regex;
-  if (match)
-  {
-    debug("pattern = \"%s\"\n", match);
-    tri ( regcomp(&match_regex, match, REG_NOSUB | REG_EXTENDED | REG_ICASE) == 0, "Invalid pattern" );
-  }
-  else
-    debug("pattern = NULL\n");
+  regex_t regex;
+  tri ( regex_compile(&regex, pattern), "Invalid pattern" );
  
   debug("data file = \"%s\"\n", K_DATA_PATH);
   FILE* f = fopen(K_DATA_PATH, "rb");
@@ -438,8 +517,25 @@ int main(int argc, char **argv)
   try ( fseek(f, 0, SEEK_END) == 0 );
   unsigned int size = ftell(f);
   debug("data file size = %u MiB\n", size>>20);
+#ifdef K_VALIDATE_DATAFILE
+  if (size != datafile_size)
+  {
+    fprintf(stderr, "Invalid data file size: %u, should be %u.\n", size, datafile_size);
+    return EXIT_FAILURE;
+  }
+  {
+    uint8_t sig[2];
+    try ( fseek(f, 0, SEEK_SET) == 0 );
+    if ( fread(sig, 1, sizeof(sig), f) != sizeof(sig) || sig[0]!='G' || sig[1]!='W' )
+    {
+      fprintf(stderr, "Invalid data file signature: %02x%02x, should be 4787.\n", sig[0], sig[1]);
+      return EXIT_FAILURE;
+    }
+  }
+#else
   tri ( size > (1<<26), "Unexpectedly short data file" );
   tri ( size < (1<<28), "Unexpectedly long data file" );
+#endif
   try ( fseek(f, 0x18, SEEK_SET) == 0 );
   try ( fread(&header, sizeof(header), 1, f) == 1 );
 
@@ -490,26 +586,26 @@ int main(int argc, char **argv)
     bool dofree = false;
     if (!config.conf_quick)
     {
-      localstr=pwnstr_to_str(localstr);
-      dofree=true;
+      localstr = pwnstr_to_str(localstr);
+      dofree = true;
     }
-    char* zipdata=wordbuffer + 12;
-    zipdata+=strlen(zipdata) + 2;
+    char* zipdata = wordbuffer + 12;
+    zipdata += strlen(zipdata) + 2;
     if (*zipdata < ' ')
     {
       zipdata += (*zipdata) + 1;
       zipped = true;
     }
-    if (!match || config.conf_deep || !regexec(&match_regex, localstr, 0, NULL, 0))
+    if (config.conf_deep || !pattern || regex_match(&regex, localstr))
     {
       bool dofree = false;
       debug(
-        "<\n  localstr = %s\n  offset = %08x : %08x\n>\n", 
+        "\b\b<\n  localstr = %s\n  offset = %08x : %08x\n>\n", 
         localstr, 
         offsets[i],
         header.words_base + offsets[i]);
       if (config.conf_entry_only)
-        tbuffer=localstr;
+        tbuffer = localstr;
       else 
       {
         if (zipped)
@@ -525,7 +621,7 @@ int main(int argc, char **argv)
           dofree = true;
         }
       }
-      if (!config.conf_deep || !match || !regexec(&match_regex, tbuffer, 0, NULL, 0))
+      if (!config.conf_deep || !pattern || regex_match(&regex, tbuffer))
         printf("%s\n", tbuffer);
       if (dofree)
         free(tbuffer);
@@ -536,8 +632,8 @@ int main(int argc, char **argv)
   
   try ( fclose(f) == 0 );
 
-  if (match)
-    regfree(&match_regex);
+  if (pattern)
+    regex_free(&regex);
 
 #undef try
 #undef try_s

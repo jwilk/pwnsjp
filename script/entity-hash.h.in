@@ -1,6 +1,6 @@
 #!/usr/bin/perl
-$hashsize=0xc0;
-@coeff=(154, 241, 147, 188, 26, 8, 23, 105, 81, 106);
+$hashsize=0x90;
+@coeff=(187, 64, 123, 7, 95, 163, 79, 124, 206, 96);
 $coeffi=$#coeff;
 
 sub compute_hash
@@ -18,11 +18,11 @@ sub compute_hash
   return $hash % $hashsize;
 }
 
-print "#include <wchar.h>\n".
+print "#include <wchar.h>\n\n".
       "#ifndef ENTITY_HASH_H\n".
       "#define ENTITY_HASH_H\n\n";
 printf "#define hash_coeff_count %d\n", ($coeffi+1);
-printf "static int hash_coeff[%d] = { ", ($coeffi+1);
+printf "static const int hash_coeff[%d] = { ", ($coeffi+1);
 foreach $i (0 .. $coeffi-1)
   { printf "%d, ", $coeff[$i]; }
 printf "%d };\n", $coeff[$coeffs];
@@ -31,7 +31,7 @@ foreach $i (0 .. $hashsize-1)
   { $hashtable{$i} = -1; }
 
 printf "#define hash_size 0x%x\n".
-       "static int entity_hash[hash_size] = { ",
+       "static const int entity_hash[hash_size] = { ",
        $hashsize;
 $i=0;
 while(<STDIN>)

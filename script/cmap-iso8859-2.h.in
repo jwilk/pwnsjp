@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 print "#ifndef CMAP_ISO8859_2_H\n".
       "#define CMAP_ISO8859_2_H\n\n". 
-      "static char rev_iso88592[0xe0] = \"";
+      "static const char rev_iso88592[0xe0] = \"";
 
 foreach $uni (0xa0 .. 0x17f)
   { $s{$uni}=0; }

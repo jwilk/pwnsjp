@@ -10,7 +10,7 @@ struct entity
   char* str;
 };
 
-static struct entity entity_list[] =
+static const struct entity entity_list[] =
 {
   { .name = "##37", .value = 0x0025, .str = NULL },
   { .name = "gt", .value = 0x003c, .str = NULL },
@@ -62,6 +62,7 @@ static struct entity entity_list[] =
   { .name = "rarr", .value = 0x2192, .str = "-->" },
   { .name = "part", .value = 0x2202, .str = "d" },
   { .name = "minus", .value = 0x2212, .str = "-" },
+  { .name = "sqrt", .value = 0x221a, .str = "v/" },
   { .name = "infin", .value = 0x221e, .str = "oo" },
   { .name = "##9553", .value = 0x2225, .str = "||" },
   { .name = "or", .value = 0x2228, .str = "|" },
@@ -72,8 +73,8 @@ static struct entity entity_list[] =
   { .name = "dolnagw", .value = 0x2605, .str = "<*>" },
   { .name = "quotup", .value = 0x8221, .str = "\'\'" },
   { .name = "quotlw", .value = 0x8222, .str = ",," },
-  { .name = "larroa", .value = 0xfff3, .str = "a->" },
-  { .name = "bvec", .value = 0xfff4, .str = "b->" },
+  { .name = "larroa", .value = 0x10000061, .str = "a->" },
+  { .name = "bvec", .value = 0x10000062, .str = "b->" },
   { .name = NULL,   .value = 0x0000, .str = NULL }
 };
 
