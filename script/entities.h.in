@@ -1,0 +1,22 @@
+#!/usr/bin/perl
+print "#include <wchar.h>\n",
+      "struct\n",
+      "{\n",
+      "  char* name;\n",
+      "  wchar_t value;\n",
+      "  char* str;\n",
+      "} entities[] =\n",
+      "  {\n";
+while(<STDIN>)
+{
+  chop;
+  if ($_ =~ "^[^|]")
+  {
+    @arr = split /\t/;
+    printf "    { .name = \"%s;\", .value = 0x%s, .str = %s },\n", @arr[0], @arr[1], @arr[2], @arr[3];
+  }
+}
+print "    { .name = NULL,   .value = 0x0000, .str = NULL }\n",
+      "  };\n";
+
+# vim: ts=2 sw=2 et ft=perl
