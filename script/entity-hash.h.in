@@ -19,11 +19,10 @@ sub compute_hash
 }
 
 print "#include <wchar.h>\n".
-#      "#include \"entity.h\"\n\n".
       "#ifndef ENTITY_HASH_H\n".
       "#define ENTITY_HASH_H\n\n";
 printf "#define hash_coeff_count %d\n", ($coeffi+1);
-printf "int hash_coeff[%d] = { ", ($coeffi+1);
+printf "static int hash_coeff[%d] = { ", ($coeffi+1);
 foreach $i (0 .. $coeffi-1)
   { printf "%d, ", $coeff[$i]; }
 printf "%d };\n", $coeff[$coeffs];
@@ -32,7 +31,7 @@ foreach $i (0 .. $hashsize-1)
   { $hashtable{$i} = -1; }
 
 printf "#define hash_size 0x%x\n".
-       "int entity_hash[hash_size] = { ",
+       "static int entity_hash[hash_size] = { ",
        $hashsize;
 $i=0;
 while(<STDIN>)

@@ -10,7 +10,7 @@ struct entity
   char* str;
 };
 
-struct entity entity_list[] =
+static struct entity entity_list[] =
 {
   { .name = "##37", .value = 0x0025, .str = NULL },
   { .name = "gt", .value = 0x003c, .str = NULL },
