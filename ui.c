@@ -7,9 +7,8 @@
 #include "common.h"
 #include "ui.h"
 
-#include <signal.h>
-
 #define _XOPEN_SOURCE_EXTENDED 
+#include <signal.h>
 #include <ncursesw/ncurses.h>
 
 #include "html.h"
@@ -82,6 +81,7 @@ static void ui_show_scrollbar(struct scrollbar_t *scrollbar)
 
 static void ui_windows_create(void)
 {
+  erase();
   wnoutrefresh(stdscr);
   
   getmaxyx(stdscr, scr_height, scr_width);
@@ -104,9 +104,8 @@ static void ui_windows_create(void)
   ui_show_scrollbar(&scrollbar);
   
   wmenu = newwin(scr_height-3, c_menu_width, 2, 1);
-
   wview = newwin(scr_height-3, scr_width-c_menu_width-5, 2, c_menu_width+4);
- 
+  
   wstatus = newwin(0, 0, scr_height-1, 0);
   ui_show_statusline(true);
 }
@@ -138,9 +137,8 @@ static void ui_stop(void)
 static void ui_windows_recreate(void)
 {
   scr_needresize = false;
-  ui_windows_destroy();
-  erase();
   endwin();
+  ui_windows_destroy();
   refresh();
   ui_windows_create();
   ui_windows_refresh();
@@ -162,8 +160,7 @@ bool ui_prepare(void)
   
   initscr();
   atexit(ui_stop);
-  halfdelay(1); raw();
-  noecho(); nonl();
+  raw(); noecho(); nonl();
   intrflush(NULL, FALSE);
   keypad(stdscr, TRUE);
   timeout(500);
@@ -196,7 +193,11 @@ bool ui_prepare(void)
 
   ui_windows_refresh();
  
-  signal(SIGWINCH, ui_sig_resize);
+  struct sigaction sa;
+  sa.sa_handler = ui_sig_resize;
+  sigfillset(&sa.sa_mask);
+  sa.sa_flags = SA_RESTART;
+  sigaction(SIGWINCH, &sa, NULL);
   
   return true;
 }

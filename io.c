@@ -90,11 +90,15 @@ static void uint32_qsort(uint32_t *l, uint32_t *r)
   while (true)
   {
     dist = r - l;
-    if (dist <= 64)
+    if (dist <= 16)
     {
       for (i=l+1; i<=r; i++)
-      for (j=i-1; j>=l && j[0]>j[1]; j--)
-        swap(j[0], j[1]);
+      {
+        p = *i;
+        for (j=i; j>l && j[-1]>p; j--)
+          j[0] = j[-1];
+        j[0] = p;
+      }
       return;
     }
     swap(l[dist/2], r[0]);
@@ -131,11 +135,15 @@ static void iitem_qsort(struct io_iitem_t *l, struct io_iitem_t *r)
   {
     dist = r - l;
     assert(gt(r[1].xentry, r[0].xentry));
-    if (dist <= 64)
+    if (dist <= 16)
     {
-      for (i=l+1; i<=r; i++)
-      for (j=i-1; j>=l && gt(j[0].xentry, j[1].xentry); j--)
-        swap(j[0], j[1]);
+      for (i=r-1; i>=l; i--)
+      {
+        temp = *i;
+        for (j=i; gt(temp.xentry, j[1].xentry); j++)
+          j[0] = j[1];
+        j[0] = temp;
+      }
       return;
     }
     swap(l[dist/2], r[0]);

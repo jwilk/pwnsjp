@@ -1,4 +1,4 @@
-M_VERSION = 0.358
+M_VERSION = 0.424
 
 M_BUILD_HEADERS = yes	# yes | no
 M_DEBUG = no			# yes | no
@@ -22,6 +22,8 @@ ifeq ($(strip ${M_DEBUG}),yes)
 	CFLAGS_opt := -O0
 	CFLAGS_dbg := -g
 	STRIP = @true
+else
+	CFLAGS_opt += -fomit-frame-pointer
 endif
 ifeq ($(strip ${M_COMPILER}),gcc)
 	CFLAGS_opt += -finline-limit=1200

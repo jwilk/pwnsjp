@@ -1,8 +1,8 @@
  _ ____ __ ___ _  ___(*)_ __
 | '_ \ V  V / ' \(_-<| | '_ \
 | .__/\_/\_/|_||_/__// | .__/
-|_|= wersja 0.358 =|__/|_|===
-==== |2005-02-27| ===========
+|_|= wersja 0.424 =|__/|_|===
+==== |2005-03-23| ===========
 
 *pwnsjp* to interfejs do trzytomowego _S³ownika jêzyka polskiego_
 Wydawnictwa Naukowego PWN, który niegdy¶ zosta³ do³±czony do Gazety
@@ -91,15 +91,17 @@ Dziennik (ha, ha) zmian:
   -- 2005-01-03 (-----)
      : podówczas pierwsz± literê kodu napisano.
 
-B³êdy, przemy¶lenia, TODO (UI == wersja interaktywna):
-  -- program jest do¶æ pamiêcio¿erny
+B³êdy, przemy¶lenia, TODO (UI -- wersja interaktywna, P -- przeciwnie)
   -- UI: czy kto¶ potrafi wyja¶niæ to miganie przy przewijaniu definicji
      s³owa ,,jêzyk''?
+  -- UI: zaawansowane wyszukiwanie
+  -- UI: potrzebny krótki kurs obs³ugi
+  -- UI: przenoszenie wyrazów pozostawia nieco do ¿yczenia
+  -- P: wyszukiwanie binarne jest w zasadzie bezu¿yteczne
+  -- program jest do¶æ pamiêcio¿erny
   -- gdzie¶ zgubi³y siê tabele odmian
   -- poszczególne rodzaje hase³ (zwy³ke, table odmian, rozwiniêcia skrótów)
      powinny byæ od siebie rozdzielone
-  -- UI: potrzebny krótki kurs obs³ugi
-  -- UI: przenoszenie wyrazów pozostawia nieco do ¿yczenia
   -- czy na pewno zadzia³a na procesorze big-endianowym?
   -- kolory s± niekonfigurowalne
   -- wizualizacja HTML-u jest kiepska
