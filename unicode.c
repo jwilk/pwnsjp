@@ -5,17 +5,18 @@
  */
 
 #include "common.h"
+#include "memory.h"
 #include "unicode.h"
 
 #include <langinfo.h>
 #include <locale.h>
 
 #include "cmap-cp1250.h"
-#include "cmap-usascii.h"
-#include "cmap-iso8859-2.h"
 #include "cmap-iso8859-16.h"
-#include "entity.h"
+#include "cmap-iso8859-2.h"
+#include "cmap-usascii.h"
 #include "entity-hash.h"
+#include "entity.h"
 
 #include "config.h"
 
@@ -82,7 +83,7 @@ static const unsigned char* entity_grep(const unsigned char *str, wchar_t *resul
 
 static wchar_t* pwnstr_to_ustr(const unsigned char *str)
 {
-  wchar_t* result = calloc(1 + strlen(str), sizeof(wchar_t));
+  wchar_t* result = alloz(1 + strlen(str), sizeof(wchar_t));
   wchar_t* resptr;
   for (resptr=result; *str; str++, resptr++)
   {
@@ -140,27 +141,29 @@ static unsigned char* ustr_fallback_ascii(const wchar_t *ustr)
   }
 #undef a
 #undef as
-  return strdup(result);
+  return str_clone(result);
 }
 
 static unsigned char* ustr_fallback_sys(const wchar_t *ustr)
 {
   int lim = 1 + wcstombs(NULL, ustr, 0);
-  unsigned char* result = malloc(lim * sizeof(unsigned char));
+  unsigned char* result = alloc(lim, sizeof(unsigned char));
   if (wcstombs(result, ustr, lim) == (size_t)(-1))
-    return strdup("{wcstombs failed!}");
+    fatal("wcstombs failed!");
   else
     return result;
+  return NULL; // suppress compiler warnings
 }
 
 wchar_t* str_to_ustr(const unsigned char *str)
 {
   int lim = 1 + mbstowcs(NULL, str, 0);
-  wchar_t* result = malloc(lim * sizeof(wchar_t));
+  wchar_t* result = alloc(lim, sizeof(wchar_t));
   if (mbstowcs(result, str, lim) == (size_t)(-1))
-    return wcsdup(L"{mbstowcs failed!}");
+    fatal("{mbstowcs failed!}");
   else
     return result;
+  return NULL; // suppress compiler warnings
 }
 
 unsigned char* ustr_to_str(const wchar_t *ustr)
@@ -213,7 +216,7 @@ size_t strnwidth(const unsigned char *str, size_t len)
 unsigned char* strxform(const unsigned char *str)
 {
   int lim = 1 + strxfrm(NULL, str, 0);
-  unsigned char* result = malloc(lim);
+  unsigned char* result = alloc(lim, sizeof(unsigned char));
   strxfrm(result, str, lim);
   return result;
 }

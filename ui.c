@@ -27,19 +27,27 @@
 
 static WINDOW* windows[w_count];
 
-static int attrs[HUE_count];
+#define ATTR(k) attrkit[HUE_##k]
+static int ATTR(count);
 
 #define c_menu_width 24
 #define c_search_limit 18
 
-void ui_show_statusline(bool activemenu)
+static int scr_width = 0;
+static int scr_height = 0;
+static bool scr_needresize = false;
+
+#define c_min_scr_width c_menu_width + 10
+#define c_min_scr_height 12
+
+static void ui_show_statusline(bool activemenu)
 {
-  wattrset(wstatus, attrs[HUE_default]);
+  wattrset(wstatus, ATTR(normal));
   mvwaddch(wstatus, 0, c_menu_width+2, activemenu ? ACS_LRCORNER : ACS_LLCORNER);
-  wattrset(wstatus, attrs[activemenu ? HUE_default : HUE_dimmed]);
+  wattrset(wstatus, activemenu ? ATTR(normal) : ATTR(dimmed));
   mvwhline(wstatus, 0, 0, ACS_HLINE, c_menu_width+2);
-  wattrset(wstatus, attrs[!activemenu ? HUE_default : HUE_dimmed]);
-  mvwhline(wstatus, 0, c_menu_width+3, ACS_HLINE, COLS-c_menu_width-3);
+  wattrset(wstatus, !activemenu ? ATTR(normal) : ATTR(dimmed));
+  mvwhline(wstatus, 0, c_menu_width+3, ACS_HLINE, scr_width-c_menu_width-3);
   wnoutrefresh(wstatus);
 }
 
@@ -58,8 +66,7 @@ static void ui_show_scrollbar(struct scrollbar_t *scrollbar)
   if (scrollbar->disabled)
     return;
   unsigned int height = scrollbar->height;
-  wattrset(scrollbar->window, attrs[HUE_default]);
-  mvwvline(scrollbar->window, 0, 0, ACS_VLINE, height);
+  wbkgd(scrollbar->window, ACS_VLINE | ATTR(normal)); werase(scrollbar->window);
   if (scrollbar->range > 0)
   {
     height--;
@@ -68,23 +75,98 @@ static void ui_show_scrollbar(struct scrollbar_t *scrollbar)
 //               start = round ( height * start/range )
     unsigned int stop = (range/2 + height*scrollbar->stop)/range;
 //               stop = round ( height * stop/range )
-    mvwvline(scrollbar->window, start, 0, ACS_CKBOARD, stop-start+1);
+    mvwvline(scrollbar->window, start, 0, ACS_CKBOARD | ATTR(normal), stop-start+1);
   }
   wnoutrefresh(scrollbar->window);
 }
 
+static void ui_windows_create(void)
+{
+  wnoutrefresh(stdscr);
+  
+  getmaxyx(stdscr, scr_height, scr_width);
+  assert(scr_width>0 && scr_height>0);
+  bool object = false;
+  if (scr_width  < c_min_scr_width ) { scr_width  = c_min_scr_width;  object = true; }
+  if (scr_height < c_min_scr_height) { scr_height = c_min_scr_height; object = true; }
+  if (object) 
+    resize_term(scr_height, scr_width);
+  
+  wtitle = newwin(1, 0, 0, 0);
+  wbkgd(wtitle, ' ' | ATTR(reverse)); werase(wtitle);
+  mvwaddstr(wtitle, 0, 1, "pwnsjp-interactive " K_VERSION);
+  
+  wscroll = newwin(scr_height-2, 1, 1, c_menu_width+2);
+  struct scrollbar_t scrollbar;
+  memset(&scrollbar, 0, sizeof(scrollbar));
+  scrollbar.window = wscroll;
+  scrollbar.height = scr_height-2;
+  ui_show_scrollbar(&scrollbar);
+  
+  wmenu = newwin(scr_height-3, c_menu_width, 2, 1);
+
+  wview = newwin(scr_height-3, scr_width-c_menu_width-5, 2, c_menu_width+4);
+ 
+  wstatus = newwin(0, 0, scr_height-1, 0);
+  ui_show_statusline(true);
+}
+
+static void ui_windows_destroy(void)
+{
+  unsigned int i;
+  for (i=0; i<w_count; i++)
+  if (windows[i] != NULL)
+    delwin(windows[i]);
+}
+
+static void ui_windows_refresh(void)
+{
+  unsigned int i;
+  for (i=0; i<w_count; i++)
+    wnoutrefresh(windows[i]);
+  doupdate();
+}
+
+static void ui_stop(void)
+{
+  ui_windows_destroy();
+  erase();
+  refresh();
+  endwin();
+}
+
+static void ui_windows_recreate(void)
+{
+  scr_needresize = false;
+  ui_windows_destroy();
+  erase();
+  endwin();
+  refresh();
+  ui_windows_create();
+  ui_windows_refresh();
+}
+
+static void ui_sig_resize()
+{
+  scr_needresize = true;
+}
+
 #define COLOR_DEFAULT (-1)
 
-inline bool ui_prepare(void)
+bool ui_prepare(void)
 {
   if (!is_term)
     return false; // FIXME
 
+  memset(windows, 0, sizeof(windows));
+  
   initscr();
+  atexit(ui_stop);
   halfdelay(1); raw();
   noecho(); nonl();
   intrflush(NULL, FALSE);
   keypad(stdscr, TRUE);
+  timeout(500);
  
   curs_set(0);
   
@@ -92,49 +174,29 @@ inline bool ui_prepare(void)
   use_default_colors();
 #define build_attr(k, f, g, a) \
   do { \
-    init_pair(HUE_##k, COLOR_##f, COLOR_##g); attrs[HUE_##k] = COLOR_PAIR(HUE_##k) | (a); \
+    init_pair(HUE_##k, COLOR_##f, COLOR_##g); ATTR(k) = COLOR_PAIR(HUE_##k) | (a); \
   } while(false)
-  build_attr(tluafed, WHITE, DEFAULT, 0);
-  attrs[HUE_misc] = attrs[HUE_default];
-  attrs[HUE_bold] = attrs[HUE_default] | A_BOLD;
-  attrs[HUE_reverse] = attrs[HUE_default] | A_REVERSE;
+  build_attr(normal, WHITE, DEFAULT, 0);
+  ATTR(misc) = ATTR(normal);
+  ATTR(bold) = ATTR(normal) | A_BOLD;
+  ATTR(reverse) = ATTR(normal) | A_REVERSE;
   build_attr(title, WHITE, BLUE, 0);
-  attrs[HUE_boldtitle] = attrs[HUE_title] | A_BOLD;
+  ATTR(boldtitle) = ATTR(title) | A_BOLD;
   build_attr(highlight, WHITE, MAGENTA, A_BOLD);
   build_attr(hyperlink, CYAN, DEFAULT, 0);
   build_attr(italic, RED, DEFAULT, 0);
-  attrs[HUE_phraze] = attrs[HUE_italic] | A_BOLD;
+  ATTR(phrase) = ATTR(italic) | A_BOLD;
   build_attr(dimmed, BLACK, DEFAULT, A_BOLD);
-#undef build_color
+#undef build_attr
   
-  wnoutrefresh(stdscr);
- 
-  wtitle = newwin(1, 0, 0, 0);
-  wattrset(wtitle, attrs[HUE_reverse]);
-  mvwhline(wtitle, 0, 0, ' ', COLS);
-  mvwaddstr(wtitle, 0, 1, "pwnsjp-interactive " K_VERSION);
-  
-  wscroll = newwin(LINES-2, 1, 1, c_menu_width+2);
-  struct scrollbar_t scrollbar;
-  memset(&scrollbar, 0, sizeof(scrollbar));
-  scrollbar.window = wscroll;
-  scrollbar.height = LINES-2;
-  ui_show_scrollbar(&scrollbar);
-  
-  wmenu = newwin(LINES-3, c_menu_width, 2, 1);
-
-  wview = newwin(LINES-3, COLS-c_menu_width-5, 2, c_menu_width+4);
+  ui_windows_create();
   unsigned char* message = ustr_to_str(L"Prosz\x0119 czeka\x0107, trwa budowanie indeksu...");
   mvwaddstr(wview, 0, 0, message);
   free(message);
+
+  ui_windows_refresh();
  
-  wstatus = newwin(0, 0, LINES-1, 0);
-  ui_show_statusline(true);
-  
-  unsigned int i;
-  for (i=0; i<w_count; i++)
-    wnoutrefresh(windows[i]);
-  doupdate();
+  signal(SIGWINCH, ui_sig_resize);
   
   return true;
 }
@@ -170,7 +232,7 @@ struct view_t
   unsigned int entry_no;
 };
 
-static inline bool ui_search(struct menu_t *menu)
+static bool ui_search(struct menu_t *menu)
 {
   assert(menu != NULL);
   assert(menu->io != NULL);
@@ -237,9 +299,12 @@ static void ui_show_menu(struct menu_t *menu)
     menu->entry_page_no = 0;
   for (i=0, j=menu->entry_page_no; i<menu->height; i++, j++)
   {
+    unsigned char* str = menu->io->iitems[j].entry;
     wattrset(wmenu, j==menu->entry_no ? A_REVERSE : A_NORMAL);
     mvwhline(wmenu, i+1, 0, ' ', menu->width);
-    mvwaddnstr(wmenu, i+1, 1, menu->io->iitems[j].entry, menu->width-2);
+    mvwaddnstr(wmenu, i+1, 1, str, menu->width-2);
+    if (strnwidth(str, -1) > menu->width-2)
+      mvwaddch(wmenu, i+1, menu->width-1, '>');
   }
   wattrset(wmenu, A_NORMAL);
 
@@ -262,19 +327,18 @@ static void ui_show_content(struct view_t *view)
       free(view->content);
     view->entry_no = view->menu->entry_no;
     io_read(view->io, view->entry_no);
+    view->position = 0;
     if (view->raw)
     {
       view->content_needfree = false;
       view->content = view->io->cbuffer;
       view->lines = (strlen(view->content) + view->width - 1) / view->width;
-      view->position = 0;
     }
     else
     {
       view->content_needfree = true;
       view->content = html_strip(view->io->cbuffer);
       view->lines = 0;
-      view->position = 0;
       needrestart = true;
     }
   }
@@ -357,7 +421,7 @@ static void ui_show_content(struct view_t *view)
       if (esc)
       {
         assert(*right >= '0' && *right < 'z');
-        wattrset(wview, attrs[*right - '0']);
+        wattrset(wview, attrkit[*right - '0']);
         esc = false;
       }
       else 
@@ -531,7 +595,7 @@ static void ui_react_menu(struct menu_t *menu, wchar_t ch)
 #undef reject
 }
 
-static inline void ui_react_view(struct view_t *view, wchar_t ch)
+static void ui_react_view(struct view_t *view, wchar_t ch)
 {
   assert(view!=NULL);
 
@@ -591,20 +655,32 @@ void ui_start(struct io_t *io)
   memset(&menu, 0, sizeof(menu));
   memset(&view, 0, sizeof(view));
   
+  assert(scr_width>0 && scr_height>0);
+
+#define set_menu_extent() \
+  do { \
+    menu.width = c_menu_width; \
+    menu.height = scr_height - 4; \
+    menu.scrollbar.window = wscroll; \
+    menu.scrollbar.height = scr_height - 2; \
+  } while (0)
+
+#define set_view_extent() \
+  do { \
+    view.width = scr_width - c_menu_width - 5; \
+    view.height = scr_height - 3; \
+    view.scrollbar.window = wscroll; \
+    view.scrollbar.height = scr_height - 2; \
+  } while (0) 
+
   menu.io = io;
   menu.view = &view;
-  menu.width = c_menu_width;
-  menu.height = LINES - 4; // FIXME: this could be negative
-  menu.scrollbar.height = LINES - 2;
+  set_menu_extent();
   menu.scrollbar.range = io->isize-1;
-  menu.scrollbar.window = wscroll;
   
   view.io = io;
   view.menu = &menu;
-  view.width = COLS - c_menu_width - 5; // FIXME
-  view.height = LINES - 3; // FIXME: this could be negative
-  view.scrollbar.height = LINES - 2;
-  view.scrollbar.window = wscroll;
+  set_view_extent();
   view.scrollbar.disabled = true;
   
   ui_show_content(&view);
@@ -615,6 +691,9 @@ void ui_start(struct io_t *io)
   
   while (!doexit)
   {
+    if (scr_needresize)
+      unget_wch(L'L'-L'@'); // Control + L
+      
     wint_t chi;
     int r = get_wch(&chi);
     wchar_t ch = chi;
@@ -662,6 +741,20 @@ void ui_start(struct io_t *io)
     case L'@'-L'\\': // Control + Backslash
       doexit = true;
       break;
+    case L'@'-L'L': // Control + L
+      ui_windows_recreate();
+      set_menu_extent();
+      menu.entry_page_no = menu.entry_no;
+      set_view_extent();
+      if (view.content_needfree)
+      {
+        view.content = NULL;
+        free(view.content);
+      }
+      ui_show_content(&view);
+      ui_show_menu(&menu);
+      doupdate();
+      break;
     default:
       if (activemenu)
         ui_react_menu(&menu, ch);
@@ -672,16 +765,10 @@ void ui_start(struct io_t *io)
 
   if (view.content_needfree)
     free(view.content);
-}
 
-void ui_stop(void)
-{
-  unsigned int i;
-  for (i=0; i<=w_count; i++)
-    delwin(windows[i]);
-  erase();
-  refresh();
-  endwin();
+#undef set_menu_extent
+#undef set_view_extent
+  
 }
 
 // vim: ts=2 sw=2 et

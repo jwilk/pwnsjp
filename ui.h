@@ -11,7 +11,6 @@
 
 bool ui_prepare(void);
 void ui_start(struct io_t*);
-void ui_stop(void);
 
 #endif
 

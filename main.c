@@ -5,9 +5,9 @@
  */
 
 #include "common.h"
-#include <unistd.h>
-#include <errno.h>
+#include "memory.h"
 
+#include <unistd.h>
 #include <fcntl.h>
 #include <sys/types.h>
 
@@ -39,16 +39,6 @@ static void usage(void)
     "  -v, --version\n\n");
 }
 
-static void eabort(unsigned char* fstr, int line, unsigned char* errstr)
-{
-  if (fstr == NULL)
-    fstr = "?";
-  if (errstr == NULL)
-    errstr = strerror(errno);
-  fprintf(stderr, "%s[%d]: %s\n", fstr, line, errstr);
-  exit(EXIT_FAILURE);
-}
-
 int main(int argc, char **argv)
 {
   term_init();
@@ -68,8 +58,8 @@ int main(int argc, char **argv)
   
   unicode_init();
   
-#define try(s) do { if (!(s)) eabort(__FILE__, __LINE__, ""); } while(0)
-#define tri(s, err) do { if (!(s)) eabort(__FILE__, __LINE__, err); } while(0)
+#define try(s) do { if (!(s)) fatal(""); } while(0)
+#define tri(s, err) do { if (!(s)) fatal(err); } while(0)
   
   regex_t regex;
   tri ( regex_compile(&regex, pattern), "Invalid pattern" );
@@ -169,11 +159,11 @@ int main(int argc, char **argv)
           pmc++;
           if (!config.conf_entry_only)
             printf("%s\n::: %s%s%s :::%s\n\n", 
-              hueset[HUE_title], 
-              hueset[HUE_boldtitle], 
+              HUE(title), 
+              HUE(boldtitle), 
               iitem->entry, 
-              hueset[HUE_title], 
-              hueset[HUE_default]);
+              HUE(title), 
+              HUE(normal));
           printf("%s\n", tbuffer);
         }
         if (dofree)
@@ -193,13 +183,10 @@ int main(int argc, char **argv)
   
   if (pattern)
     regex_free(&regex);
-
-  if (config.conf_ui)
-    ui_stop();
-  
 #undef try
 #undef try_s
 
+  return EXIT_SUCCESS;
 }
 
 // vim: ts=2 sw=2 et

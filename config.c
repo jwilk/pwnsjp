@@ -43,14 +43,9 @@ unsigned char* parse_options(int argc, char **argv)
       break;
     if (c == 0)
       c = gopts[i].val;
+ #define on(o) ( config.conf_##o = true )
     switch (c)
     {
-    case 'd':
-      config.conf_deep = true;
-      break;
-    case 'e':
-      config.conf_entry_only = true;
-      break;
     case 'h':
       config.action = action_help;
       break;
@@ -60,19 +55,14 @@ unsigned char* parse_options(int argc, char **argv)
     case 'v':
       config.action = action_version;
       break;
-    case 'D':
-      config.conf_debug = true;
-      break;
-    case 'Q':
-      config.conf_quick = true;
-      break;
-    case 'R':
-      config.conf_raw = true;
-      break;
-    case 'T':
-      config.conf_tabi = true;
-      break;
+    case 'd': on(deep);       break;
+    case 'e': on(entry_only); break;
+    case 'D': on(debug);      break;
+    case 'Q': on(quick);      break;
+    case 'R': on(raw);        break;
+    case 'T': on(tabi);       break;
     }
+#undef on
   }
   return
     (optind<=argc) ? argv[optind] : NULL;

@@ -9,8 +9,7 @@
 
 #define HUE_count     0x0b
 
-#define HUE_default   0x00
-#define HUE_tluafed   0x00
+#define HUE_normal    0x00
 #define HUE_bold      0x01
 #define HUE_reverse   0x02
 #define HUE_title     0x03
@@ -19,12 +18,11 @@
 #define HUE_hyperlink 0x06
 #define HUE_italic    0x07
 #define HUE_misc      0x08
-#define HUE_phraze    0x09
+#define HUE_phrase    0x09
 #define HUE_dimmed    0x0a
 
-#define HUE(x) ( hueset[HUE_##x] )
-
-extern unsigned char* hueset[HUE_count];
+#define HUE(k) __huekit[HUE_##k]
+extern unsigned char* HUE(count);
 
 void hue_setup_curses(void);
 void hue_setup_terminfo(void);

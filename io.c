@@ -5,13 +5,14 @@
  */
 
 #include "common.h"
+#include "memory.h"
 #include "io.h"
-#include "unicode.h"
-
-#include "config.h"
-#include "byteorder.h"
 
 #include <zlib.h>
+
+#include "byteorder.h"
+#include "config.h"
+#include "unicode.h"
 
 bool io_init(struct io_t *io, const unsigned char* filename)
 {
@@ -42,12 +43,10 @@ bool io_validate(struct io_t *io)
 
 bool io_prepareindex(struct io_t *io)
 {
-#define hsize (sizeof(struct io_header_t))
   if (fseek(io->file, 0x4, SEEK_SET)!=0)
     return false;
-  io->header = malloc(hsize);
-  if (io->header == NULL)
-    return false;
+#define hsize (sizeof(struct io_header_t))
+  io->header = alloc(1, hsize);
   if (fread(io->header, hsize, 1, io->file)!=1)
     return false;
 #undef hsize
@@ -208,7 +207,7 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
 #undef forallitems
   push(iitem);
   
-  struct io_iitem_t* buffer = malloc(count*sizeof(struct io_iitem_t));
+  struct io_iitem_t* buffer = alloc(count, sizeof(struct io_iitem_t));
   
   while (qlen >= 4)
   {
@@ -316,7 +315,7 @@ bool io_buildindex(struct io_t *io)
   if (fseek(io->file, io->header->index_base, SEEK_SET)!=0)
     return false;
 
-  uint32_t* offsets = malloc(sizeof(uint32_t)*io->isize);
+  uint32_t* offsets = alloc(io->isize, sizeof(uint32_t));
   if (offsets == NULL)
     return false;
   if (fread(offsets, sizeof(uint32_t), io->isize, io->file) != io->isize)
@@ -324,7 +323,7 @@ bool io_buildindex(struct io_t *io)
 
   debug("sizeof(struct io_iitem_t) = %u\n", sizeof(struct io_iitem_t));
   
-  io->iitems = calloc(io->isize-1, sizeof(struct io_iitem_t));
+  io->iitems = alloz(io->isize-1, sizeof(struct io_iitem_t));
   if (io->iitems == NULL)
   {
     free(offsets);
@@ -354,7 +353,7 @@ bool io_buildindex(struct io_t *io)
     return false;
   
   io->csize = (maxsize|0xff)+1;
-  io->cbuffer = malloc(io->csize << 3);
+  io->cbuffer = alloc(io->csize << 3, sizeof(unsigned char));
   if (io->cbuffer == NULL)
     return false;
  
@@ -373,7 +372,7 @@ bool io_buildindex(struct io_t *io)
     dataptr = wordbuffer + 12;
     iitem->entry = 
       config.conf_quick ? 
-        (unsigned char*)strdup(dataptr) : 
+        str_clone(dataptr) : 
         pwnstr_to_str(dataptr);
     dataptr = strchr(dataptr, '\0') + 2;
     if (*dataptr < ' ')
@@ -398,7 +397,7 @@ bool io_buildindex(struct io_t *io)
       maxlen = len;
   }
   unsigned char *plusinf; // +oo == "\xff\xff...\xff"
-  plusinf = malloc(maxlen+1);
+  plusinf = alloc(maxlen+1, sizeof(unsigned char));
   memset(plusinf, -1, maxlen);
   plusinf[maxlen]='\0';
   iitem->entry = iitem->xentry = plusinf;

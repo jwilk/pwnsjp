@@ -11,7 +11,7 @@
 #define UNICODE_H
 
 void unicode_init(void);
-bool posix_coll(void);
+inline bool posix_coll(void);
 unsigned char* pwnstr_to_str(const unsigned char *);
 
 unsigned char* ustr_to_str(const wchar_t *);
@@ -21,9 +21,7 @@ size_t strnwidth(const unsigned char *, size_t);
 unsigned char* strxform(const unsigned char*);
 
 int wcwidth(wchar_t);
-wchar_t *wcsdup(const wchar_t *);
 
 #endif
 
 // vim: ts=2 sw=2 et
-

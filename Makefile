@@ -1,4 +1,4 @@
-M_VERSION = 0.355
+M_VERSION = 0.358
 
 M_BUILD_HEADERS = yes	# yes | no
 M_DEBUG = no			# yes | no
@@ -66,7 +66,7 @@ all: pwnsjp pwnsjpi tags
 
 .PHONY: clean
 clean:
-	rm -f pwnsjp pwnsjpi *.da *.il *.dyn *.s *.o *.out pwnsjp-*.tar* tags
+	rm -f pwnsjp pwnsjpi core core.[0-9]* *.da *.il *.dyn *.s *.o *.out pwnsjp-*.tar* tags
 
 tags: $(CFILES) $(HFILES)
 ifneq ($(CTAGS),)

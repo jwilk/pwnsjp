@@ -5,6 +5,7 @@
  */
 
 #include "common.h"
+#include "memory.h"
 #include "terminfo.h"
 
 #include <unistd.h>
@@ -45,21 +46,21 @@ void term_init(void)
 
   if (!isatty(STDOUT_FILENO) || setupterm(NULL, STDOUT_FILENO, &err) != 0)
   {
-    term_sgr0 = strdup("");
-    term_bold = strdup("");
+    term_sgr0 = str_clone("");
+    term_bold = str_clone("");
     for (j=0; j<8; j++)
-      term_setaf[j] = strdup("");
+      term_setaf[j] = str_clone("");
     for (j=0; j<8; j++)
-      term_setab[j] = strdup("");
+      term_setab[j] = str_clone("");
     return;
   }
   
   is_term = true;
   
-  term_sgr0 = strdup(term_getstr("sgr0"));
+  term_sgr0 = str_clone(term_getstr("sgr0"));
   assert(term_sgr0 != NULL);
 
-  term_bold = strdup(term_getstr("bold"));
+  term_bold = str_clone(term_getstr("bold"));
   assert(term_bold != NULL);
   
   memset(term_setaf, 0, sizeof(term_setaf));
@@ -70,26 +71,26 @@ void term_init(void)
     for (j=0; j<8; j++)
     {
       term_setaf[j] = tparm(s0, j);
-      term_setaf[j] = strdup(term_setaf[j]==NULL ? (unsigned char*)"" : term_setaf[j]);
+      term_setaf[j] = str_clone(term_setaf[j]==NULL ? (unsigned char*)"" : term_setaf[j]);
       if (term_setaf[j] == NULL)
-        term_setaf[j] = strdup("");
+        term_setaf[j] = str_clone("");
     }
   else
     for (j=0; j<8; j++)
-      term_setaf[j] = strdup("");
+      term_setaf[j] = str_clone("");
   
   s0 = term_getstr("setab");
   if (*s0 != '\0')
     for (j=0; j<8; j++)
     {
       term_setab[j] = tparm(s0, j);
-      term_setab[j] = strdup(term_setab[j]==NULL ? (unsigned char*)"" : term_setab[j]);
+      term_setab[j] = str_clone(term_setab[j]==NULL ? (unsigned char*)"" : term_setab[j]);
       if (term_setab[j] == NULL)
-        term_setab[j] = strdup("");
+        term_setab[j] = str_clone("");
     }
   else
     for (j=0; j<8; j++)
-      term_setab[j] = strdup("");
+      term_setab[j] = str_clone("");
 
   atexit(term_quit);
 }

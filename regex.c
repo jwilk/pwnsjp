@@ -6,14 +6,15 @@
 
 #include "common.h"
 #include "config.h"
+#include "memory.h"
 #include "regex.h"
 
-inline void regex_free(regex_t *regex)
+void regex_free(regex_t *regex)
 {
   regfree(regex);
 }
 
-inline bool regex_compile(regex_t *regex, const unsigned char* p)
+bool regex_compile(regex_t *regex, const unsigned char* p)
 {
   if (p == NULL)
   {
@@ -25,7 +26,7 @@ inline bool regex_compile(regex_t *regex, const unsigned char* p)
     regcomp(regex, p, REG_NOSUB | REG_EXTENDED | REG_ICASE) == 0;
 }
 
-inline unsigned char* pattern_head(const unsigned char* p)
+unsigned char* pattern_head(const unsigned char* p)
 {
   if (p == NULL || *p != '^')
     return NULL;
@@ -67,10 +68,10 @@ inline unsigned char* pattern_head(const unsigned char* p)
 enough:
   *r = '\0';
   debug("pattern head = \"%s\"\n", result+1);
-  return strdup(result+1);
+  return str_clone(result+1);
 }
 
-inline bool regex_match(regex_t *regex, const unsigned char *string)
+bool regex_match(regex_t *regex, const unsigned char *string)
 {
   return regexec(regex, string, 0, NULL, 0) == 0;
 }

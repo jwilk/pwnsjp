@@ -9,7 +9,7 @@
 
 #include "terminfo.h"
 
-unsigned char* hueset[HUE_count];
+unsigned char* HUE(count);
 
 void hue_setup_curses(void)
 {
@@ -20,31 +20,31 @@ void hue_setup_curses(void)
     cbuf[i][0] = '\x1B';
     cbuf[i][1] = i + '0';
     cbuf[i][2] = '\0';
-    hueset[i] = cbuf[i];
+    __huekit[i] = cbuf[i];
   }
 }
 
 void hue_setup_terminfo(void)
 {
 #define bufsize 24
-  hueset[HUE_default] = term_sgr0;
+  HUE(normal) = term_sgr0;
   static unsigned char cbuf[HUE_count][bufsize];
 
 #define build_color(k, s1, s2) \
   do { \
     snprintf(cbuf[HUE_##k], bufsize, "%s%s%s", term_sgr0, s1, s2); \
     cbuf[HUE_##k][bufsize-1]='\0'; \
-    hueset[HUE_##k] = cbuf[HUE_##k]; \
+    HUE(k) = cbuf[HUE_##k]; \
   } while (false)
 
-  hueset[HUE_default] = hueset[HUE_misc] = term_sgr0;
+  HUE(normal) = HUE(misc) = term_sgr0;
   build_color(title, term_setab[4], "");
   build_color(boldtitle, term_setab[4], term_bold);
   build_color(highlight, term_setab[5], term_bold);
   build_color(bold, term_bold, "");
   build_color(hyperlink, term_setaf[6], "");
   build_color(italic, term_setaf[1], "");
-  build_color(phraze, term_setaf[1], term_bold);
+  build_color(phrase, term_setaf[1], term_bold);
   build_color(reverse, term_setab[7], term_setaf[0]);
   
 #undef bufsize
@@ -52,4 +52,3 @@ void hue_setup_terminfo(void)
 }
 
 // vim: ts=2 sw=2 et
-

@@ -15,11 +15,15 @@ while(<STDIN>)
   chop;
   next if /^\|/;
   split /\t/;
-  printf "  { .name = \"%s\", .value = 0x%s, .str = %s },\n", @_[0], @_[1], @_[2], @_[3];
+  printf 
+    "  { .name = \"%s\",%s.value = 0x%s, .str = %s },\n", 
+    @_[0], 
+    ' ' x (11-length(@_[0])), 
+    @_[1], @_[2], @_[3];
 }
 print "  { .name = \"__vector__\", .value = 0x20d7, .str = \"->\" },\n",
-      "  { .name = NULL, .value = 0x0000, .str = NULL }\n",
+      "  { .name = NULL,         .value = 0x0000, .str = NULL }\n",
       "};\n\n".
-      "#endif\n\n";
+      "#endif\n";
 
 # vim: ts=2 sw=2 et ft=perl

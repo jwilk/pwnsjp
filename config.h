@@ -27,7 +27,7 @@ struct config_t
   bool conf_ui;
 };
 
-unsigned char* parse_options(int, char **);
+unsigned char* parse_options(int, char**);
 extern struct config_t config;
 
 #endif

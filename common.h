@@ -18,7 +18,7 @@
 
 #ifdef NDEBUG
 
-#define debug(s, ...) while (0)
+#define debug(s, ...) ((void)0)
 
 #else
 

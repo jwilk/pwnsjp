@@ -55,18 +55,18 @@ unsigned char* html_strip(unsigned char *str)
 #define a(t) ( *appendix++ = t )
 #define as(t) \
   do { strcpy(appendix, t); while (*appendix) appendix++; } while (0)
-#define cpush(t) \
+#define cpress(t) \
   do { \
     if (cstack == cplace) \
       as(t); \
     cstack++; \
   } while (0)
-#define cpush2(t) \
-  do { as(t); cplace = cstack; cstack++; } while(0)
+#define cpush(t) \
+  do { as(HUE(t)); cplace = cstack; cstack++; } while(0)
 #define cpop() \
   do { \
     if (cstack > 0 && --cstack == cplace ) \
-      as(HUE(tluafed)); \
+      as(HUE(normal)); \
   } while (0)
 #define sync() ( head = tail+1 )
 #define nhave(s, n) ( !strncasecmp(head, s, n) )
@@ -114,24 +114,24 @@ unsigned char* html_strip(unsigned char *str)
       {
         if (first)
         {
-          cpush2(HUE(highlight));
+          cpush(highlight);
           first = false;
         }
         else
-          cpush2(HUE(bold));
+          cpush(bold);
       }
       else if (have("tr1"))
-        cpush2(HUE(highlight));
+        cpush(highlight);
       else if (have("font color=#ff0000") || have("font color=red"))
-        cpush2(HUE(phraze));
+        cpush(phrase);
       else if (have("font color=#fa8d00"))
-        cpush2(HUE(misc));
+        cpush(misc);
       else if (nhave("font", 4))
-        cpush("");
+        cpress("");
       else if (have("i"))
-        cpush(HUE(italic));
+        cpress(HUE(italic));
       else if (have("big"))
-        cpush2(HUE(highlight));
+        cpush(highlight);
       else if (have("sup"))
         a('^');
       else if (have("sub"))
@@ -139,7 +139,7 @@ unsigned char* html_strip(unsigned char *str)
       else if (have("sqrt"))
         as("&sqrt;");
       else if (nhave("a href=", 7))
-        cpush(HUE(hyperlink));
+        cpress(HUE(hyperlink));
       sync();
     }
     break;
@@ -157,14 +157,14 @@ unsigned char* html_strip(unsigned char *str)
     }
     break;
   }
-  as(HUE(tluafed));
+  as(HUE(normal));
   a('\0');
 
 #undef a
 #undef as
 #undef sync
 #undef cpush
-#undef cpush2
+#undef cpush
 #undef cpop
 #undef have
 #undef nhave
