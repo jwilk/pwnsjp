@@ -136,35 +136,4 @@ bool pwnio_fine(struct pwnio_t *pwnio)
   return fclose(pwnio->file) == 0;
 }
 
-/*
-bool pwnio_read(struct pwnio_t *pwnio, unsigned int entryno, unsigned char** res_entry, unsigned char** res_contents)
-{
-  assert(entryno >= 0);
-  assert(entryno < 0);
-  unsigned int size = pwnio->offsets[i+1]-pwnio->offsets[i];
-  unsigned char buffer[size];
-  bool zipped = false;
-  if (fseek(pwnio->file, pwnio->header->words_base + pwnio->offsets[i], SEEK_SET) != 0)
-    return false;
-  if (fread(buffer, size, 1, pwnio->file) != 1)
-    return false;
-  strcpy(pwnio->entry, buffer + 12);
-  *res_entry = pwnio->entry;
-  unsigned int entry_len = strlen(pwnio->entry);
-  *res_contents = pwnio_entry + entry_len;
-  if (config->conf_entry_only)
-  {
-    **res_contents = '\0';
-    return true;
-  }
-  char* zipdata = buffer + entry_len + 2;
-  bool zipped = false;
-  if (*zipdata < ' ')
-  {
-    zipdata += (*zipdata) + 1;
-    zipped = true;
-  }
-}
-*/
-
 // vim: ts=2 sw=2 et

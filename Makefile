@@ -1,6 +1,6 @@
-M_VERSION = $(shell date '+0.%Y%m%d')
+M_VERSION = 0.290
 
-M_BUILD_HEADERS = yes	# yes | no
+M_BUILD_HEADERS = no	# yes | no
 M_DEBUG = no			# yes | no
 M_PROFILE = no			# yes | no
 M_COMPILER = gcc		# gcc | icc
@@ -51,7 +51,10 @@ HFILES = \
 CFILES = config.c pwnio.c pwnsjp.c terminfo.c unicode.c
 OFILES = $(CFILES:.c=.o)
 
-DISTFILES = Makefile Makefile.dep Makefile.conf $(HFILES) $(CFILES) script/ data/
+DISTFILES = \
+	README \
+	Makefile Makefile.dep Makefile.conf \
+	$(HFILES) $(CFILES) script/ data/
 
 all: pwnsjp
 

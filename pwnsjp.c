@@ -96,8 +96,8 @@ static char* trim_html(char *str)
       }
 /*    else if (!strcasecmp(head, "font color=#fa8d00"))
       {
-        as(tput("setaf 3"));
-        as(tput("bold"));
+        as(term_setaf[3]);
+        as(term_bold);
         color = true;
       } */
       else if (!strcasecmp(head, "i") && !color)
@@ -250,9 +250,9 @@ int main(int argc, char **argv)
     fprintf(stderr, "Invalid data file signature.\n");
     return EXIT_FAILURE;
   }
-#else
-  tri ( pwnio.size > (1<<26), "Unexpectedly short data file" );
-  tri ( pwnio.size < (1<<28), "Unexpectedly long data file" );
+#elif 0
+  tri ( pwnio.file_size > (1<<26), "Unexpectedly short data file" );
+  tri ( pwnio.file_size < (1<<28), "Unexpectedly long data file" );
 #endif
 
   if (!pwnio_prepareindex(&pwnio))
