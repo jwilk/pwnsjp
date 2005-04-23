@@ -1,6 +1,8 @@
 #!/usr/bin/perl
+use strict;
 use File::Temp qw/ tempfile unlink0 /;
 
+my($use_konwert, $fh, $tmpfname, $i, $s);
 $use_konwert = 0;
 
 ($fh, $tmpfname) = tempfile();
@@ -21,16 +23,16 @@ if (!$use_konwert)
   { print $fh '</body></html>'; }
 
 if ($use_konwert)
- { open CO, "konwert html-ascii < $tmpfname 2>&1 |"; }
+ { open CO, "konwert html-ascii < $tmpfname 2>/dev/null |"; }
 else
- { open CO, "links -stdin -dump < $tmpfname 2>&1 |"; }
+ { open CO, "links -stdin -dump < $tmpfname 2>/dev/null |"; }
 $s='';
 while (<CO>)
 {
   chop;
   s/"/\\"/; 
   s/^ *(.*)$/"\1", /;
-  $s.=$_;
+  $s .= $_;
 }
 $s =~ s/, $//;
 

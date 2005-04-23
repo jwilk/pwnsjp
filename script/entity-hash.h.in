@@ -1,11 +1,14 @@
 #!/usr/bin/perl
-$hashsize=0x80;
-@coeff=(155, 74, 6, 22, 156, 239, 144, 4, 97, 156);
-$coeffi=$#coeff;
+use strict;
+
+my($hashsize, %hashtable, @coeff, $coeffi, $i, $s, $v);
+$hashsize = 0x80;
+@coeff = (155, 74, 6, 22, 156, 239, 144, 4, 97, 156);
+$coeffi = $#coeff;
 
 sub compute_hash
 {
-  local $s, $hash, $i, $v;
+  my($s, $hash, $i, $v);
   $s = shift;
   $hash = 0;
   foreach $i (0 .. (length $s) - 1)
@@ -23,9 +26,9 @@ print "#include <wchar.h>\n\n".
       "#define ENTITY_HASH_H\n\n";
 printf "#define hash_coeff_count %d\n", ($coeffi+1);
 printf "static const int hash_coeff[%d] = { ", ($coeffi+1);
-foreach $i (0 .. $coeffi-1)
+foreach $i (0 .. $coeffi-2)
   { printf "%d, ", $coeff[$i]; }
-printf "%d };\n", $coeff[$coeffs];
+printf "%d };\n", $coeff[$coeffi];
 
 foreach $i (0 .. $hashsize-1)
   { $hashtable{$i} = -1; }
@@ -36,6 +39,7 @@ printf "#define hash_size 0x%x\n".
 $i=0;
 while(<STDIN>)
 {
+  my($name, $value, $str, $hash);
   next if /^\|/;
   chop;
   ($name, $value, $str) = split /\t/;
@@ -46,7 +50,7 @@ while(<STDIN>)
   $i++;
 }
 foreach $i (0 .. $hashsize-2)
-  { printf "$d%s, ", $hashtable{$i}; }
+{ printf "%s, ", $hashtable{$i}; }
 printf "%d };\n\n#endif\n", $hashtable{$hashsize-1};
 
 # vim: ts=2 sw=2 et ft=perl

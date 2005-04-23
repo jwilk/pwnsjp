@@ -1,19 +1,21 @@
 #!/usr/bin/perl
+use strict;
+
 print "#include <wchar.h>\n\n".
       "#ifndef CMAP_CP1250_H\n".
       "#define CMAP_CP1250_H\n\n". 
       'static const wchar_t cp1250[0x80] = L"';
-
+my($cp, $uni, %s);
 foreach $cp (0x80 .. 0xff)
-  { $s{$cp}="0000"; }
+  { $s{$cp} = "0000"; }
 while(<STDIN>)
 {
   next if ($_ !~ /^\<U/);
   s/^\<U([0-9A-F]{4})\> *\/(x[0-9a-f]{2}).*/\1:0\2/;
   ($uni, $cp) = split /:/;
-  $cp=eval $cp;
-  $uni=lc $uni;
-  $s{$cp}=$uni;
+  $cp = eval $cp;
+  $uni = lc $uni;
+  $s{$cp} = $uni;
 }
 foreach $cp (0x80 .. 0xfe)
   { printf "\\x%s", $s{$cp} };

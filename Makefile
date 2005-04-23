@@ -1,12 +1,12 @@
-M_VERSION = 0.424
+M_VERSION = 0.500
 
 M_BUILD_HEADERS = yes	# yes | no
 M_DEBUG = no			# yes | no
 M_PROFILE = no			# yes | no
 M_COMPILER = gcc		# gcc | icc
 
-FAKEROOT := $(shell which fakeroot | head -1 2>/dev/null)
-CTAGS := $(shell which ctags | head -1 2>/dev/null)
+FAKEROOT := $(shell command -v fakeroot | head -1 2>/dev/null)
+CTAGS := $(shell command -v ctags | head -1 2>/dev/null)
 
 include Makefile.conf
 
@@ -49,7 +49,7 @@ endif
 CFLAGS_def =
 CFLAGS_def += -DK_VERSION='"$(strip ${M_VERSION})"'
 ifdef K_DATA_PATH
-	CFLAGS_def += -DK_DATA_PATH="\"$(strip {K_DATA_PATH})\""
+	CFLAGS_def += -DK_DATA_PATH="\"$(strip ${K_DATA_PATH})\""
 endif
 ifeq ($(strip ${K_VALIDATE_DATAFILE}),yes)
 	CFLAGS_def += -DK_VALIDATE_DATAFILE
@@ -61,7 +61,7 @@ OFILES = $(CFILES:.c=.o)
 MAKEFILES = Makefile $(wildcard Makefile.*)
 SOURCEFILES = $(CFILES) $(HFILES) $(MAKEFILES)
 
-DISTFILES = README $(SOURCEFILES) script/ data/
+DISTFILES = README COPYING $(SOURCEFILES) script/ data/
 
 .PHONY: all
 all: pwnsjp pwnsjpi tags

@@ -1,4 +1,6 @@
 #!/usr/bin/perl
+use strict;
+
 print "#include <wchar.h>\n\n".
       "#ifndef ENTITY_H\n".
       "#define ENTITY_H\n\n".

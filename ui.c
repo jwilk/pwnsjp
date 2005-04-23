@@ -213,7 +213,7 @@ struct menu_t
   unsigned int height;
   unsigned int entry_no;
   int entry_page_no;
-  wchar_t search[c_search_limit];
+  wchar_t search[c_search_limit+1];
   unsigned int search_len;
   unsigned int search_pos;
 };
