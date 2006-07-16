@@ -9,7 +9,7 @@
 
 #include <errno.h>
 
-void __fatal(unsigned char* fstr, int line, unsigned char* errstr)
+void __fatal(const char* fstr, int line, const char* errstr)
 {
   if (fstr == NULL)
     fstr = "?";
@@ -28,25 +28,25 @@ void* alloc(size_t nmemb, size_t size)
   return mem;
 }
 
-void* alloz(size_t nmemb, size_t size)
+void *alloz(size_t nmemb, size_t size)
 {
   void* mem = calloc(nmemb, size);
   memcheck(mem);
   return mem;
 }
 
-unsigned char* str_clone(const unsigned char* s)
+char *str_clone(const char *s)
 {
-  unsigned char* clone = strdup(s);
+  char *clone = strdup(s);
   memcheck(clone);
   return clone;
 }
 
-extern wchar_t* wcsdup(const wchar_t*);
+extern wchar_t *wcsdup(const wchar_t*);
 
-wchar_t* wcs_clone(const wchar_t* s)
+wchar_t *wcs_clone(const wchar_t *s)
 {
-  wchar_t* clone = wcsdup(s);
+  wchar_t *clone = wcsdup(s);
   memcheck(clone);
   return clone;
 }

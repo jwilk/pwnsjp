@@ -1,0 +1,24 @@
+pwnsjp (0.501-3) unstable; urgency=low
+
+  * Let ‘pwnsjp’ depend on ‘pwnsjp-data’.
+
+ -- Jakub Wilk <ubanus@users.sf.net>  Sun, 16 Jul 2006 15:48:28 +0200
+
+pwnsjp (0.501-2) unstable; urgency=low
+
+  * Repackage.
+
+ -- Jakub Wilk <ubanus@users.sf.net>  Tue, 11 Jul 2006 14:56:00 +0200
+
+pwnsjp (0.501-1) unstable; urgency=low
+
+  * New ‘pwnsjp-data’ package.
+  
+ -- Jakub Wilk <ubanus@users.sf.net>  Sun, 22 Jan 2006 23:49:52 +0100
+
+pwnsjp (0.500-1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Jakub Wilk <ubanus@users.sf.net>  Sat, 23 Apr 2005 20:35:02 +0200
+

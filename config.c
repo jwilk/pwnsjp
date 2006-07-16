@@ -11,7 +11,7 @@
 
 struct config_t config;
 
-unsigned char* parse_options(int argc, char **argv)
+char* parse_options(int argc, char **argv)
 {
   static const struct option gopts[]=
   {
@@ -28,7 +28,7 @@ unsigned char* parse_options(int argc, char **argv)
 
   memset(&config, sizeof(config), 0);
 
-  assert(argc>0 && argv!=NULL && *argv!=NULL && **argv!='\0');
+  assert(argc > 0 && argv != NULL && *argv != NULL && **argv != '\0');
   if (strchr(*argv, '\0')[-1] == 'i')
     config.conf_ui = true;
 
@@ -65,7 +65,7 @@ unsigned char* parse_options(int argc, char **argv)
 #undef on
   }
   return
-    (optind<=argc) ? argv[optind] : NULL;
+    (optind <= argc) ? argv[optind] : NULL;
 }
 
 // vim: ts=2 sw=2 et

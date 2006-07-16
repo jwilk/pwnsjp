@@ -187,7 +187,7 @@ bool ui_prepare(void)
 #undef build_attr
   
   ui_windows_create();
-  unsigned char* message = ustr_to_str(L"Prosz\x0119 czeka\x0107, trwa budowanie indeksu...");
+  char* message = ustr_to_str(L"Prosz\x0119 czeka\x0107, trwa budowanie indeksu...");
   mvwaddstr(wview, 0, 0, message);
   free(message);
 
@@ -206,8 +206,8 @@ struct view_t;
 
 struct menu_t
 {
-  struct io_t* io;
-  struct view_t* view;
+  struct io_t *io;
+  struct view_t *view;
   struct scrollbar_t scrollbar;
   unsigned int width;
   unsigned int height;
@@ -220,10 +220,10 @@ struct menu_t
 
 struct view_t
 {
-  struct io_t* io;
+  struct io_t *io;
   struct menu_t* menu;
   struct scrollbar_t scrollbar;
-  unsigned char* content;
+  char *content;
   bool content_needfree;
   bool raw;
   int position;
@@ -239,7 +239,7 @@ static bool ui_search(struct menu_t *menu)
   assert(menu->io != NULL);
 
   unsigned int prev = menu->entry_no;
-  unsigned char* search = ustr_to_str(menu->search);
+  char *search = ustr_to_str(menu->search);
   menu->entry_no = io_locate(menu->io, search);
   free(search);
   if (prev == menu->entry_no)
@@ -300,7 +300,7 @@ static void ui_show_menu(struct menu_t *menu)
     menu->entry_page_no = 0;
   for (i=0, j=menu->entry_page_no; i<menu->height; i++, j++)
   {
-    unsigned char* str = menu->io->iitems[j].entry;
+    char *str = menu->io->iitems[j].entry;
     wattrset(wmenu, j==menu->entry_no ? A_REVERSE : A_NORMAL);
     mvwhline(wmenu, i+1, 0, ' ', menu->width);
     mvwaddnstr(wmenu, i+1, 1, str, menu->width-2);
@@ -362,7 +362,7 @@ static void ui_show_content(struct view_t *view)
   if (view->raw)
   {
     int attr = A_BOLD;
-    unsigned char* s = view->content + view->position*view->width;
+    char *s = view->content + view->position*view->width;
     unsigned int x, lim;
     lim = view->height*view->width;
     for (x=0; x<lim && *s; x++, s++)
@@ -383,7 +383,7 @@ static void ui_show_content(struct view_t *view)
   }
   else
   {
-    unsigned char *left, *right;
+    char *left, *right;
     
     int xlimit, y, ylimit;
     xlimit = view->width;
@@ -693,7 +693,7 @@ void ui_start(struct io_t *io)
   while (!doexit)
   {
     if (scr_needresize)
-      unget_wch(L'L'-L'@'); // Control + L
+      unget_wch(L'L' - L'@'); // Control + L
       
     wint_t chi;
     int r = get_wch(&chi);
@@ -738,11 +738,11 @@ void ui_start(struct io_t *io)
       ch = chi;
       if (r != ERR && ch != L'\x1b')
         break;
-    case L'@'-L'C': // Control + C
-    case L'@'-L'\\': // Control + Backslash
+    case L'@' - L'C': // Control + C
+    case L'@' - L'\\': // Control + Backslash
       doexit = true;
       break;
-    case L'@'-L'L': // Control + L
+    case L'@' - L'L': // Control + L
       ui_windows_recreate();
       set_menu_extent();
       menu.entry_page_no = menu.entry_no;

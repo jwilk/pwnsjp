@@ -11,14 +11,14 @@
 #define UNICODE_H
 
 void unicode_init(void);
-inline bool posix_coll(void);
-unsigned char* pwnstr_to_str(const unsigned char *);
+bool posix_coll(void);
+char* pwnstr_to_str(const char *);
 
-unsigned char* ustr_to_str(const wchar_t *);
-wchar_t* str_to_ustr(const unsigned char *);
+char* ustr_to_str(const wchar_t*);
+wchar_t* str_to_ustr(const char *);
 
-size_t strnwidth(const unsigned char *, size_t);
-unsigned char* strxform(const unsigned char*);
+size_t strnwidth(const char*, size_t);
+char* strxform(const char*);
 
 int wcwidth(wchar_t);
 

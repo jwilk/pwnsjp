@@ -1,56 +1,53 @@
 #!/usr/bin/perl
 use strict;
 
-my($hashsize, %hashtable, @coeff, $coeffi, $i, $s, $v);
-$hashsize = 0x80;
-@coeff = (155, 74, 6, 22, 156, 239, 144, 4, 97, 156);
-$coeffi = $#coeff;
+my $hashsize = 0x80;
+my @coeff = (155, 74, 6, 22, 156, 239, 144, 4, 97, 156);
+my $coeffi = $#coeff;
 
 sub compute_hash
 {
-  my($s, $hash, $i, $v);
-  $s = shift;
-  $hash = 0;
-  foreach $i (0 .. (length $s) - 1)
-  {
-    $v = substr($s, $i, 1);
-    $v = ord(substr $s, $i, 1);
-    $v += $coeff[$i];
-    $hash = $hash ^ $v;
-  }
+  my $s = shift;
+  my $hash = 0;
+  $hash ^= ord(substr $s, $_, 1) + $coeff[$_] foreach (0 .. (length $s) - 1);
   return $hash % $hashsize;
 }
 
-print "#include <wchar.h>\n\n".
-      "#ifndef ENTITY_HASH_H\n".
-      "#define ENTITY_HASH_H\n\n";
+print <<EOF
+#include <wchar.h>
+#ifndef ENTITY_HASH_H
+#define ENTITY_HASH_H
+
+EOF
+;
 printf "#define hash_coeff_count %d\n", ($coeffi+1);
 printf "static const int hash_coeff[%d] = { ", ($coeffi+1);
-foreach $i (0 .. $coeffi-2)
-  { printf "%d, ", $coeff[$i]; }
-printf "%d };\n", $coeff[$coeffi];
+print "$coeff[$_], " foreach (0 .. $coeffi-2);
+print "$coeff[$coeffi] };\n";
 
-foreach $i (0 .. $hashsize-1)
-  { $hashtable{$i} = -1; }
+my %hashtable;
+$hashtable{$_} = -1 foreach (0 .. $hashsize-1);
 
-printf "#define hash_size 0x%x\n".
-       "static const int entity_hash[hash_size] = { ",
-       $hashsize;
-$i=0;
-while(<STDIN>)
+printf 
+  "#define hash_size 0x%x\n".
+  "static const int entity_hash[hash_size] = { ",
+  $hashsize;
+
+my $i = 0;
+while(<>)
 {
-  my($name, $value, $str, $hash);
   next if /^\|/;
   chop;
-  ($name, $value, $str) = split /\t/;
-  $hash=compute_hash $name;
-  $name="\"".$name."\"";
-  $value="0x".$value;
-  $hashtable{$hash} = $i;
-  $i++;
+  my ($name, $value, $str) = split /\t/;
+  my $hash = compute_hash $name;
+  $hashtable{$hash} = $i++;
 }
-foreach $i (0 .. $hashsize-2)
-{ printf "%s, ", $hashtable{$i}; }
-printf "%d };\n\n#endif\n", $hashtable{$hashsize-1};
+print "$hashtable{$_}, " foreach (0 .. $hashsize-2);
+print <<EOF
+$hashtable{$hashsize-1} };
 
-# vim: ts=2 sw=2 et ft=perl
+#endif
+EOF
+;
+
+# vim:ts=2 sw=2 et ft=perl

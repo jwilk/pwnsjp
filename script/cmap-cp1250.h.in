@@ -1,26 +1,41 @@
 #!/usr/bin/perl
 use strict;
 
-print "#include <wchar.h>\n\n".
-      "#ifndef CMAP_CP1250_H\n".
-      "#define CMAP_CP1250_H\n\n". 
-      'static const wchar_t cp1250[0x80] = L"';
-my($cp, $uni, %s);
-foreach $cp (0x80 .. 0xff)
-  { $s{$cp} = "0000"; }
-while(<STDIN>)
+print <<EOF
+#include <wchar.h>
+#ifndef CMAP_CP1250_H
+#define CMAP_CP1250_H
+
+#ifndef ICC
+static const wchar_t cp1250[0x80] = L"\\
+EOF
+;
+
+my %s;
+$s{$_} = '\0' foreach (0x80 .. 0xff);
+
+while (<>)
 {
-  next if ($_ !~ /^\<U/);
-  s/^\<U([0-9A-F]{4})\> *\/(x[0-9a-f]{2}).*/\1:0\2/;
-  ($uni, $cp) = split /:/;
-  $cp = eval $cp;
-  $uni = lc $uni;
-  $s{$cp} = $uni;
+  next unless m'^<U([0-9A-F]{4})> */(x[0-9a-f]{2}).*';
+  my $cp = eval "0$2";
+  $s{$cp} = '\u' . lc($1);
 }
-foreach $cp (0x80 .. 0xfe)
-  { printf "\\x%s", $s{$cp} };
-printf "\\x%s\";\n\n", $s{0xff};
+print $s{$_} foreach (0x80 .. 0xff);
+print <<EOF
+\";
+#else
+static const wchar_t cp1250[0x80] = L"\\
+EOF
+;
+$s{$_} =~ s/u/x/ foreach (0x80 .. 0xff);
+print $s{$_} foreach (0x80 .. 0xff);
+print <<EOF
+\\
+";
+#endif
 
-print "#endif\n"
+#endif
+EOF
+;
 
-# vim: ts=2 sw=2 et ft=perl
+# vim:ts=2 sw=2 et ft=perl

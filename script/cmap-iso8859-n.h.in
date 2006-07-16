@@ -1,26 +1,33 @@
 #!/usr/bin/perl
 use strict;
 
-my($n, $uni, $iso, %s);
-$n = shift;
-print "#ifndef CMAP_ISO8859_${n}_H\n".
-      "#define CMAP_ISO8859_${n}_H\n\n". 
-      "static const unsigned char rev_iso8859${n}[0xe0] = \"";
+my $n = shift;
 
-foreach $uni (0xa0 .. 0x17f)
-  { $s{$uni} = 0; }
+print <<EOF
+#ifndef CMAP_ISO8859_${n}_H
+#define CMAP_ISO8859_${n}_H
 
-while(<STDIN>)
+static const char rev_iso8859${n}[0xe0] = "\\
+EOF
+;
+
+my %s;
+$s{$_} = 0 foreach (0xa0 .. 0x17f);
+
+while (<>)
 {
-  next if ($_ !~ /^\<U/);
-  s/^\<U([0-9A-F]{4})\> *\/(x[0-9a-f]{2}).*/0x\1:0\2/;
-  ($uni,$iso) = split /:/;
-  $iso = eval $iso;
-  $uni = eval $uni;
-  $s{eval $uni} = $iso;
+  next unless m'^<U([0-9A-F]{4})> *\/(x[0-9a-f]{2})';
+  my $iso = eval "0$2";
+  my $uni = eval "0x$1";
+  $s{$uni} = $iso;
 }
-foreach $uni (0xa0 .. 0x17f)
-  { printf "\\x%02x", $s{$uni} };
-print "\";\n\n#endif\n"
+printf '\x%02x', $s{$_} foreach (0xa0 .. 0x17f);
+print <<EOF
+\\
+";
 
-# vim: ts=2 sw=2 et ft=perl
+#endif
+EOF
+;
+
+# vim:ts=2 sw=2 et ft=perl

@@ -20,8 +20,8 @@ struct io_header_t
 
 struct io_iitem_t
 {
-  unsigned char* xentry;
-  unsigned char* entry;
+  char *xentry;
+  char *entry;
   uint32_t offset;
   unsigned int size : 30;
   unsigned int zipped : 1;
@@ -39,16 +39,16 @@ struct io_t
   struct io_iitem_t* iitems;
   
   size_t csize;
-  unsigned char* cbuffer;
+  char* cbuffer;
 };
 
-bool io_init(struct io_t *io, const unsigned char* filename);
+bool io_init(struct io_t *io, const char* filename);
 bool io_validate(struct io_t *io);
 bool io_prepareindex(struct io_t *io);
 bool io_buildindex(struct io_t *io);
 void io_read(struct io_t *io, size_t indexno);
 bool io_fine(struct io_t *io);
-unsigned int io_locate(struct io_t *io, const unsigned char* search);
+unsigned int io_locate(struct io_t *io, const char* search);
 
 #endif
 

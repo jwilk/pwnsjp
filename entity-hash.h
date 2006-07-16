@@ -7,7 +7,6 @@
  */
 
 #include <wchar.h>
-
 #ifndef ENTITY_HASH_H
 #define ENTITY_HASH_H
 

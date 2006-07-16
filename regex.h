@@ -10,9 +10,9 @@
 #define REGEX_H
 
 void regex_free(regex_t *regex);
-bool regex_compile(regex_t *regex, const unsigned char* pattern);
-bool regex_match(regex_t *regex, const unsigned char *string);
-unsigned char* pattern_head(const unsigned char* pattern);
+bool regex_compile(regex_t *regex, const char* pattern);
+bool regex_match(regex_t *regex, const char *string);
+char *pattern_head(const char* pattern);
 
 #endif
 

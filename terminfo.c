@@ -13,15 +13,15 @@
 
 bool is_term = false;
 
-unsigned char* term_setaf[8];
-unsigned char* term_setab[8];
-unsigned char* term_sgr0;
-unsigned char* term_bold;
+char *term_setaf[8];
+char *term_setab[8];
+char *term_sgr0;
+char *term_bold;
 
-static unsigned char* term_getstr(const unsigned char *str)
+static char* term_getstr(const char *str)
 {
-  unsigned char* result = tigetstr((char*) str);
-  if (result == NULL || result == (unsigned char*)-1)
+  char *result = tigetstr((char*) str);
+  if (result == NULL || result == (char*)-1)
     return "";
   else
     return result;
@@ -40,7 +40,7 @@ void term_quit(void)
 
 void term_init(void)
 {
-  unsigned char *s0;
+  char *s0;
   int err;
   unsigned int j;
 
@@ -68,23 +68,23 @@ void term_init(void)
   
   s0 = term_getstr("setaf");
   if (*s0 != '\0')
-    for (j=0; j<8; j++)
+    for (j = 0; j < 8; j++)
     {
       term_setaf[j] = tparm(s0, j);
-      term_setaf[j] = str_clone(term_setaf[j]==NULL ? (unsigned char*)"" : term_setaf[j]);
+      term_setaf[j] = str_clone(term_setaf[j] == NULL ? "" : term_setaf[j]);
       if (term_setaf[j] == NULL)
         term_setaf[j] = str_clone("");
     }
   else
-    for (j=0; j<8; j++)
+    for (j = 0; j < 8; j++)
       term_setaf[j] = str_clone("");
   
   s0 = term_getstr("setab");
   if (*s0 != '\0')
-    for (j=0; j<8; j++)
+    for (j = 0; j < 8; j++)
     {
       term_setab[j] = tparm(s0, j);
-      term_setab[j] = str_clone(term_setab[j]==NULL ? (unsigned char*)"" : term_setab[j]);
+      term_setab[j] = str_clone(term_setab[j] == NULL ? "" : term_setab[j]);
       if (term_setab[j] == NULL)
         term_setab[j] = str_clone("");
     }

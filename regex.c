@@ -14,7 +14,7 @@ void regex_free(regex_t *regex)
   regfree(regex);
 }
 
-bool regex_compile(regex_t *regex, const unsigned char* p)
+bool regex_compile(regex_t *regex, const char* p)
 {
   if (p == NULL)
   {
@@ -26,7 +26,7 @@ bool regex_compile(regex_t *regex, const unsigned char* p)
     regcomp(regex, p, REG_NOSUB | REG_EXTENDED | REG_ICASE) == 0;
 }
 
-unsigned char* pattern_head(const unsigned char* p)
+char* pattern_head(const char* p)
 {
   if (p == NULL || *p != '^')
     return NULL;
@@ -34,9 +34,9 @@ unsigned char* pattern_head(const unsigned char* p)
   do p++; while (*p == '^');
   
   bool esc = false;
-  unsigned char result[1 + strlen(p)];
+  char result[1 + strlen(p)];
   result[0]='\0';
-  unsigned char* r;
+  char *r;
   for (r=result+1; *p; p++)
   if (esc)
     switch (*p)
@@ -71,7 +71,7 @@ enough:
   return str_clone(result+1);
 }
 
-bool regex_match(regex_t *regex, const unsigned char *string)
+bool regex_match(regex_t *regex, const char *string)
 {
   return regexec(regex, string, 0, NULL, 0) == 0;
 }

@@ -1,32 +1,33 @@
 #!/usr/bin/perl
 use strict;
-use File::Temp qw/ tempfile unlink0 /;
+use File::Temp qw(tempfile);
 
-my($use_konwert, $fh, $tmpfname, $i, $s);
-$use_konwert = 0;
+my $use_konwert = 0;
 
-($fh, $tmpfname) = tempfile();
+my ($tmpfd, $tmpfname) = tempfile();
 
-print "#ifndef CMAP_USASCII_H\n".
-      "#define CMAP_USASCII_H\n\n".
-      'static const unsigned char* rev_usascii[0xe0] = { "\xa0", ';
+print <<EOF
+#ifndef CMAP_USASCII_H
+#define CMAP_USASCII_H
 
-if (!$use_konwert)
-  { print $fh '<html><body>'; }
-foreach $i (0xa1 .. 0x17f)
-  { 
-    printf $fh "&#%d;\n", $i; 
-    if (!$use_konwert)
-      { print $fh '<br />' };
-  }
-if (!$use_konwert)
-  { print $fh '</body></html>'; }
+static const char* rev_usascii[0xe0] = { "\\xa0",
+EOF
+;
+
+print $tmpfd '<html><body>' unless $use_konwert;
+foreach (0xa1 .. 0x17f)
+{ 
+  print $tmpfd "&#$_;\n"; 
+  print $tmpfd '<br />' unless $use_konwert
+}
+print $tmpfd '</body></html>' unless $use_konwert;
 
 if ($use_konwert)
- { open CO, "konwert html-ascii < $tmpfname 2>/dev/null |"; }
+ { open CO, '-|', "konwert html-ascii < $tmpfname 2>/dev/null"; }
 else
- { open CO, "links -stdin -dump < $tmpfname 2>/dev/null |"; }
-$s='';
+ { open CO, '-|', "links -stdin -dump < $tmpfname 2>/dev/null"; }
+
+my $s='';
 while (<CO>)
 {
   chop;
@@ -36,10 +37,13 @@ while (<CO>)
 }
 $s =~ s/, $//;
 
-print $s.
-      " };\n\n".
-      "#endif\n";
+print <<EOF
+$s };
 
-unlink0 $fh, $tmpfname;
+#endif
+EOF
+;
 
-# vim: ts=2 sw=2 et ft=perl
+close $tmpfd; 
+
+# vim:ts=2 sw=2 et ft=perl

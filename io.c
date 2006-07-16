@@ -14,7 +14,7 @@
 #include "config.h"
 #include "unicode.h"
 
-bool io_init(struct io_t *io, const unsigned char* filename)
+bool io_init(struct io_t *io, const char *filename)
 {
   debug("data file = \"%s\"\n", filename);
   io->file = fopen(filename, "rb");
@@ -127,7 +127,7 @@ inline static void uint32_sort(uint32_t* table, size_t count)
 
 static void iitem_qsort(struct io_iitem_t *l, struct io_iitem_t *r)
 {
-  unsigned char* p;
+  char *p;
   struct io_iitem_t *i, *j, temp;
   int dist;
 
@@ -266,11 +266,11 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
 #endif
 }
 
-unsigned int io_locate(struct io_t *io, const unsigned char* search)
+unsigned int io_locate(struct io_t *io, const char *search)
 {
   struct io_iitem_t *l, *r, *m;
  
-  unsigned char* xsearch = strxform(search);
+  char *xsearch = strxform(search);
   
   l = io->iitems;
   r = l + io->isize-1;
@@ -296,7 +296,7 @@ void io_read(struct io_t *io, unsigned int indexno)
   assert(io->iitems != NULL);
   struct io_iitem_t* iitem = io->iitems + indexno;
   
-  unsigned char buffer[io->csize];
+  char buffer[io->csize];
  
   assert(io->header != NULL);
   if 
@@ -312,7 +312,7 @@ void io_read(struct io_t *io, unsigned int indexno)
   if (iitem->zipped)
   {
     memset(io->cbuffer, 0, dsize);
-    uncompress(io->cbuffer, &dsize, buffer, io->csize);
+    uncompress((unsigned char*)io->cbuffer, &dsize, (unsigned char*)buffer, io->csize);
   }
   else
     memcpy(io->cbuffer, buffer, iitem->size);
@@ -361,7 +361,7 @@ bool io_buildindex(struct io_t *io)
     return false;
   
   io->csize = (maxsize|0xff)+1;
-  io->cbuffer = alloc(io->csize << 3, sizeof(unsigned char));
+  io->cbuffer = alloc(io->csize << 3, sizeof(char));
   if (io->cbuffer == NULL)
     return false;
  
@@ -370,7 +370,7 @@ bool io_buildindex(struct io_t *io)
 #define forallitems for (i=0, iitem=io->iitems; i<io->isize; i++, iitem++)
   forallitems
   {
-    unsigned char wordbuffer[io->csize], *dataptr;
+    char wordbuffer[io->csize], *dataptr;
     unsigned int diffsize;
 
     if (fseek(io->file, io->header->words_base + iitem->offset, SEEK_SET) != 0)
@@ -404,8 +404,8 @@ bool io_buildindex(struct io_t *io)
     if (len > maxlen) 
       maxlen = len;
   }
-  unsigned char *plusinf; // +oo == "\xff\xff...\xff"
-  plusinf = alloc(maxlen+1, sizeof(unsigned char));
+  char *plusinf; // +oo == "\xff\xff...\xff"
+  plusinf = alloc(maxlen + 1, sizeof(char));
   memset(plusinf, -1, maxlen);
   plusinf[maxlen]='\0';
   iitem->entry = iitem->xentry = plusinf;

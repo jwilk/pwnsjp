@@ -1,4 +1,4 @@
-M_VERSION = 0.500
+M_VERSION = 0.501
 
 M_BUILD_HEADERS = yes	# yes | no
 M_DEBUG = no			# yes | no
@@ -14,6 +14,7 @@ CC = $(strip ${M_COMPILER})
 CFLAGS = \
 	$(CFLAGS_opt) $(CFLAGS_wrn) $(CFLAGS_std) $(CFLAGS_dbg)
 
+CFLAGS_def :=
 CFLAGS_opt := -O3 -fstrict-aliasing
 CFLAGS_ld  := -lz -lncursesw
 CFLAGS_dbg := -DNDEBUG
@@ -23,9 +24,11 @@ ifeq ($(strip ${M_DEBUG}),yes)
 	CFLAGS_dbg := -g
 	STRIP = @true
 else
+ifeq ($(CC),gcc)
 	CFLAGS_opt += -fomit-frame-pointer
 endif
-ifeq ($(strip ${M_COMPILER}),gcc)
+endif
+ifeq ($(CC),gcc)
 	CFLAGS_opt += -finline-limit=1200
 	CFLAGS_wrn := -W -Wall -Winline
 	CFLAGS_std := --std=gnu99
@@ -34,7 +37,7 @@ ifeq ($(strip ${M_COMPILER}),gcc)
 		STRIP = @true
 	endif
 endif
-ifeq ($(strip ${M_COMPILER}),icc)
+ifeq ($(CC),icc)
 	CFLAGS_opt += -static-libcxa -ansi_alias
 	CFLAGS_wrn := -w
 	CFLAGS_std := -c99
@@ -44,9 +47,9 @@ ifeq ($(strip ${M_COMPILER}),icc)
 	else
 		CFLAGS_opt += -ipo
 	endif
+	CFLAGS_def += -DICC
 endif
 
-CFLAGS_def =
 CFLAGS_def += -DK_VERSION='"$(strip ${M_VERSION})"'
 ifdef K_DATA_PATH
 	CFLAGS_def += -DK_DATA_PATH="\"$(strip ${K_DATA_PATH})\""
@@ -55,13 +58,13 @@ ifeq ($(strip ${K_VALIDATE_DATAFILE}),yes)
 	CFLAGS_def += -DK_VALIDATE_DATAFILE
 endif
 
-HFILES = $(wildcard *.h)
-CFILES = $(wildcard *.c)
-OFILES = $(CFILES:.c=.o)
-MAKEFILES = Makefile $(wildcard Makefile.*)
-SOURCEFILES = $(CFILES) $(HFILES) $(MAKEFILES)
+HFILES := $(wildcard *.h)
+CFILES := $(wildcard *.c)
+OFILES := $(CFILES:.c=.o)
+MAKEFILES := Makefile $(wildcard Makefile.*)
+SOURCEFILES := $(CFILES) $(HFILES) $(MAKEFILES)
 
-DISTFILES = README COPYING $(SOURCEFILES) script/ data/
+DISTFILES := README COPYING $(SOURCEFILES) script/ data/
 
 .PHONY: all
 all: pwnsjp pwnsjpi tags
@@ -109,9 +112,5 @@ ui-test: pwnsjpi
 .PHONY: test
 test: pwnsjp
 	./pwnsjp --debug '^ab(neg|om)'
-
-.PHONY: dist
-dist: $(HFILES)
-	$(FAKEROOT) tar -chjf pwnsjp-$(M_VERSION).tar.bz2 $(DISTFILES)
 
 # vim:ts=4

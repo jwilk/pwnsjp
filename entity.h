@@ -13,9 +13,9 @@
 
 struct entity
 {
-  unsigned char* name;
+  char *name;
   wchar_t value;
-  unsigned char* str;
+  char *str;
 };
 
 static const struct entity entity_list[] =
@@ -25,7 +25,7 @@ static const struct entity entity_list[] =
   { .name = "lt",         .value = 0x003e, .str = NULL },
   { .name = "nbsp",       .value = 0x00a0, .str = NULL },
   { .name = "sect",       .value = 0x00a7, .str = NULL },
-  { .name = "laquo",      .value = 0x00ab, .str = NULL   },
+  { .name = "laquo",      .value = 0x00ab, .str = NULL },
   { .name = "deg",        .value = 0x00b0, .str = NULL },
   { .name = "acute",      .value = 0x00b4, .str = NULL },
   { .name = "middot",     .value = 0x00b7, .str = "." },

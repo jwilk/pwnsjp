@@ -1,31 +1,41 @@
 #!/usr/bin/perl
 use strict;
 
-print "#include <wchar.h>\n\n".
-      "#ifndef ENTITY_H\n".
-      "#define ENTITY_H\n\n".
-      "struct entity\n".
-      "{\n".
-      "  unsigned char* name;\n".
-      "  wchar_t value;\n".
-      "  unsigned char* str;\n".
-      "};\n\n".
-      "static const struct entity entity_list[] =\n".
-      "{\n";
-while(<STDIN>)
+print <<EOF
+#include <wchar.h>
+
+#ifndef ENTITY_H
+#define ENTITY_H
+
+struct entity
+{
+  char *name;
+  wchar_t value;
+  char *str;
+};
+
+static const struct entity entity_list[] =
+{
+EOF
+;
+while(<>)
 {
   chop;
   next if /^\|/;
   split /\t/;
   printf 
     "  { .name = \"%s\",%s.value = 0x%s, .str = %s },\n", 
-    @_[0], 
-    ' ' x (11-length(@_[0])), 
-    @_[1], @_[2], @_[3];
+    $_[0], 
+    ' ' x (11-length($_[0])), 
+    $_[1], $_[2], $_[3];
 }
-print "  { .name = \"__vector__\", .value = 0x20d7, .str = \"->\" },\n",
-      "  { .name = NULL,         .value = 0x0000, .str = NULL }\n",
-      "};\n\n".
-      "#endif\n";
+print <<EOF
+  { .name = \"__vector__\", .value = 0x20d7, .str = \"->\" },
+  { .name = NULL,         .value = 0x0000, .str = NULL }
+};
 
-# vim: ts=2 sw=2 et ft=perl
+#endif
+EOF
+;
+
+# vim:ts=2 sw=2 et ft=perl

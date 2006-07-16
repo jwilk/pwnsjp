@@ -33,7 +33,7 @@
  *  - <small>
  */
 
-unsigned char* html_strip(unsigned char *str)
+char* html_strip(char *str)
 {
   enum
   {
@@ -42,14 +42,14 @@ unsigned char* html_strip(unsigned char *str)
     s_html_open,
     s_html_close
   } state = s_default;
-  unsigned char *head, *tail, *appendix;
+  char *head, *tail, *appendix;
   int len = strlen(str);
   bool first = true;
   bool ignorep = true;
   unsigned int cplace = 0;
   unsigned int cstack = 0;
   
-  unsigned char result[4*len];
+  char result[4*len];
   appendix = result;
 
 #define a(t) ( *appendix++ = t )
@@ -171,10 +171,10 @@ unsigned char* html_strip(unsigned char *str)
   
   if (*result != '\0')
   {
-    unsigned char *end = strchr(result, '\0');
+    char *end = strchr(result, '\0');
     do
       end--;
-    while (*end <= ' ');
+    while ((unsigned char)*end <= ' ');
     *++end = '\0';
   }
   return pwnstr_to_str(result);

@@ -20,7 +20,7 @@
 
 #include "config.h"
 
-static const unsigned char* rev_iso8859n = NULL;
+static const char *rev_iso8859n = NULL;
 
 static enum 
 { 
@@ -38,11 +38,11 @@ static enum
 
 void unicode_init(void)
 {
-  unsigned char *locale = setlocale(LC_ALL, "");
+  char *locale = setlocale(LC_ALL, "");
   if (locale)
   {
     debug("LC_ALL = \"%s\"\n", locale);
-    unsigned char *codeset = nl_langinfo(CODESET);
+    char *codeset = nl_langinfo(CODESET);
     if (!strcmp(codeset, "UTF-8"))
       cmap = cmap_utf8;
     else if (!strcmp(codeset, "ISO-8859-2"))
@@ -55,7 +55,7 @@ void unicode_init(void)
       cmap = cmap_iso885916;
       rev_iso8859n = rev_iso885916;
     }
-    unsigned char* collstr = setlocale(LC_COLLATE, NULL);
+    char* collstr = setlocale(LC_COLLATE, NULL);
     if (collstr != NULL)
     {
       if (!strcmp(collstr, "C") || !strcmp(collstr, "POSIX"))
@@ -67,7 +67,7 @@ void unicode_init(void)
     debug("unable to set locale!\n");
 }
 
-static const unsigned char* entity_grep(const unsigned char *str, wchar_t *result)
+static const char* entity_grep(const char *str, wchar_t *result)
 {
   unsigned int hash = 0;
   int i, j;
@@ -81,7 +81,7 @@ static const unsigned char* entity_grep(const unsigned char *str, wchar_t *resul
   return str;
 }
 
-static wchar_t* pwnstr_to_ustr(const unsigned char *str)
+static wchar_t *pwnstr_to_ustr(const char *str)
 {
   wchar_t* result = alloz(1 + strlen(str), sizeof(wchar_t));
   wchar_t* resptr;
@@ -91,7 +91,7 @@ static wchar_t* pwnstr_to_ustr(const unsigned char *str)
       *resptr = cp1250[*str & 0x7f];
     else if ((*resptr = *str) == '&')
     {
-      str = entity_grep(str+1, resptr);
+      str = entity_grep(str + 1, resptr);
       if (*resptr & 0x10000000)
       {
         *resptr++ &= 0xffff;
@@ -103,10 +103,10 @@ static wchar_t* pwnstr_to_ustr(const unsigned char *str)
   return result;
 }
 
-static unsigned char* ustr_fallback_ascii(const wchar_t *ustr)
+static char *ustr_fallback_ascii(const wchar_t *ustr)
 {
   int i, len = wcslen(ustr), biglen=4*(len+1);
-  unsigned char result[biglen], *appendix;
+  char result[biglen], *appendix;
   memset(result, 0, biglen); 
   appendix = result;
 #define a(t) ( *appendix++ = t )
@@ -118,17 +118,17 @@ static unsigned char* ustr_fallback_ascii(const wchar_t *ustr)
     else if (ustr[i] < 0x0180)
     {
       unsigned int j = ustr[i]-0xa0;
-      unsigned char code = 0;
+      char code = '\0';
       if (rev_iso8859n != NULL)
         code = rev_iso8859n[j];
-      if (code != 0)
+      if (code != '\0')
         a(code);
       else
         as(rev_usascii[j]);
     }
     else
     {
-      const struct entity* ent;
+      const struct entity *ent;
       for (ent = entity_list; ent->name; ent++)
       if (ustr[i] == ent->value && ent->str)
       {
@@ -144,10 +144,10 @@ static unsigned char* ustr_fallback_ascii(const wchar_t *ustr)
   return str_clone(result);
 }
 
-static unsigned char* ustr_fallback_sys(const wchar_t *ustr)
+static char* ustr_fallback_sys(const wchar_t *ustr)
 {
   int lim = 1 + wcstombs(NULL, ustr, 0);
-  unsigned char* result = alloc(lim, sizeof(unsigned char));
+  char* result = alloc(lim, sizeof(char));
   if (wcstombs(result, ustr, lim) == (size_t)(-1))
     fatal("wcstombs failed!");
   else
@@ -155,7 +155,7 @@ static unsigned char* ustr_fallback_sys(const wchar_t *ustr)
   return NULL; // suppress compiler warnings
 }
 
-wchar_t* str_to_ustr(const unsigned char *str)
+wchar_t *str_to_ustr(const char *str)
 {
   int lim = 1 + mbstowcs(NULL, str, 0);
   wchar_t* result = alloc(lim, sizeof(wchar_t));
@@ -166,7 +166,7 @@ wchar_t* str_to_ustr(const unsigned char *str)
   return NULL; // suppress compiler warnings
 }
 
-unsigned char* ustr_to_str(const wchar_t *ustr)
+char *ustr_to_str(const wchar_t *ustr)
 {
   switch(cmap)
   {
@@ -181,21 +181,21 @@ unsigned char* ustr_to_str(const wchar_t *ustr)
   return NULL; // suppress compiler warnings
 }
 
-unsigned char* pwnstr_to_str(const unsigned char *str)
+char *pwnstr_to_str(const char *str)
 {
   wchar_t* ustr = pwnstr_to_ustr(str);
-  unsigned char* result = ustr_to_str(ustr);
+  char* result = ustr_to_str(ustr);
   free(ustr);
   return result;
 }
 
-size_t strnwidth(const unsigned char *str, size_t len)
+size_t strnwidth(const char *str, size_t len)
 {
   size_t width = 0;
   // FIXME: it _might_ produce wrong results (yet I presume it won't)
   if (cmap == cmap_utf8)
   {
-    for ( ; len>0; str++, len--)
+    for ( ; len > 0; str++, len--)
     if (*str == '\0')
       break;
     else if ((*str & 0xc0) != 0x80)
@@ -204,7 +204,7 @@ size_t strnwidth(const unsigned char *str, size_t len)
   }
   else
   {
-    for ( ; len>0; str++, len--)
+    for ( ; len > 0; str++, len--)
     if (*str == '\0')
       break;
     else
@@ -213,10 +213,10 @@ size_t strnwidth(const unsigned char *str, size_t len)
   return width;
 }
 
-unsigned char* strxform(const unsigned char *str)
+char *strxform(const char *str)
 {
   int lim = 1 + strxfrm(NULL, str, 0);
-  unsigned char* result = alloc(lim, sizeof(unsigned char));
+  char *result = alloc(lim, sizeof(char));
   strxfrm(result, str, lim);
   return result;
 }

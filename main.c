@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 {
   term_init();
 
-  unsigned char* pattern = parse_options(argc, argv);
+  char *pattern = parse_options(argc, argv);
   switch (config.action)
   {
   case action_help:
@@ -120,7 +120,7 @@ int main(int argc, char **argv)
     hue_setup_terminfo();
 
     unsigned int i = 0;
-    unsigned char* bspattern = NULL;
+    char *bspattern = NULL;
     if (!config.conf_deep)
     {
       bspattern = pattern_head(pattern);
@@ -128,11 +128,11 @@ int main(int argc, char **argv)
         i = io_locate(&io, bspattern);
     }
 
-    struct io_iitem_t* iitem;
+    struct io_iitem_t *iitem;
     unsigned int pmc = 0;
     for (iitem = io.iitems + i; i<io.isize; i++, iitem++)
     {
-      unsigned char *tbuffer;
+      char *tbuffer;
       bool doesmatch = true;
       if (config.conf_deep || !pattern || (doesmatch = regex_match(&regex, iitem->entry)))
       {

@@ -9,11 +9,11 @@
 
 #include "terminfo.h"
 
-unsigned char* HUE(count);
+char* HUE(count);
 
 void hue_setup_curses(void)
 {
-  static unsigned char cbuf[HUE_count][3];
+  static char cbuf[HUE_count][3];
   unsigned int i;
   for (i=0; i<HUE_count; i++)
   {
@@ -28,7 +28,7 @@ void hue_setup_terminfo(void)
 {
 #define bufsize 24
   HUE(normal) = term_sgr0;
-  static unsigned char cbuf[HUE_count][bufsize];
+  static char cbuf[HUE_count][bufsize];
 
 #define build_color(k, s1, s2) \
   do { \
