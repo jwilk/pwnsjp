@@ -7,7 +7,7 @@ configure:
 build: build-arch build-indep
 
 build-arch:
-	$(MAKE) K_DATA_PATH=/usr/share/pwnsjp/slo.win 
+	$(MAKE) K_DATA_PATH=/usr/share/pwnsjp/slo.win all doc/pwnsjp.1 doc/pwnsjpi.1
 
 build-indep: slo.win
 
@@ -37,9 +37,8 @@ binary-common:
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs 
-	dh_installdocs README
-	dh_installexamples
-	dh_installman
+	dh_installdocs doc/README
+	dh_installman $(wildcard doc/*.[0-9])
 	dh_strip
 	dh_compress 
 	dh_fixperms

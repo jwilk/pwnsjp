@@ -1,4 +1,4 @@
-/* Copyright (C) 2005 Jakub Wilk
+/* Copyright (c) 2005, 2006 Jakub Wilk
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published 
  * by the Free Software Foundation.
@@ -40,7 +40,7 @@ void hue_setup_terminfo(void)
   HUE(normal) = HUE(misc) = term_sgr0;
   build_color(title, term_setab[4], "");
   build_color(boldtitle, term_setab[4], term_bold);
-  build_color(highlight, term_setab[5], term_bold);
+  build_color(highlight, term_setaf[4], term_bold);
   build_color(bold, term_bold, "");
   build_color(hyperlink, term_setaf[6], "");
   build_color(italic, term_setaf[1], "");

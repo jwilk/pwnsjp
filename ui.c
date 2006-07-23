@@ -1,4 +1,4 @@
-/* Copyright (C) 2005 Jakub Wilk
+/* Copyright (c) 2005, 2006 Jakub Wilk
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published 
  * by the Free Software Foundation.
@@ -179,7 +179,7 @@ bool ui_prepare(void)
   ATTR(reverse) = ATTR(normal) | A_REVERSE;
   build_attr(title, WHITE, BLUE, 0);
   ATTR(boldtitle) = ATTR(title) | A_BOLD;
-  build_attr(highlight, WHITE, MAGENTA, A_BOLD);
+  build_attr(highlight, BLUE, DEFAULT, A_BOLD);
   build_attr(hyperlink, CYAN, DEFAULT, 0);
   build_attr(italic, RED, DEFAULT, 0);
   ATTR(phrase) = ATTR(italic) | A_BOLD;

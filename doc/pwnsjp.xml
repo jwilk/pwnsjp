@@ -1,0 +1,164 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE refentry PUBLIC '-//OASIS//DTD DocBook XML V4.1.2//EN' 'http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd' 
+[
+	<!ENTITY p 'pwnsjp'>
+	<!ENTITY d "<acronym>PWN</acronym>'s Polish Dictionary">
+	<!ENTITY jw '<firstname>Jakub</firstname> <surname>Wilk</surname>'>
+	<!ENTITY slowin '<filename>slo.win</filename>'>
+]>
+
+<refentry>
+
+<refentryinfo>
+	<title>&p; manual</title>
+	<productname>&p;</productname>
+	<copyright>
+		<year>2005</year>
+	</copyright>
+	<author>
+		&jw;
+		<affiliation>
+			<address>
+				<email>ubanus@users.sf.net</email>
+			</address>
+		</affiliation>
+	</author>
+	<copyright>
+		<year>2005</year>
+		<year>2006</year>
+		<holder>&jw;</holder>
+	</copyright>
+	<date>2006-07-22</date>
+</refentryinfo>
+
+<refmeta>
+	<refentrytitle>&p;</refentrytitle>
+	<manvolnum>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+	<refname>&p;</refname>
+	<refpurpose>an interface to &d;</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+	<cmdsynopsis>
+		<command>&p;</command>
+		<group choice='opt'>
+			<arg><option>--deep</option></arg>
+			<arg><option>-d</option></arg>
+		</group>
+		<group choice='opt'>
+			<arg><option>--entry-only</option></arg>
+			<arg><option>-e</option></arg>
+		</group>
+		<arg><replaceable>pattern</replaceable></arg>
+	</cmdsynopsis>
+	<cmdsynopsis>
+		<command>&p;</command>
+		<group choice='req'>
+			<arg><option>--ui</option></arg>
+			<arg><option>-i</option></arg>
+		</group>
+	</cmdsynopsis>
+	<cmdsynopsis>
+		<command>&p;</command>
+		<group choice='req'>
+			<arg><option>--version</option></arg>
+			<arg><option>-v</option></arg>
+		</group>
+	</cmdsynopsis>
+	<cmdsynopsis>
+		<command>&p;</command>
+		<group choice='req'>
+			<arg><option>--help</option></arg>
+			<arg><option>--h</option></arg>
+		</group>
+	</cmdsynopsis>
+</refsynopsisdiv>
+<refsect1>
+	<title>DESCRIPTION</title>
+	<para>
+		&p; finds entries in the &d; which matches a pattern (regular
+		expression). Moreover, it can run an interactive version of the
+		dictionary interface.
+	</para>
+</refsect1>
+
+<refsect1>
+	<title>OPTIONS</title>
+	<para>
+		&p; accepts the following options:
+	</para>
+
+	<variablelist>
+		<varlistentry>
+			<term><option>-e</option> or <option>--entry-only</option></term>
+			<listitem>
+				<para>Display only entries, not their definitions.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term><option>-d</option> or <option>--deep</option></term>
+			<listitem>
+				<para>Search through definitions, not only entries.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term><option><replaceable>pattern</replaceable></option></term>
+			<listitem>
+				<para>
+					A pattern which an entry (or definition, if&#xA0;  
+					<option>--deep</option> were chosen) should match to be
+					displayed.
+				</para>
+				<para>
+					The pattern is treated as case-insensitive POSIX Extended
+					Regular Expression.
+				</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term><option>-i</option> or <option>--ui</option></term>
+			<listitem>
+				<para>Run an interactive version of the dictionary interface.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term><option>-h</option> or <option>--help</option></term>
+			<listitem>
+				<para>Display help and exit.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term><option>-v</option> or <option>--version</option></term>
+			<listitem>
+          		<para>Output version information and exit.</para>
+			</listitem>
+		</varlistentry>
+	</variablelist>
+</refsect1>
+
+<refsect1>
+	<title>FILES</title>
+	<variablelist>
+		<varlistentry>
+			<term>&slowin;</term>
+			<listitem>
+				<para>The data file of the &d;.</para>
+			</listitem>
+		</varlistentry>
+	</variablelist>
+</refsect1>
+
+<refsect1>
+	<title>SEE ALSO</title>
+	<citerefentry>
+		<refentrytitle>pwnsjpi</refentrytitle>
+		<manvolnum>1</manvolnum>
+	</citerefentry>
+</refsect1>
+
+</refentry>
+
+<!-- vim:set ts=4 sw=4: -->

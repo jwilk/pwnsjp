@@ -1,3 +1,15 @@
+pwnsjp (0.502) unstable; urgency=low
+
+  * Use less argessive entry color.
+
+ -- Jakub Wilk <ubanus@users.sf.net>  Sun, 23 Jul 2006 22:49:55 +0200
+
+pwnsjp (0.501-4) unstable; urgency=low
+
+  * Include manual pages.
+
+ -- Jakub Wilk <ubanus@users.sf.net>  Sat, 22 Jul 2006 15:12:16 +0200
+
 pwnsjp (0.501-3) unstable; urgency=low
 
   * Let ‘pwnsjp’ depend on ‘pwnsjp-data’.
