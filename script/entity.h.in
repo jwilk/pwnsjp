@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 use strict;
+use warnings;
 
 print <<EOF
 #include <wchar.h>
@@ -22,7 +23,7 @@ while(<>)
 {
   chop;
   next if /^\|/;
-  split /\t/;
+  @_ = split /\t/;
   printf 
     "  { .name = \"%s\",%s.value = 0x%s, .str = %s },\n", 
     $_[0], 

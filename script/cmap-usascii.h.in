@@ -1,10 +1,11 @@
 #!/usr/bin/perl
 use strict;
-use File::Temp qw(tempfile);
+use warnings;
+use File::Temp qw();
 
 my $use_konwert = 0;
 
-my ($tmpfd, $tmpfname) = tempfile();
+my $tmpfh = new File::Temp();
 
 print <<EOF
 #ifndef CMAP_USASCII_H
@@ -14,25 +15,25 @@ static const char* rev_usascii[0xe0] = { "\\xa0",
 EOF
 ;
 
-print $tmpfd '<html><body>' unless $use_konwert;
+print $tmpfh '<html><body>' unless $use_konwert;
 foreach (0xa1 .. 0x17f)
 { 
-  print $tmpfd "&#$_;\n"; 
-  print $tmpfd '<br />' unless $use_konwert
+  print $tmpfh "&#$_;\n"; 
+  print $tmpfh '<br />' unless $use_konwert
 }
-print $tmpfd '</body></html>' unless $use_konwert;
+print $tmpfh '</body></html>' unless $use_konwert;
 
 if ($use_konwert)
- { open CO, '-|', "konwert html-ascii < $tmpfname 2>/dev/null"; }
+ { open CO, '-|', "konwert html-ascii <$tmpfh 2>/dev/null"; }
 else
- { open CO, '-|', "links -stdin -dump < $tmpfname 2>/dev/null"; }
+ { open CO, '-|', "links -stdin -dump <$tmpfh 2>/dev/null"; }
 
 my $s='';
 while (<CO>)
 {
   chop;
   s/"/\\"/; 
-  s/^ *(.*)$/"\1", /;
+  s/^ *(.*)$/"$1", /;
   $s .= $_;
 }
 $s =~ s/, $//;
@@ -44,6 +45,6 @@ $s };
 EOF
 ;
 
-close $tmpfd; 
+close $tmpfh; 
 
 # vim:ts=2 sw=2 et ft=perl

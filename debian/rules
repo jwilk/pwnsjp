@@ -29,20 +29,18 @@ install-arch:
 	dh_testdir
 	dh_testroot
 	dh_clean -k -s 
-	dh_installdirs -s usr/bin/
 	dh_install -s pwnsjp usr/bin/
 	dh_link -s usr/bin/pwnsjp usr/bin/pwnsjpi
+	dh_installman -s $(wildcard doc/*.[0-9])
 
 binary-common:
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs 
 	dh_installdocs doc/README
-	dh_installman $(wildcard doc/*.[0-9])
 	dh_strip
 	dh_compress 
 	dh_fixperms
-	dh_makeshlibs
 	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol

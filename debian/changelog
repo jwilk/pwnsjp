@@ -1,3 +1,9 @@
+pwnsjp (0.502-1) unstable; urgency=low
+
+  * Minor documentation fixes.
+
+ -- Jakub Wilk <ubanus@users.sf.net>  Sun,  3 Sep 2006 16:45:39 +0200
+
 pwnsjp (0.502) unstable; urgency=low
 
   * Use less argessive entry color.

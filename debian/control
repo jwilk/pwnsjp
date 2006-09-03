@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 
 Package: pwnsjp
 Architecture: any
-Depends: ${shlibs:Depends}, pwnsjp-data
+Depends: ${misc:Depends}, ${shlibs:Depends}, pwnsjp-data
 Description: An interface to the PWN's Polish Dictionary
 
 Package: pwnsjp-data

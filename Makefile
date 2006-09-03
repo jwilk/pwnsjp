@@ -1,4 +1,4 @@
-M_VERSION = 0.502
+VERSION = $(shell sed -n -e '1 s/.*(\([0-9.]*\)).*/\1/p' < debian/changelog)
 
 M_BUILD_HEADERS = yes	# yes | no
 M_DEBUG = no			# yes | no
@@ -106,7 +106,7 @@ DB2MAN = /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/manpages/docbook.xsl
 XSLTPROC = xsltproc --nonet
 
 %.1: %.xml $(BD2MAN)
-	sed -e '1,/^$$/ { s!slo\.win!$(strip ${K_DATA_PATH})! }' $(<) | $(XSLTPROC) --output $(@) $(DB2MAN)  -
+	sed -e '1,/^$$/ { s!slo\.win!$(strip ${K_DATA_PATH})!; s!0\.devel!${VERSION}! }' $(<) | $(XSLTPROC) --output $(@) $(DB2MAN)  -
 
 .PHONY: stats
 stats:

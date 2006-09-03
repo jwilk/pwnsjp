@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 use strict;
+use warnings;
 
 my $hashsize = 0x80;
 my @coeff = (155, 74, 6, 22, 156, 239, 144, 4, 97, 156);
@@ -20,8 +21,8 @@ print <<EOF
 
 EOF
 ;
-printf "#define hash_coeff_count %d\n", ($coeffi+1);
-printf "static const int hash_coeff[%d] = { ", ($coeffi+1);
+printf "#define hash_coeff_count %d\n", ($coeffi + 1);
+printf "static const int hash_coeff[%d] = { ", ($coeffi + 1);
 print "$coeff[$_], " foreach (0 .. $coeffi-2);
 print "$coeff[$coeffi] };\n";
 
@@ -29,7 +30,7 @@ my %hashtable;
 $hashtable{$_} = -1 foreach (0 .. $hashsize-1);
 
 printf 
-  "#define hash_size 0x%x\n".
+  "#define hash_size 0x%x\n" .
   "static const int entity_hash[hash_size] = { ",
   $hashsize;
 
@@ -42,9 +43,9 @@ while(<>)
   my $hash = compute_hash $name;
   $hashtable{$hash} = $i++;
 }
-print "$hashtable{$_}, " foreach (0 .. $hashsize-2);
+print "$hashtable{$_}, " foreach (0 .. $hashsize - 2);
 print <<EOF
-$hashtable{$hashsize-1} };
+$hashtable{$hashsize - 1} };
 
 #endif
 EOF

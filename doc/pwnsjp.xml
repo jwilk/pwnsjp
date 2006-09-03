@@ -3,8 +3,8 @@
 [
 	<!ENTITY p 'pwnsjp'>
 	<!ENTITY d "<acronym>PWN</acronym>'s Polish Dictionary">
-	<!ENTITY jw '<firstname>Jakub</firstname> <surname>Wilk</surname>'>
 	<!ENTITY slowin '<filename>slo.win</filename>'>
+	<!ENTITY version '0.devel'>
 ]>
 
 <refentry>
@@ -12,11 +12,8 @@
 <refentryinfo>
 	<title>&p; manual</title>
 	<productname>&p;</productname>
-	<copyright>
-		<year>2005</year>
-	</copyright>
 	<author>
-		&jw;
+		<firstname>Jakub</firstname> <surname>Wilk</surname>
 		<affiliation>
 			<address>
 				<email>ubanus@users.sf.net</email>
@@ -26,7 +23,7 @@
 	<copyright>
 		<year>2005</year>
 		<year>2006</year>
-		<holder>&jw;</holder>
+		<holder>Jakub Wilk</holder>
 	</copyright>
 	<date>2006-07-22</date>
 </refentryinfo>
@@ -34,6 +31,7 @@
 <refmeta>
 	<refentrytitle>&p;</refentrytitle>
 	<manvolnum>1</manvolnum>
+	<refmiscinfo class='version'>&version;</refmiscinfo>
 </refmeta>
 
 <refnamediv>
@@ -45,34 +43,34 @@
 	<cmdsynopsis>
 		<command>&p;</command>
 		<group choice='opt'>
-			<arg><option>--deep</option></arg>
-			<arg><option>-d</option></arg>
+			<arg choice='plain'><option>--deep</option></arg>
+			<arg choice='plain'><option>-d</option></arg>
 		</group>
 		<group choice='opt'>
-			<arg><option>--entry-only</option></arg>
-			<arg><option>-e</option></arg>
+			<arg choice='plain'><option>--entry-only</option></arg>
+			<arg choice='plain'><option>-e</option></arg>
 		</group>
 		<arg><replaceable>pattern</replaceable></arg>
 	</cmdsynopsis>
 	<cmdsynopsis>
 		<command>&p;</command>
 		<group choice='req'>
-			<arg><option>--ui</option></arg>
-			<arg><option>-i</option></arg>
+			<arg choice='plain'><option>--ui</option></arg>
+			<arg choice='plain'><option>-i</option></arg>
 		</group>
 	</cmdsynopsis>
 	<cmdsynopsis>
 		<command>&p;</command>
 		<group choice='req'>
-			<arg><option>--version</option></arg>
-			<arg><option>-v</option></arg>
+			<arg choice='plain'><option>--version</option></arg>
+			<arg choice='plain'><option>-v</option></arg>
 		</group>
 	</cmdsynopsis>
 	<cmdsynopsis>
 		<command>&p;</command>
 		<group choice='req'>
-			<arg><option>--help</option></arg>
-			<arg><option>--h</option></arg>
+			<arg choice='plain'><option>--help</option></arg>
+			<arg choice='plain'><option>-h</option></arg>
 		</group>
 	</cmdsynopsis>
 </refsynopsisdiv>
@@ -108,7 +106,7 @@
 			<term><option><replaceable>pattern</replaceable></option></term>
 			<listitem>
 				<para>
-					A pattern which an entry (or definition, if&#xA0;  
+					A pattern which an entry (or definition, if
 					<option>--deep</option> were chosen) should match to be
 					displayed.
 				</para>
@@ -153,10 +151,12 @@
 
 <refsect1>
 	<title>SEE ALSO</title>
-	<citerefentry>
-		<refentrytitle>pwnsjpi</refentrytitle>
-		<manvolnum>1</manvolnum>
-	</citerefentry>
+	<para>
+		<citerefentry>
+			<refentrytitle>pwnsjpi</refentrytitle>
+			<manvolnum>1</manvolnum>
+		</citerefentry>
+	</para>
 </refsect1>
 
 </refentry>
