@@ -3,7 +3,7 @@ html.o: html.c common.h html.h hue.h terminfo.h unicode.h
 hue.o: hue.c common.h hue.h terminfo.h
 io.o: io.c common.h memory.h io.h byteorder.h config.h unicode.h
 main.o: main.c common.h memory.h byteorder.h config.h html.h hue.h io.h \
-  regex.h terminfo.h ui.h unicode.h validate.h
+  regex.h terminfo.h ui.h unicode.h
 memory.o: memory.c common.h memory.h
 regex.o: regex.c common.h config.h memory.h regex.h
 terminfo.o: terminfo.c common.h memory.h terminfo.h

@@ -12,6 +12,7 @@
 
 void unicode_init(void);
 bool posix_coll(void);
+void set_pwn_charset(bool);
 char* pwnstr_to_str(const char *);
 
 char* ustr_to_str(const wchar_t*);

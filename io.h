@@ -32,6 +32,7 @@ struct io_t
 {
   FILE* file;
   size_t file_size;
+  bool cp1250;
 
   struct io_header_t* header;
   

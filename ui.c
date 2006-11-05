@@ -24,10 +24,11 @@
 #define wscroll windows[3]
 #define wstatus windows[4]
 
-static WINDOW* windows[w_count];
+static WINDOW *windows[w_count];
 
-#define ATTR(k) attrkit[HUE_##k]
-static int ATTR(count);
+static int attrkit[hue_count];
+
+#define ATTR(h) attrkit[hue_##h]
 
 #define c_menu_width 24
 #define c_search_limit 18
@@ -42,11 +43,11 @@ static bool scr_needresize = false;
 static void ui_show_statusline(bool activemenu)
 {
   wattrset(wstatus, ATTR(normal));
-  mvwaddch(wstatus, 0, c_menu_width+2, activemenu ? ACS_LRCORNER : ACS_LLCORNER);
+  mvwaddch(wstatus, 0, c_menu_width + 2, activemenu ? ACS_LRCORNER : ACS_LLCORNER);
   wattrset(wstatus, activemenu ? ATTR(normal) : ATTR(dimmed));
-  mvwhline(wstatus, 0, 0, ACS_HLINE, c_menu_width+2);
+  mvwhline(wstatus, 0, 0, ACS_HLINE, c_menu_width + 2);
   wattrset(wstatus, !activemenu ? ATTR(normal) : ATTR(dimmed));
-  mvwhline(wstatus, 0, c_menu_width+3, ACS_HLINE, scr_width-c_menu_width-3);
+  mvwhline(wstatus, 0, c_menu_width + 3, ACS_HLINE, scr_width - c_menu_width - 3);
   wnoutrefresh(wstatus);
 }
 
@@ -85,7 +86,7 @@ static void ui_windows_create(void)
   wnoutrefresh(stdscr);
   
   getmaxyx(stdscr, scr_height, scr_width);
-  assert(scr_width>0 && scr_height>0);
+  assert(scr_width > 0 && scr_height > 0);
   bool object = false;
   if (scr_width  < c_min_scr_width ) { scr_width  = c_min_scr_width;  object = true; }
   if (scr_height < c_min_scr_height) { scr_height = c_min_scr_height; object = true; }
@@ -93,18 +94,18 @@ static void ui_windows_create(void)
     resize_term(scr_height, scr_width);
   
   wtitle = newwin(1, 0, 0, 0);
-  wbkgd(wtitle, ' ' | ATTR(reverse)); werase(wtitle);
+  wbkgd(wtitle, ' ' | ATTR(normal_rev)); werase(wtitle);
   mvwaddstr(wtitle, 0, 1, "pwnsjp-interactive " K_VERSION);
   
-  wscroll = newwin(scr_height-2, 1, 1, c_menu_width+2);
+  wscroll = newwin(scr_height - 2, 1, 1, c_menu_width + 2);
   struct scrollbar_t scrollbar;
   memset(&scrollbar, 0, sizeof(scrollbar));
   scrollbar.window = wscroll;
-  scrollbar.height = scr_height-2;
+  scrollbar.height = scr_height - 2;
   ui_show_scrollbar(&scrollbar);
   
-  wmenu = newwin(scr_height-3, c_menu_width, 2, 1);
-  wview = newwin(scr_height-3, scr_width-c_menu_width-5, 2, c_menu_width+4);
+  wmenu = newwin(scr_height - 3, c_menu_width, 2, 1);
+  wview = newwin(scr_height - 3, scr_width-c_menu_width-5, 2, c_menu_width+4);
   
   wstatus = newwin(0, 0, scr_height-1, 0);
   ui_show_statusline(true);
@@ -167,27 +168,33 @@ bool ui_prepare(void)
  
   curs_set(0);
   
-  start_color();
-  use_default_colors();
-#define build_attr(k, f, g, a) \
-  do { \
-    init_pair(HUE_##k, COLOR_##f, COLOR_##g); ATTR(k) = COLOR_PAIR(HUE_##k) | (a); \
-  } while(false)
-  build_attr(normal, WHITE, DEFAULT, 0);
-  ATTR(misc) = ATTR(normal);
-  ATTR(bold) = ATTR(normal) | A_BOLD;
-  ATTR(reverse) = ATTR(normal) | A_REVERSE;
-  build_attr(title, WHITE, BLUE, 0);
-  ATTR(boldtitle) = ATTR(title) | A_BOLD;
-  build_attr(highlight, BLUE, DEFAULT, A_BOLD);
-  build_attr(hyperlink, CYAN, DEFAULT, 0);
-  build_attr(italic, RED, DEFAULT, 0);
-  ATTR(phrase) = ATTR(italic) | A_BOLD;
-  build_attr(dimmed, BLACK, DEFAULT, A_BOLD);
-#undef build_attr
-  
+  if (start_color() != OK)
+    return false;
+  if (use_default_colors() != OK)
+    return false;
+ 
+  int i = 0;
+  for (int fg = 0; fg < hue_fg_count; fg++)
+  for (int bg = 0; bg <= fg; bg++)
+  {
+    i++;
+    if (init_pair(i, fg, bg) != OK)
+      return false;
+    for (int ex = 0; ex < hue_ex_count; ex++)
+    {
+      int j = (fg << hue_fg_shift) + (bg << hue_bg_shift) + (ex << hue_ex_shift);
+      int k = (bg << hue_fg_shift) + (fg << hue_bg_shift) + (ex << hue_ex_shift);
+      attrkit[j] = COLOR_PAIR(i);
+      if ((ex << hue_ex_shift) & hue_bold)
+        attrkit[j] |= A_BOLD;
+      if ((ex << hue_ex_shift) & hue_reverse)
+        attrkit[j] |= A_REVERSE;
+      attrkit[k] = attrkit[j] ^ A_REVERSE;
+    }
+  }
+
   ui_windows_create();
-  char* message = ustr_to_str(L"Prosz\x0119 czeka\x0107, trwa budowanie indeksu...");
+  char *message = ustr_to_str(L"Prosz\u0119 czeka\u0107, trwa budowanie indeksu...");
   mvwaddstr(wview, 0, 0, message);
   free(message);
 
@@ -365,7 +372,7 @@ static void ui_show_content(struct view_t *view)
     char *s = view->content + view->position*view->width;
     unsigned int x, lim;
     lim = view->height*view->width;
-    for (x=0; x<lim && *s; x++, s++)
+    for (x = 0; x < lim && *s; x++, s++)
     {
       chtype ch;
       if (*s == '<') 
@@ -421,9 +428,15 @@ static void ui_show_content(struct view_t *view)
     {
       if (esc)
       {
-        assert(*right >= '0' && *right < 'z');
-        wattrset(wview, attrkit[*right - '0']);
+        unsigned int hue;
+        for (int i = 0; i < 3; i++)
+          assert(right[i] >= '0' && right[i] < 'z');
+        assert(right[3] == 'm');
+        sscanf(right, "%x", &hue);
+        wattrset(wview, attrkit[hue]);
         esc = false;
+        right += 3;
+        left = right + 1;
       }
       else 
       switch (*right)

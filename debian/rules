@@ -7,9 +7,9 @@ configure:
 build: build-arch build-indep
 
 build-arch:
-	$(MAKE) K_DATA_PATH=/usr/share/pwnsjp/slo.win all doc/pwnsjp.1 doc/pwnsjpi.1
+	$(MAKE) K_DATA_PATH=/usr/share/pwnsjp/ all doc/pwnsjp.1 doc/pwnsjpi.1
 
-build-indep: slo.win
+build-indep:
 
 clean:
 	dh_testdir
@@ -22,8 +22,10 @@ install-indep:
 	dh_testdir
 	dh_testroot
 	dh_clean -k -i 
-	dh_installdirs -i usr/share/pwnsjp/
-	dh_install -i slo.win usr/share/pwnsjp/
+	dh_install -p pwnsjp-data-3tsjp dict/slo.win usr/share/pwnsjp/
+	dh_install -p pwnsjp-data-msf   dict/sf.win  usr/share/pwnsjp/
+	dh_install -p pwnsjp-data-msjp  dict/sjp.win usr/share/pwnsjp/
+	dh_install -p pwnsjp-data-mswo  dict/swo.win usr/share/pwnsjp/
 
 install-arch:
 	dh_testdir

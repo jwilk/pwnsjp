@@ -1,52 +1,63 @@
  _ ____ __ ___ _  ___(*)_ __
 | '_ \ V  V / ' \(_-<| | '_ \
 | .__/\_/\_/|_||_/__// | .__/
-|_|= wersja 0.502 =|__/|_|===
-==== |2006-07-23| ===========
+|_|= wersja 0.600 =|__/|_|===
+==== |2006-11-04| ===========
 
-*pwnsjp* to interfejs do trzytomowego _S³ownika jêzyka polskiego_
-Wydawnictwa Naukowego PWN, który niegdy¶ zosta³ do³±czony do Gazety
-Wyborczej.
+*pwnsjp* to interfejs do niektórych s³owników Wydawnictwa Naukowego PWN.
+Przetestowane zosta³y:
+  -- trzytomowy ,,S³ownika jêzyka polskiego'', który niegdy¶ zosta³
+     do³±czony do Gazety Wyborczej [3TSJP];
+  -- ,,Multimedialny s³ownik PWN. Frazeologia'' [MSF];
+  -- ,,Multimedialny s³ownik PWN. Jêzyk polski'' [MSJP];
+  -- ,,Multimedialny s³ownik PWN. Wyrazy obce'' [MSWO].
 
-Do jego uruchomienia niezbêdny jest plik `slo.win', który mo¿na
-wyekstrahowaæ z pliku `setup/data1.cab' (z którejkolwiek p³ytki) za pomoc±
-np. programu unshield (zobacz: <http://http://synce.sf.net/>).
-Plik ten ma 107 564 724 bajów, a programy `md5sum' i `sha1sum' mówi± o nim:
-  (md5)  259d95924af212a7db53b7cb853cab47
-  (sha1) 89bf99c22089252caaa315ae906306c75a73dc9b
+Do jego uruchomienia interfejsu niezbêdny jest plik z rozszerzeniem `.win',
+który mo¿na wyekstrahowaæ z pliku `setup/data1.cab': za pomoc± programu
+unshield (zobacz: <http://http://synce.sf.net/>) lub poprzez instalacjê
+oryginalnego interfejsu w ¶rodowisku Windows/Wine.
+
+Informacje pomagaj±ce ustaliæ to¿samo¶æ:
+
+s³ownik | plik    | rozmiar   | suma MD5
+--------+---------+-----------+----------------------------------
+3TSJP   | slo.win | 107564724 | 259d95924af212a7db53b7cb853cab47
+MSF     | sf.win  |  24307100 | f43c7f1597dd9593f730706d1b8bf492
+MSJP    | sjp.win |  63476492 | 2ac579d6502668db64080fdbaf9cdd8a
+MSWO    | swo.win |  43146160 | ff76016c9157a01b45be7cc764171384
 
 Program powinien daæ siê skompilowaæ i uruchomiæ na ka¿dej maszynie 
 z systemem uniksopodobnym systemem operacyjnym (o ile tylko spe³nione
 zostan± wymagania kompilacji; patrz ni¿ej).
-Wszak¿e zosta³ przetestowany jedynie na Debianie Sarge i procesorze
+Wszak¿e zosta³ przetestowany jedynie na Debianie Etch i procesorze
 little-endianowym.
 
----) Kompilacja (---
+[[ Kompilacja ]]
 
 Do kompilacji potrzeba:
   -- kompilatora mniej-wiêcej zgodnego ze standardem C99 (mo¿e byæ gcc >= 3.0,
      icc >= 8.0);
-     przetestowano z gcc 3.3, gcc 3.4, gcc 4.0, icc 8.0
+     przetestowano z gcc 3.3, gcc 3.4, gcc 4.0, gcc 4.1, icc 8.0
   -- biblioteki GNU libc;
-     przetestowano z wersjami 2.3.2, 2.3.4 i 2.3.5
+     przetestowano z wersjami >= 2.3.2
   -- biblioteki zlib;
-     przetestowano z wersjami 1.2.1, 1.2.2 i 1.2.3
+     przetestowano z wersjami >= 1.2.1
   -- biblioteki ncursesw (ncurses z obs³ug± unikodu);
-     przetestowano z wersj± 5.4
+     przetestowano z wersjami >= 5.4
   -- w razie konieczno¶ci od¶wie¿enia niektórych generowanych automatycznie
      plików nag³ówkowych (czyli NIE w przypadku kompilacji niemodyfikowanej
      wersji), dodatkowo:
      : perla w wersji co najmniej 5.6.1;
-       przetestowano z wersjami 5.8.4 i 5.8.5
+       testowano z wersjami >= 5.8.4
+     : programu gperf; przetestowano z wersj± 3.0.2
      : programu konwert; przetestowano z wersj± 1.8
        _lub_
-       programu links lub elinks; przetestowano z elinks-ami 0.9.2rc4,
-       0.10.2, 0.10.6
+       programu links lub elinks; przetestowano z elinks-ami >= 0.10
   
 Kompilacja polega na dostosowaniu do swoich potrzeb pliku `Makefile.conf'
 (oraz, ewentualnie, `Makefile') i odpaleniu polecenia `make'.
 
----) U¿ycie (---
+[[ U¿ycie ]]
 
 Przyk³ady:
   pwnsjp --help
@@ -61,7 +72,7 @@ Polskie znaki diakrytyczne mo¿na uzyskaæ jedynie poprzez ustawienie
 odpowiedniego locale. W szczególno¶ci polecenie `locale charmap' powinno daæ
 jako (spodziewan±) odpowied¼: ISO-8859-2, ISO-8859-16 lub UTF-8.
 
----) Rozmaito¶ci (---
+[[ Rozmaito¶ci ]]
 
 Prawa autorskie:
   Copyright (c) 2005, 2006 Jakub Wilk <ubanus@users.sf.net>.
@@ -73,15 +84,15 @@ Licencja:
   w wersji 2.
 
 Dziennik (ha, ha) zmian:
-  -- 2006-07-23 (0.502)
-     : mniej agresywny kolor hase³
+  -- 2006 
+     : zobacz 'debian/changelog'.
   -- 2005-11-17 (0.501)
      : kompilacja bez ostrze¿eñ z gcc 4.0
   -- 2005-04-16 (0.500)
      : pole tekstowe sta³o siê odporne na przepe³nienie
   -- 2005-02-27 (0.358)
      : lepsza obs³uga b³êdów alokacji pamiêci
-     : UI -- reakcja na zmiana wieloko¶ci terminala
+     : UI -- reakcja na zmiana wielko¶ci terminala
   -- 2005-02-20 (0.340)
      : przeprowadzono do¶æ bezowocne eksperymenty z algorytmami sortuj±cymi
   -- 2005-02-19 (0.335)
@@ -107,14 +118,14 @@ B³êdy, przemy¶lenia, TODO (UI -- wersja interaktywna, P -- przeciwnie)
   -- P: wyszukiwanie binarne jest w zasadzie bezu¿yteczne
   -- program jest do¶æ pamiêcio¿erny
   -- gdzie¶ zgubi³y siê tabele odmian
-  -- poszczególne rodzaje hase³ (zwy³ke, table odmian, rozwiniêcia skrótów)
+  -- poszczególne rodzaje hase³ (zwyk³e, tabele odmian, rozwiniêcia skrótów)
      powinny byæ od siebie rozdzielone
   -- czy na pewno zadzia³a na procesorze big-endianowym?
   -- kolory s± niekonfigurowalne
   -- wizualizacja HTML-u jest kiepska
-  -- budowanie indeksu jest *stanowczo* zbyt wolne, mo¿e nale¿y budowaæ
-     go podczas instalacji? przy okazji mo¿na by zdekompresowaæ ma³e 
-     co nieco
+  -- budowanie indeksu (w przypadku 3TSJP) jest *stanowczo* zbyt wolne, mo¿e
+     nale¿y budowaæ go podczas instalacji? przy okazji mo¿na by
+     zdekompresowaæ ma³e co nieco
   -- co ciekawego jest w plikach `sjptom1.dat', ..., `sjptom3.dat'?
      (przypuszczalnie nic, zw³aszcza je¿eli chodzi o ten ostatni)
 

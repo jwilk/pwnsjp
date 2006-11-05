@@ -1,4 +1,4 @@
-/* Copyright (C) 2005 Jakub Wilk
+/* Copyright (c) 2005, 2006 Jakub Wilk
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published 
  * by the Free Software Foundation.
@@ -23,9 +23,11 @@ bool io_init(struct io_t *io, const char *filename)
   if (fseek(io->file, 0, SEEK_END) != 0)
     return false;
   io->file_size = ftell(io->file);
+  io->cp1250 = io->file_size == 107564724; // that is: ,,Slownik jezyka polskiego PWN''
+  set_pwn_charset(io->cp1250);
   io->isize = 0;
   io->header = NULL;
-  debug("data file size = %u MiB\n", io->file_size>>20);
+  debug("data file size = %u MiB\n", io->file_size >> 20);
   return true;
 }
 
@@ -36,7 +38,7 @@ bool io_validate(struct io_t *io)
   uint8_t sig[2];
   if (fread(sig, 1, sizeof(sig), io->file) != sizeof(sig))
     return false;
-  if (sig[0]!='G' || sig[1]!='W')
+  if (sig[0] != 'G' || sig[1] != 'W')
     return false;
   return true;
 }
@@ -92,10 +94,10 @@ static void uint32_qsort(uint32_t *l, uint32_t *r)
     dist = r - l;
     if (dist <= 16)
     {
-      for (i=l+1; i<=r; i++)
+      for (i = l + 1; i <= r; i++)
       {
         p = *i;
-        for (j=i; j>l && j[-1]>p; j--)
+        for (j = i; j > l && j[-1] > p; j--)
           j[0] = j[-1];
         j[0] = p;
       }
@@ -103,8 +105,8 @@ static void uint32_qsort(uint32_t *l, uint32_t *r)
     }
     swap(l[dist/2], r[0]);
     p = temp;
-    i = l-1;
-    for (j=l; j<=r; j++)
+    i = l - 1;
+    for (j = l; j <= r; j++)
       if (*j <= p)
       {
         i++;
@@ -137,7 +139,7 @@ static void iitem_qsort(struct io_iitem_t *l, struct io_iitem_t *r)
     assert(gt(r[1].xentry, r[0].xentry));
     if (dist <= 16)
     {
-      for (i=r-1; i>=l; i--)
+      for (i = r-1; i >= l; i--)
       {
         temp = *i;
         for (j=i; gt(temp.xentry, j[1].xentry); j++)
@@ -149,7 +151,7 @@ static void iitem_qsort(struct io_iitem_t *l, struct io_iitem_t *r)
     swap(l[dist/2], r[0]);
     p = temp.xentry;
     i = l-1;
-    for (j=l; j<=r; j++)
+    for (j = l; j <= r; j++)
       if (!gt(j->xentry, p))
       {
         i++;
@@ -192,7 +194,7 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
   
   debug("mergesort blocks = %u\n", blockc);
   unsigned int qlog, qlim = 2*(blockc + 2);
- 	for (qlog=0; qlim>0; qlog++)
+ 	for (qlog = 0; qlim > 0; qlog++)
     qlim >>= 1;
   qlim = (1<<qlog) - 1;
   debug("mergesort stack limit = 2^%u - 1 = %u\n", qlog, qlim);
@@ -346,10 +348,10 @@ bool io_buildindex(struct io_t *io)
   io->isize -= 2;
   
   unsigned int size, maxsize = 1024;
-  for (i=0; i<io->isize; i++)
+  for (i = 0; i < io->isize; i++)
   {
-    assert(offsets[i+1] > offsets[i]);
-    size = offsets[i+1]-offsets[i];
+    assert(offsets[i + 1] > offsets[i]);
+    size = offsets[i + 1]-offsets[i];
     io->iitems[i].size = size;
     io->iitems[i].offset = offsets[i];
     if (size > maxsize)
@@ -357,10 +359,10 @@ bool io_buildindex(struct io_t *io)
   }
   free(offsets);
 
-  if (maxsize >= (1<<14))
+  if (maxsize >= (1 << 14))
     return false;
   
-  io->csize = (maxsize|0xff)+1;
+  io->csize = (maxsize | 0xff) + 1;
   io->cbuffer = alloc(io->csize << 3, sizeof(char));
   if (io->cbuffer == NULL)
     return false;
@@ -425,7 +427,7 @@ bool io_fine(struct io_t *io)
   {
     unsigned int i;
     struct io_iitem_t* iitem = io->iitems;
-    for (i=0; i<=io->isize; i++, iitem++)
+    for (i = 0; i <= io->isize; i++, iitem++)
     {
       if (iitem->xentry != iitem->entry)
         free(iitem->xentry);

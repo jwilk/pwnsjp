@@ -1,3 +1,11 @@
+pwnsjp (0.600) unstable; urgency=low
+
+  * Rewrite enitity resolver.
+  * Support for new new dictionaries.
+  * Better HTML rendering.
+
+ -- Jakub Wilk <ubanus@users.sf.net>  Sun,  5 Nov 2006 10:43:44 +0100
+
 pwnsjp (0.502-1) unstable; urgency=low
 
   * Minor documentation fixes.

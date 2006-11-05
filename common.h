@@ -34,7 +34,7 @@
 #endif
 
 #ifndef K_DATA_PATH
-#  define K_DATA_PATH "./slo.win"
+#  define K_DATA_PATH "."
 #endif
 
 #ifndef K_VERSION

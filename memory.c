@@ -21,16 +21,16 @@ void __fatal(const char* fstr, int line, const char* errstr)
 
 #define memcheck(x) do { if ((x) == NULL) fatal(NULL); } while(0)
 
-void* alloc(size_t nmemb, size_t size)
+void *alloc(size_t nmemb, size_t size)
 {
-  void* mem = malloc(nmemb * size);
+  void *mem = malloc(nmemb * size);
   memcheck(mem);
   return mem;
 }
 
 void *alloz(size_t nmemb, size_t size)
 {
-  void* mem = calloc(nmemb, size);
+  void *mem = calloc(nmemb, size);
   memcheck(mem);
   return mem;
 }

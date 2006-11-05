@@ -17,6 +17,7 @@ extern char *term_setaf[8];
 extern char *term_setab[8];
 extern char *term_sgr0;
 extern char *term_bold;
+extern char *term_rev;
 
 #endif
 

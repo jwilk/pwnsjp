@@ -17,6 +17,7 @@ char *term_setaf[8];
 char *term_setab[8];
 char *term_sgr0;
 char *term_bold;
+char *term_rev;
 
 static char* term_getstr(const char *str)
 {
@@ -31,10 +32,11 @@ void term_quit(void)
 {
   unsigned int j;
   free(term_sgr0);
+  free(term_rev);
   free(term_bold);
-  for (j=0; j<8; j++)
+  for (j = 0; j < 8; j++)
     free(term_setaf[j]);
-  for (j=0; j<8; j++)
+  for (j = 0; j < 8; j++)
     free(term_setab[j]);
 }
 
@@ -48,13 +50,13 @@ void term_init(void)
   {
     term_sgr0 = str_clone("");
     term_bold = str_clone("");
-    for (j=0; j<8; j++)
+    term_rev = str_clone("");
+    for (j = 0; j < 8; j++)
       term_setaf[j] = str_clone("");
-    for (j=0; j<8; j++)
+    for (j = 0; j < 8; j++)
       term_setab[j] = str_clone("");
     return;
   }
-  
   is_term = true;
   
   term_sgr0 = str_clone(term_getstr("sgr0"));
@@ -62,6 +64,9 @@ void term_init(void)
 
   term_bold = str_clone(term_getstr("bold"));
   assert(term_bold != NULL);
+  
+  term_rev = str_clone(term_getstr("rev"));
+  assert(term_rev != NULL);
   
   memset(term_setaf, 0, sizeof(term_setaf));
   memset(term_setab, 0, sizeof(term_setab));

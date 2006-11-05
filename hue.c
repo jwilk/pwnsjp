@@ -9,44 +9,52 @@
 
 #include "terminfo.h"
 
-char* HUE(count);
+int hue_blend(int hue, int new_fg, int new_bg, int new_ex)
+{
+  if (new_fg != -1) { hue &= ~hue_fg_mask; hue |= new_fg; }
+  if (new_bg != -1) { hue &= ~hue_bg_mask; hue |= new_bg; }
+  if (new_ex != -1) { hue &= ~hue_ex_mask; hue |= new_ex; }
+  return hue;
+}
+
+char *hue[hue_count];
 
 void hue_setup_curses(void)
 {
-  static char cbuf[HUE_count][3];
+  static char cbuf[hue_count][6];
   unsigned int i;
-  for (i=0; i<HUE_count; i++)
+  assert(hue_count < 0x1000);
+  for (i = 0; i < hue_count; i++)
   {
-    cbuf[i][0] = '\x1B';
-    cbuf[i][1] = i + '0';
-    cbuf[i][2] = '\0';
-    __huekit[i] = cbuf[i];
+    sprintf(cbuf[i], "\x1B%03xm", i);
+    hue[i] = cbuf[i];
   }
 }
 
 void hue_setup_terminfo(void)
 {
-#define bufsize 24
-  HUE(normal) = term_sgr0;
-  static char cbuf[HUE_count][bufsize];
+#define bufsize 32
+  static char cbuf[hue_count][bufsize];
 
-#define build_color(k, s1, s2) \
-  do { \
-    snprintf(cbuf[HUE_##k], bufsize, "%s%s%s", term_sgr0, s1, s2); \
-    cbuf[HUE_##k][bufsize-1]='\0'; \
-    HUE(k) = cbuf[HUE_##k]; \
-  } while (false)
+  for (int i = 0; i < hue_count; i++)
+    strncat(cbuf[i], term_sgr0, bufsize - 1);
 
-  HUE(normal) = HUE(misc) = term_sgr0;
-  build_color(title, term_setab[4], "");
-  build_color(boldtitle, term_setab[4], term_bold);
-  build_color(highlight, term_setaf[4], term_bold);
-  build_color(bold, term_bold, "");
-  build_color(hyperlink, term_setaf[6], "");
-  build_color(italic, term_setaf[1], "");
-  build_color(phrase, term_setaf[1], term_bold);
-  build_color(reverse, term_setab[7], term_setaf[0]);
+  for (int fg = 0; fg < hue_fg_count; fg++)
+  for (int bg = 0; bg < hue_bg_count; bg++)
+  for (int ex = 0; ex < hue_ex_count; ex++)
+  {
+    int i = (fg << hue_fg_shift) + (bg << hue_bg_shift) + (ex << hue_ex_shift);
+    strncat(cbuf[i], term_setaf[fg], bufsize - 1);
+    strncat(cbuf[i], term_setab[bg], bufsize - 1);
+    if ((ex << hue_ex_shift) & hue_bold)
+      strncat(cbuf[i], term_bold, bufsize - 1); 
+    if ((ex << hue_ex_shift) & hue_reverse)
+      strncat(cbuf[i], term_rev, bufsize - 1);
+  }
   
+  for (int i = 0; i < hue_count; i++)
+    hue[i] = cbuf[i];
+
 #undef bufsize
 #undef build_color
 }

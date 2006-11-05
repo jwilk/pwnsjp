@@ -17,6 +17,7 @@ struct config_t
     action_help,
     action_version
   } action;
+  char *filename;
   bool conf_color;
   bool conf_debug;
   bool conf_deep;

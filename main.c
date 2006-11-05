@@ -1,4 +1,4 @@
-/* Copyright (C) 2005 Jakub Wilk
+/* Copyright (c) 2005, 2006 Jakub Wilk
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published 
  * by the Free Software Foundation.
@@ -20,7 +20,6 @@
 #include "terminfo.h"
 #include "ui.h"
 #include "unicode.h"
-#include "validate.h"
 
 static void version(void)
 {
@@ -32,6 +31,7 @@ static void usage(void)
   fprintf(stderr,
     "Usage: pwnsjp [OPTIONS] PATTERN\n\n"
     "Options:\n"
+    "  -f, --file=DATAFILE\n"
     "  -d, --deep\n"
     "  -e, --entry-only\n"
     "  -i, --ui\n"
@@ -65,27 +65,19 @@ int main(int argc, char **argv)
   tri ( regex_compile(&regex, pattern), "Invalid pattern" );
  
   struct io_t io;
-  if (!io_init(&io, K_DATA_PATH))
+  if (!io_init(&io, config.filename))
   {
-    fprintf(stderr, "Unable to open data file.\n");
+    fprintf(stderr, "Unable to open data file: %s\n", config.filename);
     return EXIT_FAILURE;
   }
   
-#ifdef K_VALIDATE_DATAFILE
-  if (io.file_size != datafile_size)
-  {
-    fprintf(stderr, "Invalid data file size: %u, should be %u.\n", io.file_size, datafile_size);
-    return EXIT_FAILURE;
-  }
   if (!io_validate(&io))
   {
     fprintf(stderr, "Invalid data file signature.\n");
     return EXIT_FAILURE;
   }
-#elif 0
-  tri ( io.file_size > (1<<26), "Unexpectedly short data file" );
-  tri ( io.file_size < (1<<28), "Unexpectedly long data file" );
-#endif
+  tri ( io.file_size > (1 << 24), "Unexpectedly short data file" );
+  tri ( io.file_size < (1 << 28), "Unexpectedly long data file" );
   
   if (config.conf_ui && !ui_prepare())
   {
@@ -99,8 +91,8 @@ int main(int argc, char **argv)
     return EXIT_FAILURE;
   }
   
-  tri ( io.isize >= (1<<15), "Indecently few words" );
-  tri ( io.isize <= (1<<17), "Indecently many words" );
+  tri ( io.isize >= (1 << 12), "Indecently few words" );
+  tri ( io.isize <= (1 << 17), "Indecently many words" );
 
   if (!io_buildindex(&io))
   {
@@ -159,11 +151,11 @@ int main(int argc, char **argv)
           pmc++;
           if (!config.conf_entry_only)
             printf("%s\n::: %s%s%s :::%s\n\n", 
-              HUE(title), 
-              HUE(boldtitle), 
+              hue[hue_title], 
+              hue[hue_title + hue_bold], 
               iitem->entry, 
-              HUE(title), 
-              HUE(normal));
+              hue[hue_title], 
+              hue[hue_normal]);
           printf("%s\n", tbuffer);
         }
         if (dofree)

@@ -1,4 +1,4 @@
-/* Copyright (C) 2005 Jakub Wilk
+/* Copyright (c) 2005, 2006 Jakub Wilk
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published 
  * by the Free Software Foundation.
@@ -8,22 +8,29 @@
 #include <getopt.h>
 
 #include "terminfo.h"
+#include "memory.h"
 
 struct config_t config;
 
-char* parse_options(int argc, char **argv)
+static void deconfigure(void)
 {
-  static const struct option gopts[]=
+  free(config.filename);
+}
+
+char *parse_options(int argc, char **argv)
+{
+  static const struct option gopts[] =
   {
-    { "debug",      0, 0, 'D' },
-    { "deep",       0, 0, 'd' },
-    { "entry-only", 0, 0, 'e' },
-    { "ui",         0, 0, 'i' },
-    { "help",       0, 0, 'h' },
-    { "quick",      0, 0, 'Q' },
-    { "raw",        0, 0, 'R' },
-    { "version",    0, 0, 'v' },
-    { NULL,         0, 0, '\0' }
+    { .name = "deep",       .val = 'd' },
+    { .name = "entry-only", .val = 'e' },
+    { .name = "file",       .val = 'f', .has_arg = 1 },
+    { .name = "help",       .val = 'h' },
+    { .name = "ui",         .val = 'i' },
+    { .name = "version",    .val = 'v' },
+    { .name = "debug",      .val = 'D' }, // undocumented
+    { .name = "quick",      .val = 'Q' }, // undocumented
+    { .name = "raw",        .val = 'R' }, // undocumented
+    { .name = NULL,         .val = '\0' }
   };
 
   memset(&config, sizeof(config), 0);
@@ -38,7 +45,7 @@ char* parse_options(int argc, char **argv)
   while (true)
   {
     int i = 0;
-    int c = getopt_long(argc, argv, "dehivDQRT", gopts, &i);
+    int c = getopt_long(argc, argv, "def:hivDQRT", gopts, &i);
     if (c < 0)
       break;
     if (c == 0)
@@ -46,6 +53,9 @@ char* parse_options(int argc, char **argv)
  #define on(o) ( config.conf_##o = true )
     switch (c)
     {
+    case 'f':
+      config.filename = optarg;
+      break;
     case 'h':
       config.action = action_help;
       break;
@@ -64,8 +74,20 @@ char* parse_options(int argc, char **argv)
     }
 #undef on
   }
+  if (config.filename == NULL)
+    config.filename = "slo.win";
+  if (strchr(config.filename, '/') == NULL)
+  {
+    bool hasext = strchr(config.filename, '.') != NULL;
+    int size = 1 + snprintf(NULL, 0, K_DATA_PATH "/%s%s", config.filename, hasext ? "" : ".win");
+    char *buffer = alloz(size, 1);
+    sprintf(buffer, K_DATA_PATH "/%s%s", config.filename, hasext ? "" : ".win");
+    config.filename = buffer;
+    atexit(deconfigure);
+  }
   return
     (optind <= argc) ? argv[optind] : NULL;
 }
+
 
 // vim: ts=2 sw=2 et

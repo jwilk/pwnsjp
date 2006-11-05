@@ -2,30 +2,36 @@
 use strict;
 use warnings;
 
+my ($charset) = @ARGV;
+my $CHARSET = uc $charset;
+
 print <<EOF
 #include <wchar.h>
-#ifndef CMAP_CP1250_H
-#define CMAP_CP1250_H
+#ifndef CMAP_DECODE_${CHARSET}_H
+#define CMAP_DECODE_${CHARSET}_H
 
 #ifndef ICC
-static const wchar_t cp1250[0x80] = L"\\
+static const wchar_t ${charset}[0x80] = L"\\
 EOF
 ;
 
 my %s;
 $s{$_} = '\0' foreach (0x80 .. 0xff);
 
-while (<>)
+while (<STDIN>)
 {
   next unless m'^<U([0-9A-F]{4})> */(x[0-9a-f]{2}).*';
   my $cp = eval "0$2";
   $s{$cp} = '\u' . lc($1);
+  my $value = eval "0x$1";
+  $s{$cp} = '?' if ($value >= 0x80 && $value < 0xA0)
 }
 print $s{$_} foreach (0x80 .. 0xff);
 print <<EOF
-\";
+\\
+";
 #else
-static const wchar_t cp1250[0x80] = L"\\
+static const wchar_t ${charset}[0x80] = L"\\
 EOF
 ;
 $s{$_} =~ s/u/x/ foreach (0x80 .. 0xff);

@@ -56,9 +56,6 @@ ifdef K_DATA_PATH
 else
 	K_DATA_PATH := slo.win
 endif
-ifeq ($(strip $(K_VALIDATE_DATAFILE)),yes)
-	CFLAGS_def += -DK_VALIDATE_DATAFILE
-endif
 
 HFILES := $(wildcard *.h)
 CFILES := $(wildcard *.c)
@@ -106,7 +103,7 @@ DB2MAN = /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/manpages/docbook.xsl
 XSLTPROC = xsltproc --nonet
 
 %.1: %.xml $(BD2MAN)
-	sed -e '1,/^$$/ { s!slo\.win!$(strip ${K_DATA_PATH})!; s!0\.devel!${VERSION}! }' $(<) | $(XSLTPROC) --output $(@) $(DB2MAN)  -
+	sed -e '1,/^$$/ { s!\(slo\.win\)!$(strip ${K_DATA_PATH})\1!; s!0\.devel!${VERSION}! }' $(<) | $(XSLTPROC) --output $(@) $(DB2MAN)  -
 
 .PHONY: stats
 stats:

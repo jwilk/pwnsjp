@@ -11,7 +11,7 @@ print <<EOF
 struct entity
 {
   char *name;
-  wchar_t value;
+  wchar_t *values;
   char *str;
 };
 
@@ -19,20 +19,18 @@ static const struct entity entity_list[] =
 {
 EOF
 ;
-while(<>)
+while (<STDIN>)
 {
+  next if /^%/;
+  next if /^\s*$/;
   chop;
-  next if /^\|/;
-  @_ = split /\t/;
-  printf 
-    "  { .name = \"%s\",%s.value = 0x%s, .str = %s },\n", 
-    $_[0], 
-    ' ' x (11-length($_[0])), 
-    $_[1], $_[2], $_[3];
+  my ($name, $values, $string) = split /\t/;
+  $values =~ s/(^|[+])/\\u/g;
+  $values =~ s/\\u(00[0-7][0-9a-f])/chr(eval "0x$1")/ge;
+  print qq(  { .name = "$name", .values = L"$values", .str = $string },\n);
 }
 print <<EOF
-  { .name = \"__vector__\", .value = 0x20d7, .str = \"->\" },
-  { .name = NULL,         .value = 0x0000, .str = NULL }
+  { .name = NULL, .values = NULL, .str = NULL }
 };
 
 #endif
