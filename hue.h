@@ -49,6 +49,8 @@ enum hue_ex
 
 #define hue_count (hue_ex_count << hue_ex_shift)
 
+#define hue_none (hue_count - 1)
+
 #define hue_normal    (hue_fg_white   | hue_bg_black)
 #define hue_source    (hue_fg_black   | hue_bg_black | hue_bold)
 #define hue_title     (hue_fg_white   | hue_bg_blue)
@@ -59,8 +61,10 @@ enum hue_ex
 #define hue_phrase2   (hue_fg_green   | hue_bg_black)
 #define hue_dimmed    (hue_fg_black   | hue_bg_black | hue_bold)
 
-#define hue_source_p   (hue_source + hue_reverse + hue_persistent)
+#define hue_source_p   (hue_source + hue_persistent)
 #define hue_normal_rev (hue_normal + hue_reverse)
+
+
 
 int hue_blend(int hue, int new_fg, int new_bg, int new_ext);
 

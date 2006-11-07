@@ -155,8 +155,6 @@ static void ui_sig_resize()
   scr_needresize = true;
 }
 
-#define COLOR_DEFAULT (-1)
-
 bool ui_prepare(void)
 {
   if (!is_term)
@@ -176,8 +174,6 @@ bool ui_prepare(void)
 #define fail() do { ui_stop(); return false; } while (0)
   
   if (start_color() != OK)
-    fail();
-  if (use_default_colors() != OK)
     fail();
  
   int i = 0;

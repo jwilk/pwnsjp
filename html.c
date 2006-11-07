@@ -258,7 +258,7 @@ char *html_strip(char *str)
     }
     break;
   }
-  as(hue[hue_normal]);
+  as(hue[hue_none]);
   a('\0');
 
 #undef a
