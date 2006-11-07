@@ -56,9 +56,9 @@ void unicode_init(void)
       rev_iso8859n = rev_iso885916;
     }
     else
-      codeset = "POSIX";
+      codeset = "US-ASCII";
     debug("codeset = %s\n", codeset);
-    char* collstr = setlocale(LC_COLLATE, NULL);
+    char *collstr = setlocale(LC_COLLATE, NULL);
     if (collstr != NULL)
     {
       if (!strcmp(collstr, "C") || !strcmp(collstr, "POSIX"))
@@ -127,7 +127,7 @@ static char *ustr_fallback_ascii(const wchar_t *ustr)
       a(ustr[i]);
     else if (ustr[i] < 0x180)
     {
-      unsigned int j = ustr[i]-0xa0;
+      unsigned int j = ustr[i] - 0xa0;
       char code = '\0';
       if (rev_iso8859n != NULL)
         code = rev_iso8859n[j];
@@ -180,7 +180,7 @@ static char* ustr_fallback_sys(const wchar_t *ustr)
 wchar_t *str_to_ustr(const char *str)
 {
   int lim = 1 + mbstowcs(NULL, str, 0);
-  wchar_t* result = alloc(lim, sizeof(wchar_t));
+  wchar_t *result = alloc(lim, sizeof(wchar_t));
   if (mbstowcs(result, str, lim) == (size_t)(-1))
     fatal("{mbstowcs failed!}");
   else
