@@ -125,7 +125,7 @@ inline static void uint32_sort(uint32_t* table, size_t count)
   uint32_qsort(table, table+(count-1));
 }
 
-#define gt(w, v) (strcmp(w, v) > 0)
+#define gt(w, v) (strcmp(w, v) >= 0)
 
 static void iitem_qsort(struct io_iitem_t *l, struct io_iitem_t *r)
 {
@@ -133,24 +133,24 @@ static void iitem_qsort(struct io_iitem_t *l, struct io_iitem_t *r)
   struct io_iitem_t *i, *j, temp;
   int dist;
 
-  while(true)
+  while (true)
   {
     dist = r - l;
     assert(gt(r[1].xentry, r[0].xentry));
     if (dist <= 16)
     {
-      for (i = r-1; i >= l; i--)
+      for (i = r - 1; i >= l; i--)
       {
         temp = *i;
-        for (j=i; gt(temp.xentry, j[1].xentry); j++)
+        for (j = i; gt(temp.xentry, j[1].xentry); j++)
           j[0] = j[1];
         j[0] = temp;
       }
       return;
     }
-    swap(l[dist/2], r[0]);
+    swap(l[dist / 2], r[0]);
     p = temp.xentry;
-    i = l-1;
+    i = l - 1;
     for (j = l; j <= r; j++)
       if (!gt(j->xentry, p))
       {
@@ -161,7 +161,7 @@ static void iitem_qsort(struct io_iitem_t *l, struct io_iitem_t *r)
       i--;
     if (l < j)
       iitem_qsort(l, i);
-    l = i+1;
+    l = i + 1;
   }
 }
 
@@ -179,7 +179,7 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
   struct io_iitem_t *iitem;
   unsigned int i;
 
-#define forallitems for (i=0, iitem=table; i<count; i++, iitem++)
+#define forallitems for (i = 0, iitem = table; i < count; i++, iitem++)
   forallitems
     if (strcmp(iitem[1].xentry, iitem->xentry) < 0)
     {
@@ -224,7 +224,7 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
     struct io_iitem_t *a, *al, *ah, *bl, *bh, *r;
     al = pop(); ah = pop();
     bl = pop(); bh = pop();
-    if (bl != ah+1)
+    if (bl != ah + 1)
     {
       push(al); push(ah);
       al = bl; ah = bh;
@@ -239,7 +239,7 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
       if (bl > bh)
       {
         if (ah >= al)
-          memcpy(r, al, (1+ah-al)*sizeof(struct io_iitem_t));
+          memcpy(r, al, (1 + ah - al) * sizeof(struct io_iitem_t));
         break;
       }
       if (al > ah)
@@ -252,7 +252,7 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
       else
         *r++ = *bl++;
     }
-    memcpy(a, buffer, (1+bh-a)*sizeof(struct io_iitem_t));
+    memcpy(a, buffer, (1 + bh - a) * sizeof(struct io_iitem_t));
   }
 
 #undef push
@@ -278,9 +278,9 @@ unsigned int io_locate(struct io_t *io, const char *search)
   r = l + io->isize-1;
   while (r > l)
   {
-    m = l + (r-l)/2;
+    m = l + (r - l)/2;
     if (strcmp(xsearch, m->xentry) > 0)
-      l = m+1;
+      l = m + 1;
     else
       r = m;
   }
