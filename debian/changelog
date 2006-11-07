@@ -1,3 +1,9 @@
+pwnsjp (0.601) unstable; urgency=low
+
+  * Better color handling on rxvt terminals.
+
+ -- Jakub Wilk <ubanus@users.sf.net>  Mon,  6 Nov 2006 14:17:10 +0100
+
 pwnsjp (0.600) unstable; urgency=low
 
   * Rewrite enitity resolver.

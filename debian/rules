@@ -7,7 +7,7 @@ configure:
 build: build-arch build-indep
 
 build-arch:
-	$(MAKE) K_DATA_PATH=/usr/share/pwnsjp/ all doc/pwnsjp.1 doc/pwnsjpi.1
+	$(MAKE) K_DATA_PATH=/usr/share/pwnsjp all doc/pwnsjp.1 doc/pwnsjpi.1
 
 build-indep:
 

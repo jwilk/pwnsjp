@@ -56,6 +56,7 @@ enum hue_ex
 #define hue_hyperlink (hue_fg_magenta | hue_bg_black | hue_bold)
 #define hue_italic    (hue_fg_cyan    | hue_bg_black)
 #define hue_phrase    (hue_fg_red     | hue_bg_black | hue_bold)
+#define hue_phrase2   (hue_fg_green   | hue_bg_black)
 #define hue_dimmed    (hue_fg_black   | hue_bg_black | hue_bold)
 
 #define hue_source_p   (hue_source + hue_reverse + hue_persistent)

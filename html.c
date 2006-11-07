@@ -12,25 +12,62 @@
 #include "unicode.h"
 
 /*
- * List of unhandled tags:
- *  - <above>
- *  - <font color=#23b002>
- *  - <font color=#3030bf>
- *  - <j>
- *  - <przysl>
- *  - <s>
- *  - <term z=puste>
- * List of ignored tags:
- *  - <font size=-1>
- *  - <font size=5>
- *  - <g>
- *  - <glo>
- *  - <k>
- *  - <l>
- *  - <math>
- *  - <q>
- *  - <r1>
- *  - <small>
+ * Tag support table:
+ * | p | <a href="<number>,<number>" note="1">
+ * | p | <a href="<number>,<number>" note>
+ * | p | <a href="<number>,<number>">
+ * | y | <above>
+ * | y | <b>
+ * | y | <big>
+ * | y | <br>
+ * | i | <center>
+ * | i | <entry>
+ * | y | <font color="#057e4c">
+ * | i | <font color="#057fc6">
+ * | y | <font color="#959493">
+ * | y | <font color="#d32b2b">
+ * | i | <font color="#d62829">
+ * | y | <font color=#23b002>
+ * | i | <font color=#3030bf>
+ * | y | <font color=#fa8d00>
+ * | y | <font color=#ff0000>
+ * | y | <font color=red>
+ * | i | <font size="+0">
+ * | i | <font size="-1" color="#057fc6">
+ * | i | <font size=-1>
+ * | i | <font size=5>
+ * | i | <g>
+ * | i | <glo h=ii>
+ * | i | <hangingpar>
+ * | y | <i>
+ * | - | <img src="ksiazecz.bmp">
+ * | - | <j>
+ * | i | <k>
+ * | i | <l n=c>
+ * | i | <l n=d>
+ * | i | <math>
+ * | y | <p style="tab">
+ * | y | <p>
+ * | - | <przysl i=przysl>
+ * | - | <przysl>
+ * | i | <q>
+ * | i | <r1>
+ * | - | <s>
+ * | i | <small>
+ * | y | <sqrt>
+ * | y | <sub>
+ * | y | <sup>
+ * | - | <tableref id=0>
+ * | - | <tableref id=1>
+ * | - | <term z=puste>
+ * | y | <tr1>
+ * | - | <u>
+ *
+ * Legend:
+ *   -   need support,
+ *   y   supported,
+ *   p   supported but need more work,
+ *   i   supported by accident (I believe it's safe to ignore it)
  */
 
 char *html_strip(char *str)
@@ -174,6 +211,8 @@ char *html_strip(char *str)
           cpush(hue_highlight);
         else if (have("font color=#ff0000") || have("font color=red") || have("font color=\"#d32b2b\""))
           cpush(hue_phrase);
+        else if (have("font color=#23b002"))
+          cpush(hue_phrase2);
         else if (have("font color=\"#057e4c\"") || have("font color=#fa8d00"))
           cpush(hue_source);
         else if (have("font color=\"#959493\""))
@@ -210,6 +249,8 @@ char *html_strip(char *str)
       state = s_default;
       if (have("a") || have("b") || have("i") || have("big") || have("tr1") || have("font"))
         cpop();
+      else if (have("above"))
+        as("&+vector+;");
       else if (have("p"))
         while(tail[1] == ' ')
           tail++;

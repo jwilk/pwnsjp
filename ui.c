@@ -122,17 +122,22 @@ static void ui_windows_destroy(void)
 static void ui_windows_refresh(void)
 {
   unsigned int i;
-  for (i=0; i<w_count; i++)
+  for (i = 0; i < w_count; i++)
     wnoutrefresh(windows[i]);
   doupdate();
 }
 
 static void ui_stop(void)
 {
-  ui_windows_destroy();
-  erase();
-  refresh();
-  endwin();
+  static bool done = false;
+  if (!done)
+  {
+    done = true;
+    ui_windows_destroy();
+    erase();
+    refresh();
+    endwin();
+  }
 }
 
 static void ui_windows_recreate(void)
@@ -167,29 +172,34 @@ bool ui_prepare(void)
   timeout(500);
  
   curs_set(0);
+
+#define fail() do { ui_stop(); return false; } while (0)
   
   if (start_color() != OK)
-    return false;
+    fail();
   if (use_default_colors() != OK)
-    return false;
+    fail();
  
   int i = 0;
   for (int fg = 0; fg < hue_fg_count; fg++)
-  for (int bg = 0; bg <= fg; bg++)
+  for (int bg = 0; bg < hue_bg_count; bg++)
   {
+    if (fg << hue_fg_shift == hue_fg_white && bg << hue_bg_shift == hue_bg_white)
+      continue;
     i++;
     if (init_pair(i, fg, bg) != OK)
-      return false;
+    {
+      fprintf(stderr, "%d\n", i);
+      fail();
+    }
     for (int ex = 0; ex < hue_ex_count; ex++)
     {
       int j = (fg << hue_fg_shift) + (bg << hue_bg_shift) + (ex << hue_ex_shift);
-      int k = (bg << hue_fg_shift) + (fg << hue_bg_shift) + (ex << hue_ex_shift);
       attrkit[j] = COLOR_PAIR(i);
       if ((ex << hue_ex_shift) & hue_bold)
         attrkit[j] |= A_BOLD;
       if ((ex << hue_ex_shift) & hue_reverse)
         attrkit[j] |= A_REVERSE;
-      attrkit[k] = attrkit[j] ^ A_REVERSE;
     }
   }
 
@@ -205,7 +215,9 @@ bool ui_prepare(void)
   sigfillset(&sa.sa_mask);
   sa.sa_flags = SA_RESTART;
   sigaction(SIGWINCH, &sa, NULL);
-  
+
+#undef fail
+
   return true;
 }
 
