@@ -55,6 +55,9 @@ void unicode_init(void)
       cmap = cmap_iso885916;
       rev_iso8859n = rev_iso885916;
     }
+    else
+      codeset = "POSIX";
+    debug("codeset = %s\n", codeset);
     char* collstr = setlocale(LC_COLLATE, NULL);
     if (collstr != NULL)
     {
