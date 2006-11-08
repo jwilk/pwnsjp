@@ -55,6 +55,7 @@ void term_init(void)
       term_setaf[j] = str_clone("");
     for (j = 0; j < 8; j++)
       term_setab[j] = str_clone("");
+    atexit(term_quit);
     return;
   }
   is_term = true;
