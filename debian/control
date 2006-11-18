@@ -1,6 +1,6 @@
 Source: pwnsjp
 Section: contrib/text
-Priority: optional
+Priority: extra
 Maintainer: Jakub Wilk <ubanus@users.sf.net>
 Bugs: mailto:ubanus@users.sf.net
 Build-Depends: debhelper (>= 5), libncursesw5-dev, zlib1g-dev, xsltproc, docbook-xsl
