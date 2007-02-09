@@ -100,7 +100,7 @@ include Makefile.hdr
 endif
 
 DB2MAN = /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/manpages/docbook.xsl
-XSLTPROC = xsltproc --nonet
+XSLTPROC = xsltproc
 
 %.1: %.xml $(BD2MAN)
 	sed -e '1,/^$$/ { s!\(slo\.win\)!$(strip ${K_DATA_PATH})/\1!; s!0\.devel!${VERSION}! }' $(<) | $(XSLTPROC) --output $(@) $(DB2MAN)  -
