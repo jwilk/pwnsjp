@@ -12,6 +12,7 @@ Depends: ${misc:Depends}, ${shlibs:Depends}, pwnsjp-data
 Description: An interface to the PWN's Polish Dictionary
 
 Package: pwnsjp-data-3tsjp
+Section: non-free/text
 Architecture: all
 Provides: pwnsjp-data
 Replaces: pwnsjp-data (<< 0.600)
@@ -19,16 +20,19 @@ Conflicts: pwnsjp-data (<< 0.600)
 Description: Data files of the PWN's Polish Dictionary, 3 volumes
 
 Package: pwnsjp-data-msf
+Section: non-free/text
 Architecture: all
 Provides: pwnsjp-data
 Description: Data files of the PWN's Multimedia Phraseology Dictionary
 
 Package: pwnsjp-data-msjp
+Section: non-free/text
 Architecture: all
 Provides: pwnsjp-data
 Description: Data files of the PWN's Multimedia Polish Dictionary
 
 Package: pwnsjp-data-mswo
+Section: non-free/text
 Architecture: all
 Provides: pwnsjp-data
 Description: Data files of the PWN's Multimedia Foreign Words Dictionary
