@@ -45,8 +45,8 @@ struct io_t
 
 bool io_init(struct io_t *io, const char* filename);
 bool io_validate(struct io_t *io);
-bool io_prepareindex(struct io_t *io);
-bool io_buildindex(struct io_t *io);
+bool io_prepare_index(struct io_t *io);
+bool io_build_index(struct io_t *io);
 void io_read(struct io_t *io, size_t indexno);
 bool io_fine(struct io_t *io);
 unsigned int io_locate(struct io_t *io, const char* search);

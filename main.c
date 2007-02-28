@@ -85,7 +85,7 @@ int main(int argc, char **argv)
     return EXIT_FAILURE;
   }
 
-  if (!io_prepareindex(&io))
+  if (!io_prepare_index(&io))
   {
     fprintf(stderr, "Unable to prepare index.\n");
     return EXIT_FAILURE;
@@ -94,7 +94,7 @@ int main(int argc, char **argv)
   tri ( io.isize >= (1 << 12), "Indecently few words" );
   tri ( io.isize <= (1 << 17), "Indecently many words" );
 
-  if (!io_buildindex(&io))
+  if (!io_build_index(&io))
   {
     fprintf(stderr, "Unable to build index.\n");
     return EXIT_FAILURE;

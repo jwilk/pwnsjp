@@ -1,4 +1,4 @@
-/* Copyright (c) 2005, 2006 Jakub Wilk
+/* Copyright (c) 2005, 2006, 2007 Jakub Wilk
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published 
  * by the Free Software Foundation.
@@ -36,31 +36,31 @@ bool io_validate(struct io_t *io)
   if (fseek(io->file, 0, SEEK_SET) != 0)
     return false;
   uint8_t sig[2];
-  if (fread(sig, 1, sizeof(sig), io->file) != sizeof(sig))
+  if (fread(sig, 1, sizeof sig, io->file) != sizeof sig)
     return false;
   if (sig[0] != 'G' || sig[1] != 'W')
     return false;
   return true;
 }
 
-bool io_prepareindex(struct io_t *io)
+bool io_prepare_index(struct io_t *io)
 {
   if (fseek(io->file, 0x4, SEEK_SET)!=0)
     return false;
-#define hsize (sizeof(struct io_header_t))
+#define hsize (sizeof (struct io_header_t))
   io->header = alloc(1, hsize);
   if (fread(io->header, hsize, 1, io->file)!=1)
     return false;
 #undef hsize
 
   unsigned int i;
-  for (i=1; i<5; i++)
+  for (i = 1; i < 5; i++)
   {
     io->header->__tmp[i] = le2cpu(io->header->__tmp[i]);
     debug("m(%u) = 0x%08x\n", i, io->header->__tmp[i]);
   }
 
-  for (i=0; i<5; i++)
+  for (i = 0; i < 5; i++)
   {
     io->header->__tmq[i] = le2cpu(io->header->__tmq[i]);
     debug("m(%u) = 0x%08x\n", i+6, io->header->__tmq[i]);
@@ -73,7 +73,7 @@ bool io_prepareindex(struct io_t *io)
   io->header->index_base = le2cpu(io->header->index_base);
   debug("index #1 base = 0x%08x\n", io->header->index_base);
   
-  io->header->index_base += sizeof(uint32_t)*io->isize;
+  io->header->index_base += sizeof (uint32_t) * io->isize;
   debug("index #2 base = 0x%08x\n", io->header->index_base);
   
   io->header->words_base = le2cpu(io->header->words_base);
@@ -168,7 +168,7 @@ static void iitem_qsort(struct io_iitem_t *l, struct io_iitem_t *r)
 #undef gt
 #undef swap
 
-static void iitem_sort(struct io_iitem_t* table, size_t count)
+static void iitem_sort(struct io_iitem_t *table, size_t count)
 {
 #if defined(MERGESORT)
 
@@ -193,13 +193,13 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
       blocks++;
   
   debug("mergesort blocks = %u\n", blockc);
-  unsigned int qlog, qlim = 2*(blockc + 2);
+  unsigned int qlog, qlim = 2 * (blockc + 2);
  	for (qlog = 0; qlim > 0; qlog++)
     qlim >>= 1;
   qlim = (1<<qlog) - 1;
   debug("mergesort stack limit = 2^%u - 1 = %u\n", qlog, qlim);
   
-  struct io_iitem_t* queue[qlim+1];
+  struct io_iitem_t *queue[qlim + 1];
   unsigned int qhead, qtail, qlen;
   qlen = 0;
   qhead = qtail = -1;
@@ -217,7 +217,7 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
 #undef forallitems
   push(iitem);
   
-  struct io_iitem_t* buffer = alloc(count, sizeof(struct io_iitem_t));
+  struct io_iitem_t *buffer = alloc(count, sizeof (struct io_iitem_t));
   
   while (qlen >= 4)
   {
@@ -239,7 +239,7 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
       if (bl > bh)
       {
         if (ah >= al)
-          memcpy(r, al, (1 + ah - al) * sizeof(struct io_iitem_t));
+          memcpy(r, al, (1 + ah - al) * sizeof (struct io_iitem_t));
         break;
       }
       if (al > ah)
@@ -252,7 +252,7 @@ static void iitem_sort(struct io_iitem_t* table, size_t count)
       else
         *r++ = *bl++;
     }
-    memcpy(a, buffer, (1 + bh - a) * sizeof(struct io_iitem_t));
+    memcpy(a, buffer, (1 + bh - a) * sizeof (struct io_iitem_t));
   }
 
 #undef push
@@ -296,7 +296,7 @@ void io_read(struct io_t *io, unsigned int indexno)
 {
   assert(io != NULL);
   assert(io->iitems != NULL);
-  struct io_iitem_t* iitem = io->iitems + indexno;
+  struct io_iitem_t *iitem = io->iitems + indexno;
   
   char buffer[io->csize];
  
@@ -314,26 +314,26 @@ void io_read(struct io_t *io, unsigned int indexno)
   if (iitem->zipped)
   {
     memset(io->cbuffer, 0, dsize);
-    uncompress((unsigned char*)io->cbuffer, &dsize, (unsigned char*)buffer, io->csize);
+    uncompress((unsigned char *)io->cbuffer, &dsize, (unsigned char *)buffer, io->csize);
   }
   else
     memcpy(io->cbuffer, buffer, iitem->size);
 }
 
-bool io_buildindex(struct io_t *io)
+bool io_build_index(struct io_t *io)
 {
   if (fseek(io->file, io->header->index_base, SEEK_SET)!=0)
     return false;
 
-  uint32_t* offsets = alloc(io->isize, sizeof(uint32_t));
+  uint32_t *offsets = alloc(io->isize, sizeof (uint32_t));
   if (offsets == NULL)
     return false;
-  if (fread(offsets, sizeof(uint32_t), io->isize, io->file) != io->isize)
+  if (fread(offsets, sizeof (uint32_t), io->isize, io->file) != io->isize)
     return false;
 
   debug("sizeof(struct io_iitem_t) = %u\n", sizeof(struct io_iitem_t));
   
-  io->iitems = alloz(io->isize-1, sizeof(struct io_iitem_t));
+  io->iitems = alloz(io->isize - 1, sizeof (struct io_iitem_t));
   if (io->iitems == NULL)
   {
     free(offsets);
@@ -341,7 +341,7 @@ bool io_buildindex(struct io_t *io)
   }
 
   unsigned int i;
-  for (i=0; i<io->isize; i++)
+  for (i = 0; i < io->isize; i++)
     offsets[i] = le2cpu(offsets[i]) & 0x07ffffff;
   uint32_sort(offsets, io->isize);
 
@@ -363,13 +363,13 @@ bool io_buildindex(struct io_t *io)
     return false;
   
   io->csize = (maxsize | 0xff) + 1;
-  io->cbuffer = alloc(io->csize << 3, sizeof(char));
+  io->cbuffer = alloc(io->csize << 3, sizeof (char));
   if (io->cbuffer == NULL)
     return false;
  
-  struct io_iitem_t* iitem;
+  struct io_iitem_t *iitem;
 
-#define forallitems for (i=0, iitem=io->iitems; i<io->isize; i++, iitem++)
+#define forallitems for (i = 0, iitem = io->iitems; i < io->isize; i++, iitem++)
   forallitems
   {
     char wordbuffer[io->csize], *dataptr;
@@ -407,9 +407,9 @@ bool io_buildindex(struct io_t *io)
       maxlen = len;
   }
   char *plusinf; // +oo == "\xff\xff...\xff"
-  plusinf = alloc(maxlen + 1, sizeof(char));
+  plusinf = alloc(maxlen + 1, sizeof (char));
   memset(plusinf, -1, maxlen);
-  plusinf[maxlen]='\0';
+  plusinf[maxlen] = '\0';
   iitem->entry = iitem->xentry = plusinf;
   
 #undef forallitems
@@ -426,7 +426,7 @@ bool io_fine(struct io_t *io)
   if (io->iitems != NULL)
   {
     unsigned int i;
-    struct io_iitem_t* iitem = io->iitems;
+    struct io_iitem_t *iitem = io->iitems;
     for (i = 0; i <= io->isize; i++, iitem++)
     {
       if (iitem->xentry != iitem->entry)
