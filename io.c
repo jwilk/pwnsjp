@@ -122,7 +122,7 @@ static void uint32_qsort(uint32_t *l, uint32_t *r)
 
 inline static void uint32_sort(uint32_t* table, size_t count)
 {
-  uint32_qsort(table, table+(count-1));
+  uint32_qsort(table, table + count - 1);
 }
 
 #define gt(w, v) (strcmp(w, v) >= 0)
@@ -351,7 +351,7 @@ bool io_build_index(struct io_t *io)
   for (i = 0; i < io->isize; i++)
   {
     assert(offsets[i + 1] > offsets[i]);
-    size = offsets[i + 1]-offsets[i];
+    size = offsets[i + 1] - offsets[i];
     io->iitems[i].size = size;
     io->iitems[i].offset = offsets[i];
     if (size > maxsize)
