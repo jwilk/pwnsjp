@@ -57,49 +57,43 @@ int main(int argc, char **argv)
   }
   
   unicode_init();
-  
-#define try(s) do { if (!(s)) fatal(""); } while(0)
-#define tri(s, err) do { if (!(s)) fatal(err); } while(0)
+
+#define fail(format, ...) \
+  do { fprintf(stderr, format, ## __VA_ARGS__); return EXIT_FAILURE; } while (0)
   
   regex_t regex;
-  tri ( regex_compile(&regex, pattern), "Invalid pattern" );
- 
+  if (!regex_compile(&regex, pattern))
+    fail("Invalid pattern.\n");
+
   struct io_t io;
   if (!io_init(&io, config.filename))
-  {
-    fprintf(stderr, "Unable to open data file: %s\n", config.filename);
-    return EXIT_FAILURE;
-  }
+    fail("Unable to open data file: %s\n", config.filename);
   
   if (!io_validate(&io))
-  {
-    fprintf(stderr, "Invalid data file signature.\n");
-    return EXIT_FAILURE;
-  }
-  tri ( io.file_size > (1 << 24), "Unexpectedly short data file" );
-  tri ( io.file_size < (1 << 28), "Unexpectedly long data file" );
+    fail("Invalid data file signature.\n");
+
+  if (io.file_size < (1 << 24))
+    fail("Unexpectedly short data file.\n");
+  
+  if (io.file_size > (1 << 28))
+    fail("Unexpectedly long data file.\n");
   
   if (config.conf_ui && !ui_prepare())
-  {
-    fprintf(stderr, "Unable to initialize user interface.\n");
-    return EXIT_FAILURE;
-  }
+    fail("Unable to initialize user interface.\n");
 
   if (!io_prepare_index(&io))
-  {
-    fprintf(stderr, "Unable to prepare index.\n");
-    return EXIT_FAILURE;
-  }
+    fail("Unable to prepare index.\n");
   
-  tri ( io.isize >= (1 << 12), "Indecently few words" );
-  tri ( io.isize <= (1 << 17), "Indecently many words" );
+  if (io.isize < (1 << 12))
+    fail("Indecently few words.\n");
+  if (io.isize > (1 << 17))
+    fail("Indecently many words.\n");
 
   if (!io_build_index(&io))
-  {
-    fprintf(stderr, "Unable to build index.\n");
-    return EXIT_FAILURE;
-  }
- 
+    fail("Unable to build index.\n");
+
+#undef fail
+
   if (config.conf_tabi)
     ; // we do nothing
   else if (config.conf_ui)
@@ -171,12 +165,11 @@ int main(int argc, char **argv)
     debug("number of matches = %u\n", pmc);
   }
 
-  try ( io_fine(&io) );
+  if (!io_fine(&io))
+    fatal("");
   
   if (pattern)
     regex_free(&regex);
-#undef try
-#undef try_s
 
   return EXIT_SUCCESS;
 }
