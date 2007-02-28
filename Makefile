@@ -87,8 +87,8 @@ pwnsjpi: pwnsjp
 
 pwnsjp: $(OFILES)
 	@echo CFLAGS = $(CFLAGS)
-	@echo $(CC) '(...)' $(CFLAGS_ld) $(^) -o ${@}
-	@$(CC) $(CFLAGS) $(CFLAGS_ld) $(^) -o ${@}
+	@echo $(CC) '(...)' $(^) -o ${@} $(CFLAGS_ld) 
+	@$(CC) $(CFLAGS) $(^) -o ${@} $(CFLAGS_ld) 
 	$(STRIP) ${@}
 
 $(OFILES): %.o: %.c
