@@ -59,14 +59,14 @@
 	</cmdsynopsis>
 </refsynopsisdiv>
 <refsect1>
-	<title>DESCRIPTION</title>
+	<title>Description</title>
 	<para>
 		&p; runs an interactive interface to the &d;.
 	</para>
 </refsect1>
 
 <refsect1>
-	<title>OPTIONS</title>
+	<title>Options</title>
 	<para>
 		&p; accepts the following options:
 	</para>
@@ -88,7 +88,7 @@
 </refsect1>
 
 <refsect1>
-	<title>FILES</title>
+	<title>Files</title>
 	<variablelist>
 		<varlistentry>
 			<term>&slowin;</term>
@@ -100,7 +100,7 @@
 </refsect1>
 
 <refsect1>
-	<title>SEE ALSO</title>
+	<title>See also</title>
 	<para>
 		<citerefentry>
 			<refentrytitle>pwnsjp</refentrytitle>
