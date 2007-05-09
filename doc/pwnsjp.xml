@@ -75,7 +75,7 @@
 	</cmdsynopsis>
 </refsynopsisdiv>
 <refsect1>
-	<title>DESCRIPTION</title>
+	<title>Description</title>
 	<para>
 		&p; finds entries in the &d; which matches a pattern (regular
 		expression). Moreover, it can run an interactive version of the
@@ -84,7 +84,7 @@
 </refsect1>
 
 <refsect1>
-	<title>OPTIONS</title>
+	<title>Options</title>
 	<para>
 		&p; accepts the following options:
 	</para>
@@ -138,7 +138,7 @@
 </refsect1>
 
 <refsect1>
-	<title>FILES</title>
+	<title>Files</title>
 	<variablelist>
 		<varlistentry>
 			<term>&slowin;</term>
@@ -150,7 +150,7 @@
 </refsect1>
 
 <refsect1>
-	<title>SEE ALSO</title>
+	<title>See also</title>
 	<para>
 		<citerefentry>
 			<refentrytitle>pwnsjpi</refentrytitle>
