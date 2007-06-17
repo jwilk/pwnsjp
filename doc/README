@@ -1,8 +1,8 @@
  _ ____ __ ___ _  ___(*)_ __
 | '_ \ V  V / ' \(_-<| | '_ \
 | .__/\_/\_/|_||_/__// | .__/
-|_|= wersja 0.600 =|__/|_|===
-==== |2006-11-04| ===========
+|_|= wersja 0.602 =|__/|_|===
+==== |2007-06-17| ===========
 
 *pwnsjp* to interfejs do niektórych s³owników Wydawnictwa Naukowego PWN.
 Przetestowane zosta³y:
@@ -84,7 +84,7 @@ Licencja:
   w wersji 2.
 
 Dziennik (ha, ha) zmian:
-  -- 2006 
+  -- 2006, 2007
      : zobacz 'debian/changelog'.
   -- 2005-11-17 (0.501)
      : kompilacja bez ostrze¿eñ z gcc 4.0
