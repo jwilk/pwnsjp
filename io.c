@@ -114,9 +114,11 @@ static void uint32_qsort(uint32_t *l, uint32_t *r)
       }
     if (i >= r)
       i--;
+    else if (i <= l - 1)
+      i++;
     if (l < j)
       uint32_qsort(l, i);
-    l = i+1;
+    l = i + 1;
   }
 }
 
@@ -159,6 +161,8 @@ static void iitem_qsort(struct io_iitem_t *l, struct io_iitem_t *r)
       }
     if (i >= r)
       i--;
+    else if (i <= l - 1)
+      i++;
     if (l < j)
       iitem_qsort(l, i);
     l = i + 1;
