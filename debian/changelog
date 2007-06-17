@@ -1,6 +1,6 @@
 pwnsjp (0.602) unstable; urgency=low
 
-  * Fix an infitie loops which apears in some configurations.
+  * Fix an infinite loop which appears in some configurations.
 
  -- Jakub Wilk <ubanus@users.sf.net>  Sun, 17 Jun 2007 21:38:18 +0200
 
