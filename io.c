@@ -114,8 +114,6 @@ static void uint32_qsort(uint32_t *l, uint32_t *r)
       }
     if (i >= r)
       i--;
-    else if (i <= l - 1)
-      i++;
     if (l < j)
       uint32_qsort(l, i);
     l = i + 1;
@@ -127,7 +125,7 @@ inline static void uint32_sort(uint32_t* table, size_t count)
   uint32_qsort(table, table + count - 1);
 }
 
-#define gt(w, v) (strcmp(w, v) >= 0)
+#define gt(w, v) (strcmp(w, v) > 0)
 
 static void iitem_qsort(struct io_iitem_t *l, struct io_iitem_t *r)
 {
@@ -161,8 +159,6 @@ static void iitem_qsort(struct io_iitem_t *l, struct io_iitem_t *r)
       }
     if (i >= r)
       i--;
-    else if (i <= l - 1)
-      i++;
     if (l < j)
       iitem_qsort(l, i);
     l = i + 1;
