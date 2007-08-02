@@ -12,6 +12,7 @@
 #include <locale.h>
 
 #include "cmap-cp1250.h"
+#include "cmap-iso8859-13.h"
 #include "cmap-iso8859-16.h"
 #include "cmap-iso8859-2.h"
 #include "cmap-usascii.h"
@@ -26,6 +27,7 @@ static enum
 { 
   cmap_usascii    = 0, 
   cmap_iso88592   = 2, 
+  cmap_iso885913  = 13, 
   cmap_iso885916  = 16, 
   cmap_utf8       = -1
 } cmap = cmap_usascii;
@@ -49,6 +51,11 @@ void unicode_init(void)
     {
       cmap = cmap_iso88592;
       rev_iso8859n = rev_iso88592;
+    }
+    else if (!strcmp(codeset, "ISO-8859-13"))
+    {
+      cmap = cmap_iso885913;
+      rev_iso8859n = rev_iso885913;
     }
     else if (!strcmp(codeset, "ISO-8859-16"))
     {
@@ -194,6 +201,7 @@ char *ustr_to_str(const wchar_t *ustr)
   {
     case cmap_usascii:
     case cmap_iso88592:
+    case cmap_iso885913:
     case cmap_iso885916:
       return ustr_fallback_ascii(ustr);
     case cmap_utf8:

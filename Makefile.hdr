@@ -14,6 +14,10 @@ cmap-iso8859-2.h: data/cmap-iso8859-2.gz script/cmap-iso8859-n.h.in script/cmap-
 	zcat $(<) | script/cmap-iso8859-n.h.in 2 >> $(@)
 	zcat $(<) | script/cmap-decode iso8859_2 >> $(@)
 
+cmap-iso8859-13.h: data/cmap-iso8859-13.gz script/cmap-iso8859-n.h.in
+	$(GENCOPYRIGHT) > $(@)
+	zcat $(<) | script/cmap-iso8859-n.h.in 13 >> $(@)
+
 cmap-iso8859-16.h: data/cmap-iso8859-16.gz script/cmap-iso8859-n.h.in
 	$(GENCOPYRIGHT) > $(@)
 	zcat $(<) | script/cmap-iso8859-n.h.in 16 >> $(@)
