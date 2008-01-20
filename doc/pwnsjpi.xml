@@ -74,13 +74,15 @@
 
 	<variablelist>
 		<varlistentry>
-			<term><option>-h</option> or <option>--help</option></term>
+			<term><option>-h</option></term>
+			<term><option>--help</option></term>
 			<listitem>
 				<para>Display help and exit.</para>
 			</listitem>
 		</varlistentry>
 		<varlistentry>
-			<term><option>-v</option> or <option>--version</option></term>
+			<term><option>-v</option></term>
+			<term><option>--version</option></term>
 			<listitem>
           		<para>Output version information and exit.</para>
 			</listitem>

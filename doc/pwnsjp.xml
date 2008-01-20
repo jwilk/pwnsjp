@@ -92,13 +92,15 @@
 
 	<variablelist>
 		<varlistentry>
-			<term><option>-e</option> or <option>--entry-only</option></term>
+			<term><option>-e</option></term>
+			<term><option>--entry-only</option></term>
 			<listitem>
 				<para>Display only entries, not their definitions.</para>
 			</listitem>
 		</varlistentry>
 		<varlistentry>
-			<term><option>-d</option> or <option>--deep</option></term>
+			<term><option>-d</option></term>
+			<term><option>--deep</option></term>
 			<listitem>
 				<para>Search through definitions, not only entries.</para>
 			</listitem>
@@ -118,19 +120,22 @@
 			</listitem>
 		</varlistentry>
 		<varlistentry>
-			<term><option>-i</option> or <option>--ui</option></term>
+			<term><option>-i</option></term>
+			<term><option>--ui</option></term>
 			<listitem>
 				<para>Run an interactive version of the dictionary interface.</para>
 			</listitem>
 		</varlistentry>
 		<varlistentry>
-			<term><option>-h</option> or <option>--help</option></term>
+			<term><option>-h</option></term>
+			<term><option>--help</option></term>
 			<listitem>
 				<para>Display help and exit.</para>
 			</listitem>
 		</varlistentry>
 		<varlistentry>
-			<term><option>-v</option> or <option>--version</option></term>
+			<term><option>-v</option></term>
+			<term><option>--version</option></term>
 			<listitem>
           		<para>Output version information and exit.</para>
 			</listitem>
