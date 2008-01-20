@@ -99,7 +99,7 @@ ifeq ($(strip $(M_BUILD_HEADERS)),yes)
 include Makefile.hdr
 endif
 
-DB2MAN = /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/manpages/docbook.xsl
+DB2MAN = /usr/share/xml/docbook/stylesheet/nwalsh/manpages/docbook.xsl
 XSLTPROC = xsltproc
 
 %.1: %.xml $(BD2MAN)
