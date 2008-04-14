@@ -59,14 +59,14 @@
 		</group>
 	</cmdsynopsis>
 </refsynopsisdiv>
-<refsect1>
+<refsection>
 	<title>Description</title>
 	<para>
 		&p; runs an interactive interface to the &d;.
 	</para>
-</refsect1>
+</refsection>
 
-<refsect1>
+<refsection>
 	<title>Options</title>
 	<para>
 		&p; accepts the following options:
@@ -88,9 +88,9 @@
 			</listitem>
 		</varlistentry>
 	</variablelist>
-</refsect1>
+</refsection>
 
-<refsect1>
+<refsection>
 	<title>Files</title>
 	<variablelist>
 		<varlistentry>
@@ -100,9 +100,9 @@
 			</listitem>
 		</varlistentry>
 	</variablelist>
-</refsect1>
+</refsection>
 
-<refsect1>
+<refsection>
 	<title>See also</title>
 	<para>
 		<citerefentry>
@@ -110,7 +110,7 @@
 			<manvolnum>1</manvolnum>
 		</citerefentry>
 	</para>
-</refsect1>
+</refsection>
 
 </refentry>
 

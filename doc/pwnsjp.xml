@@ -75,16 +75,16 @@
 		</group>
 	</cmdsynopsis>
 </refsynopsisdiv>
-<refsect1>
+<refsection>
 	<title>Description</title>
 	<para>
 		&p; finds entries in the &d; which matches a pattern (regular
 		expression). Moreover, it can run an interactive version of the
 		dictionary interface.
 	</para>
-</refsect1>
+</refsection>
 
-<refsect1>
+<refsection>
 	<title>Options</title>
 	<para>
 		&p; accepts the following options:
@@ -141,9 +141,9 @@
 			</listitem>
 		</varlistentry>
 	</variablelist>
-</refsect1>
+</refsection>
 
-<refsect1>
+<refsection>
 	<title>Files</title>
 	<variablelist>
 		<varlistentry>
@@ -153,9 +153,9 @@
 			</listitem>
 		</varlistentry>
 	</variablelist>
-</refsect1>
+</refsection>
 
-<refsect1>
+<refsection>
 	<title>See also</title>
 	<para>
 		<citerefentry>
@@ -163,7 +163,7 @@
 			<manvolnum>1</manvolnum>
 		</citerefentry>
 	</para>
-</refsect1>
+</refsection>
 
 </refentry>
 
