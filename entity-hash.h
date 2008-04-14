@@ -1,4 +1,4 @@
-/* ANSI-C code produced by gperf version 3.0.2 */
+/* ANSI-C code produced by gperf version 3.0.3 */
 /* Command-line: gperf -L ANSI-C -c -C -F ', 0' -H entity_hash -N entity_lookup -t -m 20  */
 /* Computed positions: -k'1-3,$' */
 
@@ -96,6 +96,9 @@ entity_hash (register const char *str, register unsigned int len)
 
 #ifdef __GNUC__
 __inline
+#ifdef __GNUC_STDC_INLINE__
+__attribute__ ((__gnu_inline__))
+#endif
 #endif
 const struct entity_ptr *
 entity_lookup (register const char *str, register unsigned int len)
