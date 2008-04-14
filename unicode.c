@@ -251,7 +251,7 @@ char *strxform(const char *str)
   return result;
 }
 
-inline bool posix_coll(void)
+bool posix_coll(void)
 {
   return coll == coll_posix; 
 }
