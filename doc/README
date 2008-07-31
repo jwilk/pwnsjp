@@ -1,132 +1,164 @@
- _ ____ __ ___ _  ___(*)_ __
-| '_ \ V  V / ' \(_-<| | '_ \
-| .__/\_/\_/|_||_/__// | .__/
-|_|= wersja 0.602 =|__/|_|===
-==== |2007-06-17| ===========
+=================================
+pwnsjp, wersja 0.602 (2007-06-17)
+=================================
 
-*pwnsjp* to interfejs do niektÛrych s≥ownikÛw Wydawnictwa Naukowego PWN.
-Przetestowane zosta≥y:
-  -- trzytomowy ,,S≥ownika jÍzyka polskiego'', ktÛry niegdy∂ zosta≥
-     do≥±czony do Gazety Wyborczej [3TSJP];
-  -- ,,Multimedialny s≥ownik PWN. Frazeologia'' [MSF];
-  -- ,,Multimedialny s≥ownik PWN. JÍzyk polski'' [MSJP];
-  -- ,,Multimedialny s≥ownik PWN. Wyrazy obce'' [MSWO].
+**pwnsjp** to interfejs do niekt√≥rych s≈Çownik√≥w Wydawnictwa Naukowego PWN.
+Przetestowane zosta≈Çy:
 
-Do jego uruchomienia interfejsu niezbÍdny jest plik z rozszerzeniem `.win',
-ktÛry moøna wyekstrahowaÊ z pliku `setup/data1.cab': za pomoc± programu
-unshield (zobacz: <http://http://synce.sf.net/>) lub poprzez instalacjÍ
-oryginalnego interfejsu w ∂rodowisku Windows/Wine.
+* trzytomowy ‚ÄûS≈Çownika jƒôzyka polskiego‚Äù, kt√≥ry niegdy≈õ zosta≈Ç
+  do≈ÇƒÖczony do Gazety Wyborczej [3TSJP];
 
-Informacje pomagaj±ce ustaliÊ toøsamo∂Ê:
+* ‚ÄûMultimedialny s≈Çownik PWN. Frazeologia‚Äù [MSF];
 
-s≥ownik | plik    | rozmiar   | suma MD5
---------+---------+-----------+----------------------------------
-3TSJP   | slo.win | 107564724 | 259d95924af212a7db53b7cb853cab47
-MSF     | sf.win  |  24307100 | f43c7f1597dd9593f730706d1b8bf492
-MSJP    | sjp.win |  63476492 | 2ac579d6502668db64080fdbaf9cdd8a
-MSWO    | swo.win |  43146160 | ff76016c9157a01b45be7cc764171384
+* ‚ÄûMultimedialny s≈Çownik PWN. Jƒôzyk polski‚Äù [MSJP];
 
-Program powinien daÊ siÍ skompilowaÊ i uruchomiÊ na kaødej maszynie 
-z systemem uniksopodobnym systemem operacyjnym (o ile tylko spe≥nione
-zostan± wymagania kompilacji; patrz niøej).
-Wszakøe zosta≥ przetestowany jedynie na Debianie Etch i procesorze
+* ‚ÄûMultimedialny s≈Çownik PWN. Wyrazy obce‚Äù [MSWO].
+
+Do jego uruchomienia interfejsu niezbƒôdny jest plik z rozszerzeniem ``.win``,
+kt√≥ry mo≈ºna wyekstrahowaƒá z pliku ``setup/data1.cab``: za pomocƒÖ programu
+unshield (zobacz: http://http://synce.sf.net/) lub poprzez instalacjƒô
+oryginalnego interfejsu w ≈õrodowisku Windows/Wine.
+
+Informacje pomagajƒÖce ustaliƒá to≈ºsamo≈õƒá:
+
+======== ========= =========== ================================
+s≈Çownik  plik      rozmiar     suma MD5
+======== ========= =========== ================================
+3TSJP    slo.win     107564724 259d95924af212a7db53b7cb853cab47
+MSF      sf.win       24307100 f43c7f1597dd9593f730706d1b8bf492
+MSJP     sjp.win      63476492 2ac579d6502668db64080fdbaf9cdd8a
+MSWO     swo.win      43146160 ff76016c9157a01b45be7cc764171384
+======== ========= =========== ================================
+
+Program powinien daƒá siƒô skompilowaƒá i uruchomiƒá na ka≈ºdej maszynie 
+z systemem uniksopodobnym systemem operacyjnym (o ile tylko spe≈Çnione
+zostanƒÖ wymagania kompilacji; patrz ni≈ºej).
+Wszak≈ºe zosta≈Ç przetestowany jedynie na Debianie Lennym i procesorze
 little-endianowym.
 
-[[ Kompilacja ]]
+Kompilacja
+----------
 
 Do kompilacji potrzeba:
-  -- kompilatora mniej-wiÍcej zgodnego ze standardem C99 (moøe byÊ gcc >= 3.0,
-     icc >= 8.0);
-     przetestowano z gcc 3.3, gcc 3.4, gcc 4.0, gcc 4.1, icc 8.0
-  -- biblioteki GNU libc;
-     przetestowano z wersjami >= 2.3.2
-  -- biblioteki zlib;
-     przetestowano z wersjami >= 1.2.1
-  -- biblioteki ncursesw (ncurses z obs≥ug± unikodu);
-     przetestowano z wersjami >= 5.4
-  -- w razie konieczno∂ci od∂wieøenia niektÛrych generowanych automatycznie
-     plikÛw nag≥Ûwkowych (czyli NIE w przypadku kompilacji niemodyfikowanej
-     wersji), dodatkowo:
-     : perla w wersji co najmniej 5.6.1;
-       testowano z wersjami >= 5.8.4
-     : programu gperf; przetestowano z wersj± 3.0.2
-     : programu konwert; przetestowano z wersj± 1.8
-       _lub_
-       programu links lub elinks; przetestowano z elinks-ami >= 0.10
+
+* kompilatora mniej-wiƒôcej zgodnego ze standardem C99, np. *gcc* ‚â• 3.0,
+  *icc* ‚â• 8.0;
+
+* biblioteki *GNU libc*;
+
+* biblioteki *zlib*;
+
+* biblioteki *ncursesw* (*ncurses* z obs≈ÇugƒÖ unikodu);
+
+* w razie konieczno≈õci od≈õwie≈ºenia niekt√≥rych generowanych automatycznie
+  plik√≥w nag≈Ç√≥wkowych (czyli *nie* w przypadku kompilacji niemodyfikowanej
+  wersji), dodatkowo:
+
+  * *perla* w wersji co najmniej 5.6.1,
+
+  * programu *gperf*,
+
+  * programu *konwert* lub programu *links* lub *elinks*.
   
-Kompilacja polega na dostosowaniu do swoich potrzeb pliku `Makefile.conf'
-(oraz, ewentualnie, `Makefile') i odpaleniu polecenia `make'.
+Kompilacja polega na dostosowaniu do swoich potrzeb pliku ``Makefile.conf``
+(oraz, ewentualnie, ``Makefile``) i odpaleniu polecenia ``make``.
 
-[[ Uøycie ]]
+U≈ºycie
+------
 
-Przyk≥ady:
-  pwnsjp --help
-  pwnsjp --entry-only 'b(ne|om)'
-  pwnsjp '^(nie)?k≥opotliwy'
-  pwnsjp --deep 'lodowisko'
+Przyk≈Çady:
 
-Kilka ciekawych (choÊ przeznaczonych g≥Ûwnie do dezynsekcji) opcji jest
+| pwnsjp --help
+| pwnsjp --entry-only 'b(ne|om)'
+| pwnsjp '^(nie)?k≈Çopotliwy'
+| pwnsjp --deep 'lodowisko'
+
+Kilka ciekawych (choƒá przeznaczonych g≈Ç√≥wnie do dezynsekcji) opcji jest
 nieudokumentowanych.
 
-Polskie znaki diakrytyczne moøna uzyskaÊ jedynie poprzez ustawienie
-odpowiedniego locale. W szczegÛlno∂ci polecenie `locale charmap' powinno daÊ
-jako (spodziewan±) odpowiedº: ISO-8859-2, ISO-8859-16 lub UTF-8.
+Polskie znaki diakrytyczne mo≈ºna uzyskaƒá jedynie poprzez ustawienie
+odpowiedniego locale. W szczeg√≥lno≈õci polecenie ``locale charmap`` powinno
+daƒá jako (spodziewanƒÖ) odpowied≈∫: ISO-8859-2, ISO-8859-16 lub UTF-8.
 
-[[ Rozmaito∂ci ]]
+Rozmaito≈õci
+-----------
 
-Prawa autorskie:
-  Copyright (c) 2005, 2006 Jakub Wilk <ubanus@users.sf.net>.
-  Powyøsze nie dotyczy plikÛw `data/cmap*', ktÛre zosta≥y ,,poøyczone'' 
-  z biblioteki libc.
+Prawa autorskie
+~~~~~~~~~~~~~~~
 
-Licencja:
-  Program jest udostÍpniany na zasadach licencji GNU General Public License
-  w wersji 2.
+Copyright ¬© 2005, 2006, 2007 Jakub Wilk <ubanus@users.sf.net>.
 
-Dziennik (ha, ha) zmian:
-  -- 2006, 2007
-     : zobacz 'debian/changelog'.
-  -- 2005-11-17 (0.501)
-     : kompilacja bez ostrzeøeÒ z gcc 4.0
-  -- 2005-04-16 (0.500)
-     : pole tekstowe sta≥o siÍ odporne na przepe≥nienie
-  -- 2005-02-27 (0.358)
-     : lepsza obs≥uga b≥ÍdÛw alokacji pamiÍci
-     : UI -- reakcja na zmiana wielko∂ci terminala
-  -- 2005-02-20 (0.340)
-     : przeprowadzono do∂Ê bezowocne eksperymenty z algorytmami sortuj±cymi
-  -- 2005-02-19 (0.335)
-     : wersja interaktywna jest juø uøywalna;
-     : wyszukiwanie binarne hase≥ (na tyle, ile to moøliwe)
-     : poprawne dzia≥anie na terminalach monochromatycznych.
-  -- 2005-02-17
-     : subtelnie poprawione renderowanie HTML-u;
-     : poszczegÛlne has≥a s± wyraºnie od siebie oddzielane;
-     : indeks jest przebudowywany jeszcze g≥Íbiej (i jeszcze wolnej);
-     : zal±øek wersji interaktywnej.
-  -- 2005-02-03 (0.290)
-     : za gÛrami, za lasami publicznie udostÍpniono kod.
-  -- 2005-01-03 (-----)
-     : podÛwczas pierwsz± literÍ kodu napisano.
+Powy≈ºsze nie dotyczy plik√≥w ``data/cmap*``, kt√≥re zosta≈Çy ‚Äûpo≈ºyczone‚Äù 
+z biblioteki libc.
 
-B≥Ídy, przemy∂lenia, TODO (UI -- wersja interaktywna, P -- przeciwnie)
-  -- UI: czy kto∂ potrafi wyja∂niÊ to miganie przy przewijaniu definicji
-     s≥owa ,,jÍzyk''?
-  -- UI: zaawansowane wyszukiwanie
-  -- UI: potrzebny krÛtki kurs obs≥ugi
-  -- UI: przenoszenie wyrazÛw pozostawia nieco do øyczenia
-  -- P: wyszukiwanie binarne jest w zasadzie bezuøyteczne
-  -- program jest do∂Ê pamiÍcioøerny
-  -- gdzie∂ zgubi≥y siÍ tabele odmian
-  -- poszczegÛlne rodzaje hase≥ (zwyk≥e, tabele odmian, rozwiniÍcia skrÛtÛw)
-     powinny byÊ od siebie rozdzielone
-  -- czy na pewno zadzia≥a na procesorze big-endianowym?
-  -- kolory s± niekonfigurowalne
-  -- wizualizacja HTML-u jest kiepska
-  -- budowanie indeksu (w przypadku 3TSJP) jest *stanowczo* zbyt wolne, moøe
-     naleøy budowaÊ go podczas instalacji? przy okazji moøna by
-     zdekompresowaÊ ma≥e co nieco
-  -- co ciekawego jest w plikach `sjptom1.dat', ..., `sjptom3.dat'?
-     (przypuszczalnie nic, zw≥aszcza jeøeli chodzi o ten ostatni)
+Licencja
+~~~~~~~~
 
-# vim:tw=76 ts=2 sw=2 et fenc=iso-8859-2
+Program jest udostƒôpniany na zasadach licencji GNU General Public License
+w wersji 2.
+
+Dziennik (ha, ha) zmian
+~~~~~~~~~~~~~~~~~~~~~~~
+
+:2006, 2007:
+    zobacz 'debian/changelog'.
+:2005-11-17 (0.501):
+    kompilacja bez ostrze≈ºe≈Ñ z gcc 4.0
+:2005-04-16 (0.500):
+    pole tekstowe sta≈Ço siƒô odporne na przepe≈Çnienie
+:2005-02-27 (0.358):
+    lepsza obs≈Çuga b≈Çƒôd√≥w alokacji pamiƒôci
+    UI -- reakcja na zmiana wielko≈õci terminala
+:2005-02-20 (0.340):
+    przeprowadzono do≈õƒá bezowocne eksperymenty z algorytmami sortujƒÖcymi
+:2005-02-19 (0.335):
+    wersja interaktywna jest ju≈º u≈ºywalna;
+    wyszukiwanie binarne hase≈Ç (na tyle, ile to mo≈ºliwe)
+    poprawne dzia≈Çanie na terminalach monochromatycznych.
+:2005-02-17:
+    subtelnie poprawione renderowanie HTML-u;
+    poszczeg√≥lne has≈Ça sƒÖ wyra≈∫nie od siebie oddzielane;
+    indeks jest przebudowywany jeszcze g≈Çƒôbiej (i jeszcze wolnej);
+    zalƒÖ≈ºek wersji interaktywnej.
+:2005-02-03 (0.290):
+    za g√≥rami, za lasami publicznie udostƒôpniono kod.
+:2005-01-03 (-----):
+    pod√≥wczas pierwszƒÖ literƒô kodu napisano.
+
+B≈Çƒôdy, przemy≈õlenia, TODO
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[UI -- wersja interaktywna, P -- przeciwnie]
+
+* UI: czy kto≈õ potrafi wyja≈õniƒá to miganie przy przewijaniu definicji
+  s≈Çowa ‚Äûjƒôzyk‚Äù?
+
+* UI: zaawansowane wyszukiwanie
+
+* UI: potrzebny kr√≥tki kurs obs≈Çugi
+
+* UI: przenoszenie wyraz√≥w pozostawia nieco do ≈ºyczenia
+
+* P: wyszukiwanie binarne jest w zasadzie bezu≈ºyteczne
+
+* program jest do≈õƒá pamiƒôcio≈ºerny
+
+* gdzie≈õ zgubi≈Çy siƒô tabele odmian
+
+* poszczeg√≥lne rodzaje hase≈Ç (zwyk≈Çe, tabele odmian, rozwiniƒôcia skr√≥t√≥w)
+  powinny byƒá od siebie rozdzielone
+
+* czy na pewno zadzia≈Ça na procesorze big-endianowym?
+
+* kolory sƒÖ niekonfigurowalne
+
+* wizualizacja HTML-u jest kiepska
+
+* budowanie indeksu (w przypadku 3TSJP) jest *stanowczo* zbyt wolne, mo≈ºe
+  nale≈ºy budowaƒá go podczas instalacji? przy okazji mo≈ºna by
+  zdekompresowaƒá ma≈Çe co nieco
+
+* co ciekawego jest w plikach ``sjptom1.dat``, ‚Ä¶, ``sjptom3.dat``?
+  (przypuszczalnie nic, zw≈Çaszcza je≈ºeli chodzi o ten ostatni)
+
+.. vim:tw=76 ts=4 sw=4 et ft=rst
