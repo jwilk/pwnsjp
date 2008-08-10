@@ -50,7 +50,7 @@ ifeq ($(CC),icc)
 	CFLAGS_def += -DICC
 endif
 
-CFLAGS_def += -DK_VERSION='"$(strip $(M_VERSION))"'
+CFLAGS_def += -DK_VERSION='"$(strip $(VERSION))"'
 ifdef K_DATA_PATH
 	CFLAGS_def += -DK_DATA_PATH="\"$(strip $(K_DATA_PATH))\""
 else
