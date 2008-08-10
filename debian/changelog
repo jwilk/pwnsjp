@@ -20,7 +20,7 @@ pwnsjp (0.600) unstable; urgency=low
 
  -- Jakub Wilk <ubanus@users.sf.net>  Sun,  5 Nov 2006 10:43:44 +0100
 
-pwnsjp (0.502-1) unstable; urgency=low
+pwnsjp (0.502.1) unstable; urgency=low
 
   * Minor documentation fixes.
 
@@ -32,31 +32,31 @@ pwnsjp (0.502) unstable; urgency=low
 
  -- Jakub Wilk <ubanus@users.sf.net>  Sun, 23 Jul 2006 22:49:55 +0200
 
-pwnsjp (0.501-4) unstable; urgency=low
+pwnsjp (0.501.4) unstable; urgency=low
 
   * Include manual pages.
 
  -- Jakub Wilk <ubanus@users.sf.net>  Sat, 22 Jul 2006 15:12:16 +0200
 
-pwnsjp (0.501-3) unstable; urgency=low
+pwnsjp (0.501.3) unstable; urgency=low
 
   * Let ‘pwnsjp’ depend on ‘pwnsjp-data’.
 
  -- Jakub Wilk <ubanus@users.sf.net>  Sun, 16 Jul 2006 15:48:28 +0200
 
-pwnsjp (0.501-2) unstable; urgency=low
+pwnsjp (0.501.2) unstable; urgency=low
 
   * Repackage.
 
  -- Jakub Wilk <ubanus@users.sf.net>  Tue, 11 Jul 2006 14:56:00 +0200
 
-pwnsjp (0.501-1) unstable; urgency=low
+pwnsjp (0.501.1) unstable; urgency=low
 
   * New ‘pwnsjp-data’ package.
   
  -- Jakub Wilk <ubanus@users.sf.net>  Sun, 22 Jan 2006 23:49:52 +0100
 
-pwnsjp (0.500-1) unstable; urgency=low
+pwnsjp (0.500) unstable; urgency=low
 
   * Initial release.
 
