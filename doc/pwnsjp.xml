@@ -3,6 +3,7 @@
 [
 	<!ENTITY p 'pwnsjp'>
 	<!ENTITY d "<acronym>PWN</acronym>'s Polish Dictionary">
+	<!ENTITY jwilk '<firstname>Jakub</firstname> <surname>Wilk</surname>'>
 	<!ENTITY slowin '<filename>slo.win</filename>'>
 	<!ENTITY version '0.devel'>
 ]>
@@ -13,20 +14,17 @@
 	<title>&p; manual</title>
 	<productname>&p;</productname>
 	<author>
-		<firstname>Jakub</firstname> <surname>Wilk</surname>
-		<affiliation>
-			<address>
-				<email>ubanus@users.sf.net</email>
-			</address>
-		</affiliation>
+		&jwilk;	
+		<address>
+			<email>ubanus@users.sf.net</email>
+		</address>
 	</author>
 	<copyright>
 		<year>2006</year>
 		<year>2007</year>
 		<year>2008</year>
-		<holder>Jakub Wilk</holder>
+		<holder>&jwilk;</holder>
 	</copyright>
-	<date>2008-01-20</date>
 </refentryinfo>
 
 <refmeta>
