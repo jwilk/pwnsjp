@@ -288,7 +288,7 @@ unsigned int io_locate(struct io_t *io, const char *search)
   return l - io->iitems;
 }
 
-void io_read(struct io_t *io, unsigned int indexno)
+void io_read(struct io_t *io, size_t indexno)
 {
   assert(io != NULL);
   assert(io->iitems != NULL);
