@@ -99,11 +99,11 @@ ifeq ($(strip $(M_BUILD_HEADERS)),yes)
 include Makefile.hdr
 endif
 
-DB2MAN = /usr/share/xml/docbook/stylesheet/nwalsh/manpages/docbook.xsl
+XSL = http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl
 XSLTPROC = xsltproc
 
-%.1: %.xml $(BD2MAN)
-	sed -e '1,/^$$/ { s!\(slo\.win\)!$(strip ${K_DATA_PATH})/\1!; s!0\.devel!${VERSION}! }' $(<) | $(XSLTPROC) --output $(@) $(DB2MAN)  -
+%.1: %.xml
+	sed -e '1,/^$$/ { s!\(slo\.win\)!$(strip ${K_DATA_PATH})/\1!; s!0\.devel!${VERSION}! }' $(<) | $(XSLTPROC) --output $(@) $(XSL)  -
 
 .PHONY: stats
 stats:
