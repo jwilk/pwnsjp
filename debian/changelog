@@ -1,8 +1,8 @@
-pwnsjp (0.603) UNRELEASED; urgency=low
+pwnsjp (0.603) unstable; urgency=low
 
   * Again, fix an infinite loop which appears in some configurations.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Sun, 10 Aug 2008 22:28:29 +0200
+ -- Jakub Wilk <ubanus@users.sf.net>  Sun, 10 May 2009 18:03:01 +0200
 
 pwnsjp (0.602) unstable; urgency=low
 
