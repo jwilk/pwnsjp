@@ -8,7 +8,8 @@ Standards-Version: 3.8.0
 
 Package: pwnsjp
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, pwnsjp-data
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Recommends: pwnsjp-data
 Description: An interface to some PWN's dictionaries
  pwnsjp is a console-based frontend to the following dictionaries:
  — “Słownik języka polskiego PWN”, 3 volumes;
