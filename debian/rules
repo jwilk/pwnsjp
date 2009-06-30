@@ -63,3 +63,5 @@ binary-arch: build-arch install-arch
 
 binary: binary-arch binary-indep
 .PHONY: build clean binary-indep binary-arch binary install install-indep install-arch configure
+
+# vim:ts=4 sw=4 noet
