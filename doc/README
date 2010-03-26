@@ -97,41 +97,10 @@ Licencja
 Program jest udostępniany na zasadach licencji GNU General Public License
 w wersji 2.
 
-Dziennik (ha, ha) zmian
-~~~~~~~~~~~~~~~~~~~~~~~
-
-:2006, 2007:
-    zobacz 'debian/changelog'.
-:2005-11-17 (0.501):
-    kompilacja bez ostrzeżeń z gcc 4.0
-:2005-04-16 (0.500):
-    pole tekstowe stało się odporne na przepełnienie
-:2005-02-27 (0.358):
-    lepsza obsługa błędów alokacji pamięci
-    UI -- reakcja na zmiana wielkości terminala
-:2005-02-20 (0.340):
-    przeprowadzono dość bezowocne eksperymenty z algorytmami sortującymi
-:2005-02-19 (0.335):
-    wersja interaktywna jest już używalna;
-    wyszukiwanie binarne haseł (na tyle, ile to możliwe)
-    poprawne działanie na terminalach monochromatycznych.
-:2005-02-17:
-    subtelnie poprawione renderowanie HTML-u;
-    poszczególne hasła są wyraźnie od siebie oddzielane;
-    indeks jest przebudowywany jeszcze głębiej (i jeszcze wolnej);
-    zalążek wersji interaktywnej.
-:2005-02-03 (0.290):
-    za górami, za lasami publicznie udostępniono kod.
-:2005-01-03 (-----):
-    podówczas pierwszą literę kodu napisano.
-
 Błędy, przemyślenia, TODO
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [UI -- wersja interaktywna, P -- przeciwnie]
-
-* UI: czy ktoś potrafi wyjaśnić to miganie przy przewijaniu definicji
-  słowa „język”?
 
 * UI: zaawansowane wyszukiwanie
 
