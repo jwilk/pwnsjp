@@ -2,19 +2,19 @@ pwnsjp (0.604) unstable; urgency=low
 
   * Type fixes for 64-bit machines.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Sun, 10 May 2009 18:13:56 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Sun, 10 May 2009 18:13:56 +0200
 
 pwnsjp (0.603) unstable; urgency=low
 
   * Again, fix an infinite loop which appears in some configurations.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Sun, 10 May 2009 18:03:01 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Sun, 10 May 2009 18:03:01 +0200
 
 pwnsjp (0.602) unstable; urgency=low
 
   * Fix an infinite loop which appears in some configurations.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Sun, 17 Jun 2007 21:38:18 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Sun, 17 Jun 2007 21:38:18 +0200
 
 pwnsjp (0.601) unstable; urgency=low
 
@@ -22,7 +22,7 @@ pwnsjp (0.601) unstable; urgency=low
     rxvt-unicode, xterm, gnome-terminal).
   * Make US-ASCII fallback table consist of only US-ASCII characters. 
 
- -- Jakub Wilk <ubanus@users.sf.net>  Tue,  7 Nov 2006 19:35:19 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue,  7 Nov 2006 19:35:19 +0100
 
 pwnsjp (0.600) unstable; urgency=low
 
@@ -30,47 +30,47 @@ pwnsjp (0.600) unstable; urgency=low
   * Support for new new dictionaries.
   * Better HTML rendering.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Sun,  5 Nov 2006 10:43:44 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Sun,  5 Nov 2006 10:43:44 +0100
 
 pwnsjp (0.502.1) unstable; urgency=low
 
   * Minor documentation fixes.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Sun,  3 Sep 2006 16:45:39 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Sun,  3 Sep 2006 16:45:39 +0200
 
 pwnsjp (0.502) unstable; urgency=low
 
   * Use less argessive entry color.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Sun, 23 Jul 2006 22:49:55 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Sun, 23 Jul 2006 22:49:55 +0200
 
 pwnsjp (0.501.4) unstable; urgency=low
 
   * Include manual pages.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Sat, 22 Jul 2006 15:12:16 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Sat, 22 Jul 2006 15:12:16 +0200
 
 pwnsjp (0.501.3) unstable; urgency=low
 
   * Let ‘pwnsjp’ depend on ‘pwnsjp-data’.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Sun, 16 Jul 2006 15:48:28 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Sun, 16 Jul 2006 15:48:28 +0200
 
 pwnsjp (0.501.2) unstable; urgency=low
 
   * Repackage.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Tue, 11 Jul 2006 14:56:00 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 11 Jul 2006 14:56:00 +0200
 
 pwnsjp (0.501.1) unstable; urgency=low
 
   * New ‘pwnsjp-data’ package.
   
- -- Jakub Wilk <ubanus@users.sf.net>  Sun, 22 Jan 2006 23:49:52 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Sun, 22 Jan 2006 23:49:52 +0100
 
 pwnsjp (0.500) unstable; urgency=low
 
   * Initial release.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Sat, 23 Apr 2005 20:35:02 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Sat, 23 Apr 2005 20:35:02 +0200
 
