@@ -1,4 +1,4 @@
-VERSION = $(shell sed -n -e '1 s/.*(\([0-9.]*\)).*/\1/p' < debian/changelog)
+VERSION = $(shell sed -n -e '1 s/.*(\([0-9.]*\)).*/\1/p' < doc/changelog)
 
 M_BUILD_HEADERS = yes	# yes | no
 M_DEBUG = no			# yes | no
