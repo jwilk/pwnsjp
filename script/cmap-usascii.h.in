@@ -24,9 +24,17 @@ foreach (0xa1 .. 0x17f)
 print $tmpfh '</body></html>' unless $use_konwert;
 
 if ($use_konwert)
- { open CO, '-|', "konwert html-ascii <$tmpfh 2>/dev/null"; }
+{
+  open(STDIN, "<&tmpfh");
+  open CO, '-|', "konwert html-ascii" or die;
+}
 else
- { open CO, '-|', "links -stdin -dump -dump-charset US-ASCII <$tmpfh 2>/dev/null"; }
+{
+  my $links_args = "-dump -dump-charset US-ASCII $tmpfh";
+  open CO, '-|', "links $links_args" or
+  open CO, '-|', "elinks $links_args" or
+  die;
+}
 
 my $s='';
 while (<CO>)
