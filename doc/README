@@ -1,28 +1,29 @@
-=================================
-pwnsjp, wersja 0.602 (2007-06-17)
-=================================
+=========================
+pwnsjp 0.605 (2010-09-23)
+=========================
 
-**pwnsjp** to interfejs do niektórych słowników Wydawnictwa Naukowego PWN.
-Przetestowane zostały:
+**pwnsjp** is a console-based frontend to some dictionaries published by
+Wydawnictwo Naukowe PWN. The following dictionaries has been tested:
 
-* trzytomowy „Słownika języka polskiego”, który niegdyś został
-  dołączony do Gazety Wyborczej [3TSJP];
+ - “Słownika języka polskiego”, 3 volumes (distributed as an
+   attachment to Gazety Wyborcza) [3TSJP];
 
-* „Multimedialny słownik PWN. Frazeologia” [MSF];
+ - “Multimedialny słownik PWN. Frazeologia” [MSF];
 
-* „Multimedialny słownik PWN. Język polski” [MSJP];
+ - “Multimedialny słownik PWN. Język polski” [MSJP];
 
-* „Multimedialny słownik PWN. Wyrazy obce” [MSWO].
+ - “Multimedialny słownik PWN. Wyrazy obce” [MSWO].
 
-Do jego uruchomienia interfejsu niezbędny jest plik z rozszerzeniem ``.win``,
-który można wyekstrahować z pliku ``setup/data1.cab``: za pomocą programu
-unshield (zobacz: http://http://synce.sf.net/) lub poprzez instalację
-oryginalnego interfejsu w środowisku Windows/Wine.
+You will need the ``*.win`` file, which can be extracted:
 
-Informacje pomagające ustalić tożsamość:
+ - either by extracting from ``setup/data1.cab`` using Unshield_;
+
+ - or by installing the original interface on Windows/Wine.
+
+Identity data of the supported dictionaries:
 
 ======== ========= =========== ================================
-słownik  plik      rozmiar     suma MD5
+dict.    file      size        MD5
 ======== ========= =========== ================================
 3TSJP    slo.win     107564724 259d95924af212a7db53b7cb853cab47
 MSF      sf.win       24307100 f43c7f1597dd9593f730706d1b8bf492
@@ -30,104 +31,68 @@ MSJP     sjp.win      63476492 2ac579d6502668db64080fdbaf9cdd8a
 MSWO     swo.win      43146160 ff76016c9157a01b45be7cc764171384
 ======== ========= =========== ================================
 
-Program powinien dać się skompilować i uruchomić na każdej maszynie 
-z systemem uniksopodobnym systemem operacyjnym (o ile tylko spełnione
-zostaną wymagania kompilacji; patrz niżej).
-Wszakże został przetestowany jedynie na Debianie Lennym i procesorze
-little-endianowym.
+.. _Unshield:
+   http://synce.sf.net/
 
-Kompilacja
-----------
+Building
+--------
 
-Do kompilacji potrzeba:
+You will need:
 
-* kompilatora mniej-więcej zgodnego ze standardem C99, np. *gcc* ≥ 3.0,
-  *icc* ≥ 8.0;
+ - a modern C99 compiler;
 
-* biblioteki *GNU libc*;
+ - *GNU make*;
 
-* biblioteki *zlib*;
+ - *GNU C* library;
 
-* biblioteki *ncursesw* (*ncurses* z obsługą unikodu);
+ - *zlib* library;
 
-* w razie konieczności odświeżenia niektórych generowanych automatycznie
-  plików nagłówkowych (czyli *nie* w przypadku kompilacji niemodyfikowanej
-  wersji), dodatkowo:
+ - *ncursesw* library (*ncurses* with Unicode support);
 
-  * *perla* w wersji co najmniej 5.6.1,
+ - additionally, if you need to refresh some automatically generated files:
 
-  * programu *gperf*,
+    - *perl*,
 
-  * programu *konwert* lub programu *links* lub *elinks*.
-  
-Kompilacja polega na dostosowaniu do swoich potrzeb pliku ``Makefile.conf``
-(oraz, ewentualnie, ``Makefile``) i odpaleniu polecenia ``make``.
+    - *gperf*,
 
-Użycie
-------
+    - *konwert* or *links* or *elinks*.
+      
+To build the software:
 
-Przykłady:
+ - customize ``Makefile.conf``;
+
+ - run ``make``.
+
+Usage
+-----
+
+Examples:
 
 | pwnsjp --help
 | pwnsjp --entry-only 'b(ne|om)'
 | pwnsjp '^(nie)?kłopotliwy'
 | pwnsjp --deep 'lodowisko'
 
-Kilka ciekawych (choć przeznaczonych głównie do dezynsekcji) opcji jest
-nieudokumentowanych.
+Polish diacritic characters can be displayed correctly only if locale is
+configured properly. Please make sure than ``locale charmap`` gives the 
+expected result: ``ISO-8859-2``, ``ISO-8859-16`` or ``UTF-8``.
 
-Polskie znaki diakrytyczne można uzyskać jedynie poprzez ustawienie
-odpowiedniego locale. W szczególności polecenie ``locale charmap`` powinno
-dać jako (spodziewaną) odpowiedź: ISO-8859-2, ISO-8859-16 lub UTF-8.
+Variétés
+--------
 
-Rozmaitości
------------
+Copyrights
+~~~~~~~~~~
 
-Prawa autorskie
-~~~~~~~~~~~~~~~
+Copyright © 2005, 2006, 2007, 2008, 2009, 2010 Jakub Wilk <jwilk@jwilk.net>.
 
-Copyright © 2005, 2006, 2007 Jakub Wilk <jwilk@jwilk.net>.
+The above does not apply to ``data/cmap*`` files, which were taken from the
+GNU C library.
 
-Powyższe nie dotyczy plików ``data/cmap*``, które zostały „pożyczone” 
-z biblioteki libc.
+License
+~~~~~~~
 
-Licencja
-~~~~~~~~
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License version 2 as published 
+by the Free Software Foundation.
 
-Program jest udostępniany na zasadach licencji GNU General Public License
-w wersji 2.
-
-Błędy, przemyślenia, TODO
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-[UI -- wersja interaktywna, P -- przeciwnie]
-
-* UI: zaawansowane wyszukiwanie
-
-* UI: potrzebny krótki kurs obsługi
-
-* UI: przenoszenie wyrazów pozostawia nieco do życzenia
-
-* P: wyszukiwanie binarne jest w zasadzie bezużyteczne
-
-* program jest dość pamięciożerny
-
-* gdzieś zgubiły się tabele odmian
-
-* poszczególne rodzaje haseł (zwykłe, tabele odmian, rozwinięcia skrótów)
-  powinny być od siebie rozdzielone
-
-* czy na pewno zadziała na procesorze big-endianowym?
-
-* kolory są niekonfigurowalne
-
-* wizualizacja HTML-u jest kiepska
-
-* budowanie indeksu (w przypadku 3TSJP) jest *stanowczo* zbyt wolne, może
-  należy budować go podczas instalacji? przy okazji można by
-  zdekompresować małe co nieco
-
-* co ciekawego jest w plikach ``sjptom1.dat``, …, ``sjptom3.dat``?
-  (przypuszczalnie nic, zwłaszcza jeżeli chodzi o ten ostatni)
-
-.. vim:tw=76 ts=4 sw=4 et ft=rst
+.. vim:tw=76 ts=3 sw=3 et ft=rst
