@@ -74,10 +74,9 @@ clean:
 
 tags: $(CFILES) $(HFILES)
 ifneq ($(CTAGS),)
-	@echo 'ctags *.c *.h'
-	@ctags $(^)
+	ctags $(^)
 else
-	@touch $(@)
+	touch $(@)
 endif
 
 include Makefile.dep
@@ -86,14 +85,11 @@ pwnsjpi: pwnsjp
 	ln -sf pwnsjp pwnsjpi
 
 pwnsjp: $(OFILES)
-	@echo CFLAGS = $(CFLAGS)
-	@echo $(CC) '(...)' $(^) -o ${@} $(CFLAGS_ld) 
-	@$(CC) $(CFLAGS) $(^) -o ${@} $(CFLAGS_ld) 
+	$(CC) $(CFLAGS) $(^) -o ${@} $(CFLAGS_ld) 
 	$(STRIP) ${@}
 
 $(OFILES): %.o: %.c
-	@echo $(CC) '(...)' -c $(<) -o $(@)
-	@$(CC) $(CFLAGS) $(CFLAGS_def) -c $(<) -o $(@)
+	$(CC) $(CFLAGS) $(CFLAGS_def) -c $(<) -o $(@)
 
 ifeq ($(strip $(M_BUILD_HEADERS)),yes)
 include Makefile.hdr
@@ -107,8 +103,8 @@ XSLTPROC = xsltproc
 
 .PHONY: stats
 stats:
-	@echo $(shell cat ${SOURCEFILES} script/* | wc -l) lines.
-	@echo $(shell cat ${SOURCEFILES} script/* | wc -c) bytes.
+	echo $(shell cat ${SOURCEFILES} script/* | wc -l) lines.
+	echo $(shell cat ${SOURCEFILES} script/* | wc -c) bytes.
 
 .PHONY: ui-test
 ui-test: pwnsjpi
