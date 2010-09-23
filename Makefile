@@ -15,7 +15,7 @@ CFLAGS = \
 	$(CFLAGS_opt) $(CFLAGS_wrn) $(CFLAGS_std) $(CFLAGS_dbg)
 
 CFLAGS_def :=
-CFLAGS_opt := -O3 -fstrict-aliasing
+CFLAGS_opt := -O3
 CFLAGS_ld  := -lz -lncursesw
 CFLAGS_dbg := -DNDEBUG
 STRIP = strip -s
@@ -23,10 +23,6 @@ ifeq ($(strip $(M_DEBUG)),yes)
 	CFLAGS_opt := -O0
 	CFLAGS_dbg := -g
 	STRIP = @true
-else
-ifeq ($(CC),gcc)
-	CFLAGS_opt += -fomit-frame-pointer
-endif
 endif
 ifeq ($(CC),gcc)
 	CFLAGS_opt += -finline-limit=1200
