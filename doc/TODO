@@ -6,28 +6,17 @@ Things to do
 ~~~~~~~~~~~~
 
  - TUI: add support for advanced search (e.g. with regular expressions).
-
  - TUI: add help under F1.
-
  - TUI: implement better word wrapping.
-
  - CLI: make binary search more useful or get rid of it.
-
  - Make the program more memory-efficient.
-
  - Find out how to access inflexion tables.
-
  - Avoid mixing up different kinds of entries (normal, inflexion tables,
    shortcuts etc.).
-
  - Test if it actually works on a big-endian machine.
-
  - Make colors configurable.
-
  - Render HTML in a better way.
-
  - Generate indices at compile time (or runtime?).
-
  - Investigate what is the contents of ``sjptom1.dat``, …, ``sjptom3.dat``?
 
 .. vim:tw=76 ts=3 sw=3 et ft=rst

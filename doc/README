@@ -7,17 +7,12 @@ Wydawnictwo Naukowe PWN. The following dictionaries has been tested:
 
  - “Słownika języka polskiego”, 3 volumes (distributed as an
    attachment to Gazety Wyborcza) [3TSJP];
-
  - “Multimedialny słownik PWN. Frazeologia” [MSF];
-
  - “Multimedialny słownik PWN. Język polski” [MSJP];
-
  - “Multimedialny słownik PWN. Wyrazy obce” [MSWO].
 
 You will need the ``*.win`` file, which can be extracted:
-
  - either by extracting from ``setup/data1.cab`` using Unshield_;
-
  - or by installing the original interface on Windows/Wine.
 
 Identity data of the supported dictionaries:
@@ -40,38 +35,28 @@ Building
 You will need:
 
  - a modern C99 compiler;
-
  - *GNU make*;
-
  - *GNU C* library;
-
  - *zlib* library;
-
  - *ncursesw* library (*ncurses* with Unicode support);
-
  - additionally, if you need to refresh some automatically generated files:
-
     - *perl*,
-
     - *gperf*,
-
     - *konwert* or *links* or *elinks*.
       
 To build the software:
-
  - customize ``Makefile.conf``;
-
  - run ``make``.
 
 Usage
 -----
 
-Examples:
+Examples::
 
-| pwnsjp --help
-| pwnsjp --entry-only 'b(ne|om)'
-| pwnsjp '^(nie)?kłopotliwy'
-| pwnsjp --deep 'lodowisko'
+   pwnsjp --help
+   pwnsjp --entry-only 'b(ne|om)'
+   pwnsjp '^(nie)?kłopotliwy'
+   pwnsjp --deep 'lodowisko'
 
 Polish diacritic characters can be displayed correctly only if locale is
 configured properly. Please make sure than ``locale charmap`` gives the 
