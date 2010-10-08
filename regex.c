@@ -45,9 +45,9 @@ char* pattern_head(const char* p)
 {
   if (p == NULL || *p != '^')
     return NULL;
-  
+
   do p++; while (*p == '^');
-  
+
   bool esc = false;
   char result[1 + strlen(p)];
   result[0]='\0';
@@ -56,7 +56,7 @@ char* pattern_head(const char* p)
   if (esc)
     switch (*p)
     {
-    case '^': case '.': case '[': case ']': case '$': case '(': case ')': 
+    case '^': case '.': case '[': case ']': case '$': case '(': case ')':
     case '|': case '*': case '+': case '?': case '{': case '}': case '\\':
       *r++ = *p;
       esc = false;
@@ -65,7 +65,7 @@ char* pattern_head(const char* p)
       goto enough;
     }
   else
-    switch (*p)  
+    switch (*p)
     {
     case '\\':
       esc = true;

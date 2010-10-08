@@ -74,19 +74,19 @@ void term_init(void)
     return;
   }
   is_term = true;
-  
+
   term_sgr0 = str_clone(term_getstr("sgr0"));
   assert(term_sgr0 != NULL);
 
   term_bold = str_clone(term_getstr("bold"));
   assert(term_bold != NULL);
-  
+
   term_rev = str_clone(term_getstr("rev"));
   assert(term_rev != NULL);
-  
+
   memset(term_setaf, 0, sizeof(term_setaf));
   memset(term_setab, 0, sizeof(term_setab));
-  
+
   s0 = term_getstr("setaf");
   if (*s0 != '\0')
     for (j = 0; j < 8; j++)
@@ -99,7 +99,7 @@ void term_init(void)
   else
     for (j = 0; j < 8; j++)
       term_setaf[j] = str_clone("");
-  
+
   s0 = term_getstr("setab");
   if (*s0 != '\0')
     for (j = 0; j < 8; j++)

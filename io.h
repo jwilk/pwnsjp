@@ -31,7 +31,7 @@ struct io_header_t
   uint32_t index_base;
   uint32_t words_base;
   uint32_t __tmq[5];
-}; 
+};
 
 struct io_iitem_t
 {
@@ -50,10 +50,10 @@ struct io_t
   bool cp1250;
 
   struct io_header_t* header;
-  
+
   size_t isize;
   struct io_iitem_t* iitems;
-  
+
   size_t csize;
   char* cbuffer;
 };

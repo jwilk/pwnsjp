@@ -17,8 +17,8 @@ EOF
 
 print $tmpfh '<html><body>' unless $use_konwert;
 foreach (0xa1 .. 0x17f)
-{ 
-  print $tmpfh "&#$_;\n"; 
+{
+  print $tmpfh "&#$_;\n";
   print $tmpfh '<br />' unless $use_konwert
 }
 print $tmpfh '</body></html>' unless $use_konwert;
@@ -40,7 +40,7 @@ my $s='';
 while (<CO>)
 {
   chop;
-  s/"/\\"/; 
+  s/"/\\"/;
   s/^ *(.*)$/"$1", /;
   $s .= $_;
 }
@@ -53,6 +53,6 @@ $s };
 EOF
 ;
 
-close $tmpfh; 
+close $tmpfh;
 
 # vim:ts=2 sw=2 et ft=perl

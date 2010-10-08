@@ -80,20 +80,20 @@ bool io_prepare_index(struct io_t *io)
     io->header->__tmq[i] = le2cpu(io->header->__tmq[i]);
     debug("m(%u) = 0x%08x\n", i+6, io->header->__tmq[i]);
   }
-  
+
   io->iitems = NULL;
   io->isize = le2cpu(io->header->__word_count);
   debug("word count = %d\n", io->isize);
 
   io->header->index_base = le2cpu(io->header->index_base);
   debug("index #1 base = 0x%08x\n", io->header->index_base);
-  
+
   io->header->index_base += sizeof (uint32_t) * io->isize;
   debug("index #2 base = 0x%08x\n", io->header->index_base);
-  
+
   io->header->words_base = le2cpu(io->header->words_base);
   debug("words base = 0x%08x\n", io->header->words_base);
-  
+
   return true;
 }
 
@@ -103,7 +103,7 @@ static void uint32_qsort(uint32_t *l, uint32_t *r)
 {
   uint32_t *i, *j, p, temp;
   int dist;
-  
+
   while (true)
   {
     dist = r - l;
@@ -202,22 +202,22 @@ static void iitem_sort(struct io_iitem_t *table, size_t count)
     }
     else
       blocks++;
-  
+
   debug("mergesort blocks = %u\n", blockc);
   unsigned int qlog, qlim = 2 * (blockc + 2);
  	for (qlog = 0; qlim > 0; qlog++)
     qlim >>= 1;
   qlim = (1<<qlog) - 1;
   debug("mergesort stack limit = 2^%u - 1 = %u\n", qlog, qlim);
-  
+
   struct io_iitem_t *queue[qlim + 1];
   unsigned int qhead, qtail, qlen;
   qlen = 0;
   qhead = qtail = -1;
-  
+
 #define pop() (qlen--, qtail = ((qtail+1) & qlim), queue[qtail])
 #define push(x) (qlen++, qhead = ((qhead+1) & qlim), queue[qhead] = (x))
-  
+
   push(table);
   forallitems
     if (iitem->stirring)
@@ -227,9 +227,9 @@ static void iitem_sort(struct io_iitem_t *table, size_t count)
     }
 #undef forallitems
   push(iitem);
-  
+
   struct io_iitem_t *buffer = alloc(count, sizeof (struct io_iitem_t));
-  
+
   while (qlen >= 4)
   {
     struct io_iitem_t *a, *al, *ah, *bl, *bh, *r;
@@ -272,7 +272,7 @@ static void iitem_sort(struct io_iitem_t *table, size_t count)
   free(buffer);
 
 #else
-  
+
   debug("quicksort = yes\n");
   iitem_qsort(table, table + count - 1);
 
@@ -282,9 +282,9 @@ static void iitem_sort(struct io_iitem_t *table, size_t count)
 unsigned int io_locate(struct io_t *io, const char *search)
 {
   struct io_iitem_t *l, *r, *m;
- 
+
   char *xsearch = strxform(search);
-  
+
   l = io->iitems;
   r = l + io->isize-1;
   while (r > l)
@@ -297,7 +297,7 @@ unsigned int io_locate(struct io_t *io, const char *search)
   }
 
   free(xsearch);
-  
+
   assert(l >= io->iitems);
   assert(l < io->iitems + io->isize);
   return l - io->iitems;
@@ -308,18 +308,18 @@ void io_read(struct io_t *io, size_t indexno)
   assert(io != NULL);
   assert(io->iitems != NULL);
   struct io_iitem_t *iitem = io->iitems + indexno;
-  
+
   char buffer[io->csize];
- 
+
   assert(io->header != NULL);
-  if 
+  if
     ( (fseek(io->file, io->header->words_base + iitem->offset, SEEK_SET) != 0) ||
       (fread(buffer, iitem->size, 1, io->file) != 1) )
   {
     io->cbuffer[0] = '\0';
     return;
   }
-  
+
   unsigned long dsize = io->csize << 3;
   assert(io->cbuffer != NULL);
   if (iitem->zipped)
@@ -343,7 +343,7 @@ bool io_build_index(struct io_t *io)
     return false;
 
   debug("sizeof(struct io_iitem_t) = %u\n", sizeof(struct io_iitem_t));
-  
+
   io->iitems = alloz(io->isize - 1, sizeof (struct io_iitem_t));
   if (io->iitems == NULL)
   {
@@ -357,7 +357,7 @@ bool io_build_index(struct io_t *io)
   uint32_sort(offsets, io->isize);
 
   io->isize -= 2;
-  
+
   unsigned int size, maxsize = 1024;
   for (i = 0; i < io->isize; i++)
   {
@@ -372,12 +372,12 @@ bool io_build_index(struct io_t *io)
 
   if (maxsize >= (1 << 14))
     return false;
-  
+
   io->csize = (maxsize | 0xff) + 1;
   io->cbuffer = alloc(io->csize << 3, sizeof (char));
   if (io->cbuffer == NULL)
     return false;
- 
+
   struct io_iitem_t *iitem;
 
 #define forallitems for (i = 0, iitem = io->iitems; i < io->isize; i++, iitem++)
@@ -391,9 +391,9 @@ bool io_build_index(struct io_t *io)
     if (fread(wordbuffer, iitem->size, 1, io->file) != 1)
       return false;
     dataptr = wordbuffer + 12;
-    iitem->entry = 
-      config.conf_quick ? 
-        str_clone(dataptr) : 
+    iitem->entry =
+      config.conf_quick ?
+        str_clone(dataptr) :
         pwnstr_to_str(dataptr);
     dataptr = strchr(dataptr, '\0') + 2;
     if (*dataptr < ' ')
@@ -409,12 +409,12 @@ bool io_build_index(struct io_t *io)
     forallitems iitem->xentry = iitem->entry;
   else
     forallitems iitem->xentry = strxform(iitem->entry);
-  
+
   unsigned int len, maxlen = 0;
   forallitems
   {
     len = strlen(iitem->xentry);
-    if (len > maxlen) 
+    if (len > maxlen)
       maxlen = len;
   }
   char *plusinf; // +oo == "\xff\xff...\xff"
@@ -422,11 +422,11 @@ bool io_build_index(struct io_t *io)
   memset(plusinf, -1, maxlen);
   plusinf[maxlen] = '\0';
   iitem->entry = iitem->xentry = plusinf;
-  
+
 #undef forallitems
-  
+
   iitem_sort(io->iitems, io->isize);
-  
+
   return true;
 }
 

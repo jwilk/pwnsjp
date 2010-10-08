@@ -38,12 +38,12 @@
 
 static const char *rev_iso8859n = NULL;
 
-static enum 
-{ 
-  cmap_usascii    = 0, 
-  cmap_iso88592   = 2, 
-  cmap_iso885913  = 13, 
-  cmap_iso885916  = 16, 
+static enum
+{
+  cmap_usascii    = 0,
+  cmap_iso88592   = 2,
+  cmap_iso885913  = 13,
+  cmap_iso885916  = 16,
   cmap_utf8       = -1
 } cmap = cmap_usascii;
 
@@ -139,7 +139,7 @@ static char *ustr_fallback_ascii(const wchar_t *ustr)
 {
   int i, len = wcslen(ustr), biglen = 4 * (len + 1);
   char result[biglen], *appendix;
-  memset(result, 0, biglen); 
+  memset(result, 0, biglen);
   appendix = result;
 #define a(t) ( *appendix++ = t )
 #define as(t) do { strcpy(appendix, t); while (*appendix) appendix++; } while (0)
@@ -268,7 +268,7 @@ char *strxform(const char *str)
 
 bool posix_coll(void)
 {
-  return coll == coll_posix; 
+  return coll == coll_posix;
 }
 
 // vim: ts=2 sw=2 et

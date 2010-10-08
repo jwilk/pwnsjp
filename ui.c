@@ -22,7 +22,7 @@
 #include "common.h"
 #include "ui.h"
 
-#define _XOPEN_SOURCE_EXTENDED 
+#define _XOPEN_SOURCE_EXTENDED
 #include <signal.h>
 #include <ncursesw/ncurses.h>
 
@@ -99,29 +99,29 @@ static void ui_windows_create(void)
 {
   erase();
   wnoutrefresh(stdscr);
-  
+
   getmaxyx(stdscr, scr_height, scr_width);
   assert(scr_width > 0 && scr_height > 0);
   bool object = false;
   if (scr_width  < c_min_scr_width ) { scr_width  = c_min_scr_width;  object = true; }
   if (scr_height < c_min_scr_height) { scr_height = c_min_scr_height; object = true; }
-  if (object) 
+  if (object)
     resize_term(scr_height, scr_width);
-  
+
   wtitle = newwin(1, 0, 0, 0);
   wbkgd(wtitle, ' ' | ATTR(normal_rev)); werase(wtitle);
   mvwaddstr(wtitle, 0, 1, "pwnsjp-interactive " K_VERSION);
-  
+
   wscroll = newwin(scr_height - 2, 1, 1, c_menu_width + 2);
   struct scrollbar_t scrollbar;
   memset(&scrollbar, 0, sizeof(scrollbar));
   scrollbar.window = wscroll;
   scrollbar.height = scr_height - 2;
   ui_show_scrollbar(&scrollbar);
-  
+
   wmenu = newwin(scr_height - 3, c_menu_width, 2, 1);
   wview = newwin(scr_height - 3, scr_width-c_menu_width-5, 2, c_menu_width+4);
-  
+
   wstatus = newwin(0, 0, scr_height-1, 0);
   ui_show_statusline(true);
 }
@@ -176,21 +176,21 @@ bool ui_prepare(void)
     return false; // FIXME
 
   memset(windows, 0, sizeof(windows));
-  
+
   initscr();
   atexit(ui_stop);
   raw(); noecho(); nonl();
   intrflush(NULL, FALSE);
   keypad(stdscr, TRUE);
   timeout(500);
- 
+
   curs_set(0);
 
 #define fail() do { ui_stop(); return false; } while (0)
-  
+
   if (start_color() != OK)
     fail();
- 
+
   int i = 0;
   for (int fg = 0; fg < hue_fg_count; fg++)
   for (int bg = 0; bg < hue_bg_count; bg++)
@@ -220,7 +220,7 @@ bool ui_prepare(void)
   free(message);
 
   ui_windows_refresh();
- 
+
   struct sigaction sa;
   sa.sa_handler = ui_sig_resize;
   sigfillset(&sa.sa_mask);
@@ -274,7 +274,7 @@ static bool ui_search(struct menu_t *menu)
   free(search);
   if (prev == menu->entry_no)
     return false;
-  if 
+  if
     ( menu->entry_no >= menu->entry_page_no + menu->height ||
       menu->entry_no < (unsigned int)menu->entry_page_no )
     menu->entry_page_no = menu->entry_no;
@@ -297,10 +297,10 @@ static void ui_show_menu(struct menu_t *menu)
 {
   unsigned int i, j;
   bool almostfound;
-  
+
   assert(menu != NULL);
   assert(menu->io != NULL);
-  
+
   wchar_t* hide = str_to_ustr(menu->io->iitems[menu->entry_no].entry);
   wchar_t* seek = menu->search;
   i = wcslen(hide);
@@ -341,7 +341,7 @@ static void ui_show_menu(struct menu_t *menu)
 
   menu->scrollbar.start = menu->scrollbar.stop = menu->entry_no;
   ui_show_scrollbar(&menu->scrollbar);
-  
+
   ui_show_menu_cursor(menu);
 }
 
@@ -351,7 +351,7 @@ static void ui_show_content(struct view_t *view)
   werase(wview);
 
   bool needrestart = false;
-  
+
   if (view->content == NULL || view->entry_no != view->menu->entry_no)
   {
     if (view->content_needfree && view->content != NULL)
@@ -375,20 +375,20 @@ static void ui_show_content(struct view_t *view)
   }
   else
   {
-    if 
+    if
       ( view->position + view->height > 0 &&
-        (unsigned int)(view->position + view->height) > view->lines 
+        (unsigned int)(view->position + view->height) > view->lines
       )
       view->position = view->lines - view->height;
     if (view->position < 0)
       view->position = 0;
-    
+
     assert(view->position >= 0);
     assert(view->height > view->lines || view->position + view->height <= view->lines);
   }
-  
+
   int lines = 1;
- 
+
   if (view->raw)
   {
     int attr = A_BOLD;
@@ -398,8 +398,8 @@ static void ui_show_content(struct view_t *view)
     for (x = 0; x < lim && *s; x++, s++)
     {
       chtype ch;
-      if (*s == '<') 
-        attr = A_NORMAL; 
+      if (*s == '<')
+        attr = A_NORMAL;
       if (*s < ' ')
         ch = '$' | A_REVERSE;
       else if (*s >= 0x7f)
@@ -414,7 +414,7 @@ static void ui_show_content(struct view_t *view)
   else
   {
     char *left, *right;
-    
+
     int xlimit, y, ylimit;
     xlimit = view->width;
     ylimit = needrestart ? INT_MAX : view->height;
@@ -446,7 +446,7 @@ static void ui_show_content(struct view_t *view)
     } \
     y++; \
   } while (false)
-  
+
     while (*right)
     {
       if (esc)
@@ -461,7 +461,7 @@ static void ui_show_content(struct view_t *view)
         right += 3;
         left = right + 1;
       }
-      else 
+      else
       switch (*right)
       {
       case '\x1b':
@@ -478,7 +478,7 @@ static void ui_show_content(struct view_t *view)
           xlimit--;
           if (canwrite())
             waddch(wview, ' ');
-        } 
+        }
         else
           cr();
         break;
@@ -506,7 +506,7 @@ exceed:
       return ui_show_content(view);
     }
   }
-  
+
   wnoutrefresh(wview);
 
   if (view->height > view->lines)
@@ -521,12 +521,12 @@ exceed:
 static void ui_react_menu(struct menu_t *menu, wchar_t ch)
 {
   assert(menu != NULL);
-  
+
 #define reject(p) \
   do if (p) { beep(); return; } while(false)
 
   unsigned int i;
-  
+
   switch (ch)
   {
   case KEY_DC:
@@ -614,7 +614,7 @@ static void ui_react_menu(struct menu_t *menu, wchar_t ch)
     doupdate();
     break;
   default:
-    reject 
+    reject
       ( (ch = -ch) < L'\0' ||
         !iswprint(ch) ||
         wcwidth(ch) != 1 ||
@@ -691,7 +691,7 @@ void ui_start(struct io_t *io)
   struct view_t view;
   memset(&menu, 0, sizeof(menu));
   memset(&view, 0, sizeof(view));
-  
+
   assert(scr_width>0 && scr_height>0);
 
 #define set_menu_extent() \
@@ -708,29 +708,29 @@ void ui_start(struct io_t *io)
     view.height = scr_height - 3; \
     view.scrollbar.window = wscroll; \
     view.scrollbar.height = scr_height - 2; \
-  } while (0) 
+  } while (0)
 
   menu.io = io;
   menu.view = &view;
   set_menu_extent();
   menu.scrollbar.range = io->isize-1;
-  
+
   view.io = io;
   view.menu = &menu;
   set_view_extent();
   view.scrollbar.disabled = true;
-  
+
   ui_show_content(&view);
   ui_show_menu(&menu);
   doupdate();
-  
+
   bool doexit = false;
-  
+
   while (!doexit)
   {
     if (scr_needresize)
       unget_wch(L'L' - L'@'); // Control + L
-      
+
     wint_t chi;
     int r = get_wch(&chi);
     wchar_t ch = chi;
@@ -805,7 +805,7 @@ void ui_start(struct io_t *io)
 
 #undef set_menu_extent
 #undef set_view_extent
-  
+
 }
 
 // vim: ts=2 sw=2 et

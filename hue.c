@@ -62,11 +62,11 @@ void hue_setup_terminfo(void)
     strncat(cbuf[i], term_setaf[fg], bufsize - 1);
     strncat(cbuf[i], term_setab[bg], bufsize - 1);
     if ((ex << hue_ex_shift) & hue_bold)
-      strncat(cbuf[i], term_bold, bufsize - 1); 
+      strncat(cbuf[i], term_bold, bufsize - 1);
     if ((ex << hue_ex_shift) & hue_reverse)
       strncat(cbuf[i], term_rev, bufsize - 1);
   }
-  
+
   for (int i = 0; i < hue_count; i++)
     hue[i] = cbuf[i];
 

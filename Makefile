@@ -81,7 +81,7 @@ pwnsjpi: pwnsjp
 	ln -sf pwnsjp pwnsjpi
 
 pwnsjp: $(OFILES)
-	$(CC) $(CFLAGS) $(^) -o ${@} $(CFLAGS_ld) 
+	$(CC) $(CFLAGS) $(^) -o ${@} $(CFLAGS_ld)
 	$(STRIP) ${@}
 
 $(OFILES): %.o: %.c

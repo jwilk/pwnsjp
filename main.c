@@ -70,12 +70,12 @@ int main(int argc, char **argv)
   case action_seek:
     ;
   }
-  
+
   unicode_init();
 
 #define fail(format, ...) \
   do { fprintf(stderr, format, ## __VA_ARGS__); return EXIT_FAILURE; } while (0)
-  
+
   regex_t regex;
   if (!regex_compile(&regex, pattern))
     fail("Invalid pattern.\n");
@@ -83,22 +83,22 @@ int main(int argc, char **argv)
   struct io_t io;
   if (!io_init(&io, config.filename))
     fail("Unable to open data file: %s\n", config.filename);
-  
+
   if (!io_validate(&io))
     fail("Invalid data file signature.\n");
 
   if (io.file_size < (1 << 24))
     fail("Unexpectedly short data file.\n");
-  
+
   if (io.file_size > (1 << 28))
     fail("Unexpectedly long data file.\n");
-  
+
   if (config.conf_ui && !ui_prepare())
     fail("Unable to initialize user interface.\n");
 
   if (!io_prepare_index(&io))
     fail("Unable to prepare index.\n");
-  
+
   if (io.isize < (1 << 12))
     fail("Indecently few words.\n");
   if (io.isize > (1 << 17))
@@ -138,14 +138,14 @@ int main(int argc, char **argv)
       if (config.conf_deep || !pattern || (doesmatch = regex_match(&regex, iitem->entry)))
       {
         debug(
-          "localstr = \"%s\" ; location = %08x + %06x\n", 
-          iitem->entry, 
+          "localstr = \"%s\" ; location = %08x + %06x\n",
+          iitem->entry,
           iitem->offset,
           iitem->size);
         bool dofree = false;
         if (config.conf_entry_only)
           tbuffer = iitem->entry;
-        else 
+        else
         {
           io_read(&io, i);
           tbuffer = io.cbuffer;
@@ -159,11 +159,11 @@ int main(int argc, char **argv)
         {
           pmc++;
           if (!config.conf_entry_only)
-            printf("%s\n::: %s%s%s :::%s\n\n", 
-              hue[hue_title], 
-              hue[hue_title + hue_bold], 
-              iitem->entry, 
-              hue[hue_title], 
+            printf("%s\n::: %s%s%s :::%s\n\n",
+              hue[hue_title],
+              hue[hue_title + hue_bold],
+              iitem->entry,
+              hue[hue_title],
               hue[hue_normal]);
           printf("%s\n", tbuffer);
         }
@@ -182,7 +182,7 @@ int main(int argc, char **argv)
 
   if (!io_fine(&io))
     fatal("");
-  
+
   if (pattern)
     regex_free(&regex);
 

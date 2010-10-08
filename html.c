@@ -141,7 +141,7 @@ char *html_strip(char *str)
 #define sync() ( head = tail + 1 )
 #define nhave(s, n) ( !strncasecmp(head, s, n) )
 #define have(s) ( !strcasecmp(head, s) )
-  
+
   for (head = tail = str; *tail; tail++)
   switch (state)
   {
@@ -189,7 +189,7 @@ char *html_strip(char *str)
       state = s_tag_open;
     break;
   case s_tag_open:
-    if (*tail == '>') 
+    if (*tail == '>')
     {
       state = s_default;
       *tail = '\0';
@@ -284,7 +284,7 @@ char *html_strip(char *str)
 #undef have
 #undef nhave
 #undef stack_size
-  
+
   if (*result != '\0')
   {
     char *end = strchr(result, '\0');

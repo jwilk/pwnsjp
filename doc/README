@@ -43,7 +43,7 @@ You will need:
     - *perl*,
     - *gperf*,
     - *konwert* or *links* or *elinks*.
-      
+
 To build the software:
  - customize ``Makefile.conf``;
  - run ``make``.
@@ -59,7 +59,7 @@ Examples::
    pwnsjp --deep 'lodowisko'
 
 Polish diacritic characters can be displayed correctly only if locale is
-configured properly. Please make sure than ``locale charmap`` gives the 
+configured properly. Please make sure than ``locale charmap`` gives the
 expected result: ``ISO-8859-2``, ``ISO-8859-16`` or ``UTF-8``.
 
 Variétés

@@ -56,7 +56,7 @@ char *parse_options(int argc, char **argv)
 
   if (is_term)
     config.conf_color = true;
- 
+
   while (true)
   {
     int i = 0;
