@@ -1,0 +1,2 @@
+/* XXX: This file was generated automatically. */
+
