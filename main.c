@@ -38,7 +38,7 @@
 
 static void version(void)
 {
-  fprintf(stderr, "pwnsjp, version " K_VERSION "\n\n");
+  fprintf(stderr, "pwnsjp, version " PACKAGE_VERSION "\n\n");
 }
 
 static void usage(void)

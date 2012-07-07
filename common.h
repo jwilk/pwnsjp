@@ -1,4 +1,4 @@
-/* Copyright © 2005, 2010 Jakub Wilk <jwilk@jwilk.net>
+/* Copyright © 2005, 2010, 2012 Jakub Wilk <jwilk@jwilk.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -48,13 +48,7 @@
 
 #endif
 
-#ifndef K_DATA_PATH
-#  define K_DATA_PATH "."
-#endif
-
-#ifndef K_VERSION
-#  define K_VERSION "<devel>"
-#endif
+#include "setup.h"
 
 #endif
 

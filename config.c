@@ -1,4 +1,4 @@
-/* Copyright © 2005, 2006, 2010 Jakub Wilk <jwilk@jwilk.net>
+/* Copyright © 2005, 2006, 2010, 2012 Jakub Wilk <jwilk@jwilk.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -94,9 +94,9 @@ char *parse_options(int argc, char **argv)
   if (strchr(config.filename, '/') == NULL)
   {
     bool hasext = strchr(config.filename, '.') != NULL;
-    int size = 1 + snprintf(NULL, 0, K_DATA_PATH "/%s%s", config.filename, hasext ? "" : ".win");
+    int size = 1 + snprintf(NULL, 0, DICTDIR "/%s%s", config.filename, hasext ? "" : ".win");
     char *buffer = alloz(size, 1);
-    sprintf(buffer, K_DATA_PATH "/%s%s", config.filename, hasext ? "" : ".win");
+    sprintf(buffer, DICTDIR "/%s%s", config.filename, hasext ? "" : ".win");
     config.filename = buffer;
     atexit(deconfigure);
   }

@@ -1,6 +1,7 @@
-pwnsjp (0.605) UNRELEASED; urgency=low
+pwnsjp (0.700) UNRELEASED; urgency=low
 
   * Relicense to the Expat license.
+  * Use Autoconf.
 
  -- Jakub Wilk <jwilk@jwilk.net>  Fri, 08 Oct 2010 16:39:43 +0200
 

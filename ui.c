@@ -110,7 +110,7 @@ static void ui_windows_create(void)
 
   wtitle = newwin(1, 0, 0, 0);
   wbkgd(wtitle, ' ' | ATTR(normal_rev)); werase(wtitle);
-  mvwaddstr(wtitle, 0, 1, "pwnsjp-interactive " K_VERSION);
+  mvwaddstr(wtitle, 0, 1, "pwnsjp-interactive " PACKAGE_VERSION);
 
   wscroll = newwin(scr_height - 2, 1, 1, c_menu_width + 2);
   struct scrollbar_t scrollbar;

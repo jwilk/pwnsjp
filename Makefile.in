@@ -1,0 +1,64 @@
+CC = @CC@
+CFLAGS = @CFLAGS@ @ZLIB_CFLAGS@
+CPPFLAGS = @CPPFLAGS@ -DDICTDIR='"$(dictdir)"'
+LDFLAGS = @LDFLAGS@
+LDLIBS = @CURSES_LIB@ @ZLIB_LIBS@
+
+prefix = @prefix@
+datadir = @datadir@
+datarootdir = @datarootdir@
+dictdir = @dictdir@
+
+version = @PACKAGE_VERSION@
+
+cfiles := $(wildcard *.c)
+ofiles := $(cfiles:.c=.o)
+
+# code
+# ====
+
+.PHONY: all
+all: pwnsjp pwnsjpi
+
+pwnsjpi: pwnsjp
+	ln -sf pwnsjp pwnsjpi
+
+pwnsjp: $(ofiles)
+	$(LINK.c) $(^) $(LOADLIBES) $(LDLIBS) -o $(@)
+
+$(ofiles): %.o: %.c
+
+include Makefile.dep
+include Makefile.hdr
+
+# documentation
+# =============
+
+XSLTPROC = @XSLTPROC@
+
+ifneq "$(XSLTPROC)" ""
+
+xml_files = $(wildcard doc/*.xml)
+man_files = $(xml_files:.xml=.1)
+all: $(man_files)
+
+docbook_xsl = http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl
+
+%.1: %.xml
+	sed -e 's,&version;,$(version),g' -e 's,&slowin;,$(dictdir)/slo.win,g' $(<) | \
+	$(XSLTPROC) --output $(@) $(docbook_xsl) -
+
+endif
+
+# cleaning
+# ========
+
+.PHONY: clean
+clean:
+	rm -f pwnsjp pwnsjpi *.o doc/*.[0-9]
+
+.PHONY: distclean
+distclean:
+	rm -f config.log config.status setup.h
+
+# vim:ts=4
