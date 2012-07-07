@@ -59,6 +59,6 @@ clean:
 
 .PHONY: distclean
 distclean:
-	rm -f config.log config.status setup.h
+	rm -f Makefile config.log config.status setup.h
 
 # vim:ts=4
