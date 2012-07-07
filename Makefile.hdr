@@ -1,32 +1,32 @@
-AUTOGEN_HEADER = data/autogen-header.inc.h
+autogen_header = data/autogen-header.inc.h
 
-AUTOHFILES = $(wildcard cmap-*.h) $(wildcard entity*.h)
+autohfiles = $(wildcard cmap-*.h) $(wildcard entity*.h)
 
-$(AUTOHFILES): $(AUTOGEN_HEADER)
+$(autohfiles): $(autogen_header)
 
 cmap-cp1250.h: data/cmap-cp1250.gz script/cmap-decode
-	cat $(AUTOGEN_HEADER) > $(@)
+	cat $(autogen_header) > $(@)
 	zcat $(<) | script/cmap-decode cp1250 >> $(@)
 
 cmap-iso8859-2.h: data/cmap-iso8859-2.gz script/cmap-iso8859-n.h.in script/cmap-decode
-	cat $(AUTOGEN_HEADER) > $(@)
+	cat $(autogen_header) > $(@)
 	zcat $(<) | script/cmap-iso8859-n.h.in 2 >> $(@)
 	zcat $(<) | script/cmap-decode iso8859_2 >> $(@)
 
 cmap-iso8859-13.h: data/cmap-iso8859-13.gz script/cmap-iso8859-n.h.in
-	cat $(AUTOGEN_HEADER) > $(@)
+	cat $(autogen_header) > $(@)
 	zcat $(<) | script/cmap-iso8859-n.h.in 13 >> $(@)
 
 cmap-iso8859-16.h: data/cmap-iso8859-16.gz script/cmap-iso8859-n.h.in
-	cat $(AUTOGEN_HEADER) > $(@)
+	cat $(autogen_header) > $(@)
 	zcat $(<) | script/cmap-iso8859-n.h.in 16 >> $(@)
 
 cmap-usascii.h: script/cmap-usascii.h.in
-	cat $(AUTOGEN_HEADER) > $(@)
+	cat $(autogen_header) > $(@)
 	script/cmap-usascii.h.in >> $(@)
 
 entity.h: data/entities.dat script/entity.h.in
-	cat $(AUTOGEN_HEADER) > $(@)
+	cat $(autogen_header) > $(@)
 	script/entity.h.in < $(<) >> $(@)
 
 entity-hash.h: data/entities.dat script/entity-hash.h.in
