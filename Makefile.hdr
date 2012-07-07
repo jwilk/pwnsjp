@@ -32,4 +32,8 @@ entity.h: data/entities.dat script/entity.h.in
 entity-hash.h: data/entities.dat script/entity-hash.h.in
 	script/entity-hash.h.in < ${<} > ${@}
 
+.PHONY: clean-hdr
+clean-hdr:
+	rm -f $(autohfiles)
+
 # vim:ts=4
