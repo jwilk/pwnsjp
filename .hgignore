@@ -1,0 +1,13 @@
+syntax: glob
+
+*.o
+Makefile
+aclocal.m4
+config.log
+config.status
+configure
+doc/*.1
+pwnsjp
+pwnsjpi
+setup.h
+setup.h.in
