@@ -2,8 +2,10 @@ pwnsjp (0.700) UNRELEASED; urgency=low
 
   * Relicense to the Expat license.
   * Use Autoconf.
+  * Prefer U+2018 LEFT SINGLE QUOTATION MARK to U+201B SINGLE HIGH-REVERSED-9
+    QUOTATION MARK.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Fri, 08 Oct 2010 16:39:43 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Mon, 09 Jul 2012 11:38:32 +0200
 
 pwnsjp (0.604) unstable; urgency=low
 

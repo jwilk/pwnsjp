@@ -172,7 +172,7 @@ static const struct entity entity_list[] =
   { .name = "lsquo", .values = L"\u2018", .str = "`" },
   { .name = "rsquo", .values = L"\u2019", .str = "'" },
   { .name = "lsquor", .values = L"\u201a", .str = "," },
-  { .name = "#8219", .values = L"\u201b", .str = "`" },
+  { .name = "#8219", .values = L"\u2018", .str = "`" },
   { .name = "rdquo", .values = L"\u201d", .str = "''" },
   { .name = "ldquor", .values = L"\u201e", .str = ",," },
   { .name = "bullb", .values = L"\u2022", .str = "(#)" },
