@@ -1,5 +1,5 @@
 =========================
-pwnsjp 0.605 (2010-09-23)
+pwnsjp 0.700 (2012-07-09)
 =========================
 
 **pwnsjp** is a console-based frontend to some dictionaries published by
@@ -40,13 +40,15 @@ You will need:
  - *zlib* library;
  - *ncursesw* library (*ncurses* with Unicode support);
  - additionally, if you need to refresh some automatically generated files:
+    - *autoconf*,
     - *perl*,
     - *gperf*,
     - *konwert* or *links* or *elinks*.
 
-To build the software:
- - customize ``Makefile.conf``;
- - run ``make``.
+Building instructions::
+
+   ./configure --with-dictdir=DIRECTORY-WITH-DICTIONARY-FILES
+   make
 
 Usage
 -----
@@ -62,13 +64,11 @@ Polish diacritic characters can be displayed correctly only if locale is
 configured properly. Please make sure than ``locale charmap`` gives the
 expected result: ``ISO-8859-2``, ``ISO-8859-16`` or ``UTF-8``.
 
-Variétés
---------
+License
+-------
 
-Copyrights, license
-~~~~~~~~~~~~~~~~~~~
-
-Copyright © 2005, 2006, 2007, 2008, 2009, 2010 Jakub Wilk <jwilk@jwilk.net>
+Copyright © 2005, 2006, 2007, 2008, 2009, 2010, 2012
+Jakub Wilk <jwilk@jwilk.net>
 
 License:
 
