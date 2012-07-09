@@ -24,7 +24,7 @@ while (<STDIN>)
   my $cp = hex $2;
   $s{$cp} = '\u' . lc($1);
   my $value = hex $1;
-  $s{$cp} = '?' if ($value >= 0x80 && $value < 0xA0)
+  $s{$cp} = '?' if $value >= 0x80 and $value < 0xA0;
 }
 print $s{$_} foreach (0x80 .. 0xff);
 print <<EOF
