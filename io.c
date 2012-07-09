@@ -1,4 +1,4 @@
-/* Copyright © 2005, 2006, 2007, 2010 Jakub Wilk <jwilk@jwilk.net>
+/* Copyright © 2005, 2006, 2007, 2010, 2012 Jakub Wilk <jwilk@jwilk.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -149,7 +149,6 @@ static void iitem_qsort(struct io_iitem_t *l, struct io_iitem_t *r)
   while (true)
   {
     dist = r - l;
-    assert(gt(r[1].xentry, r[0].xentry));
     if (dist <= 16)
     {
       for (i = r - 1; i >= l; i--)
