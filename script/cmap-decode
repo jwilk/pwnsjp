@@ -21,9 +21,9 @@ $s{$_} = '\0' foreach (0x80 .. 0xff);
 while (<STDIN>)
 {
   next unless m'^<U([0-9A-F]{4})> */(x[0-9a-f]{2}).*';
-  my $cp = eval "0$2";
+  my $cp = hex $2;
   $s{$cp} = '\u' . lc($1);
-  my $value = eval "0x$1";
+  my $value = hex $1;
   $s{$cp} = '?' if ($value >= 0x80 && $value < 0xA0)
 }
 print $s{$_} foreach (0x80 .. 0xff);

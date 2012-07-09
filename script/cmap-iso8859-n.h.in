@@ -18,8 +18,8 @@ $s{$_} = 0 foreach (0xa0 .. 0x17f);
 while (<>)
 {
   next unless m'^<U([0-9A-F]{4})> *\/(x[0-9a-f]{2})';
-  my $iso = eval "0$2";
-  my $uni = eval "0x$1";
+  my $iso = hex $2;
+  my $uni = hex $1;
   $s{$uni} = $iso;
 }
 printf '\x%02x', $s{$_} foreach (0xa0 .. 0x17f);
