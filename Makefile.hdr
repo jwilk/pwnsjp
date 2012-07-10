@@ -4,39 +4,39 @@ autohfiles = $(wildcard cmap-*.h) $(wildcard entity*.h)
 
 $(autohfiles): $(autogen_header)
 
-cmap-cp1250.h: data/cmap-cp1250.gz script/cmap-decode
+cmap-cp1250.h: data/cmap-cp1250.gz tools/cmap-decode
 	cat $(autogen_header) > $(@)~
-	zcat $(<) | script/cmap-decode cp1250 >> $(@)~
+	zcat $(<) | tools/cmap-decode cp1250 >> $(@)~
 	mv -f $(@)~ $(@)
 
-cmap-iso8859-2.h: data/cmap-iso8859-2.gz script/cmap-iso8859-n.h.in script/cmap-decode
+cmap-iso8859-2.h: data/cmap-iso8859-2.gz tools/cmap-iso8859-n.h.in tools/cmap-decode
 	cat $(autogen_header) > $(@)~
-	zcat $(<) | script/cmap-iso8859-n.h.in 2 >> $(@)~
-	zcat $(<) | script/cmap-decode iso8859_2 >> $(@)~
+	zcat $(<) | tools/cmap-iso8859-n.h.in 2 >> $(@)~
+	zcat $(<) | tools/cmap-decode iso8859_2 >> $(@)~
 	mv -f $(@)~ $(@)
 
-cmap-iso8859-13.h: data/cmap-iso8859-13.gz script/cmap-iso8859-n.h.in
+cmap-iso8859-13.h: data/cmap-iso8859-13.gz tools/cmap-iso8859-n.h.in
 	cat $(autogen_header) > $(@)~
-	zcat $(<) | script/cmap-iso8859-n.h.in 13 >> $(@)~
+	zcat $(<) | tools/cmap-iso8859-n.h.in 13 >> $(@)~
 	mv -f $(@)~ $(@)
 
-cmap-iso8859-16.h: data/cmap-iso8859-16.gz script/cmap-iso8859-n.h.in
+cmap-iso8859-16.h: data/cmap-iso8859-16.gz tools/cmap-iso8859-n.h.in
 	cat $(autogen_header) > $(@)~
-	zcat $(<) | script/cmap-iso8859-n.h.in 16 >> $(@)~
+	zcat $(<) | tools/cmap-iso8859-n.h.in 16 >> $(@)~
 	mv -f $(@)~ $(@)
 
-cmap-usascii.h: script/cmap-usascii.h.in
+cmap-usascii.h: tools/cmap-usascii.h.in
 	cat $(autogen_header) > $(@)~
-	script/cmap-usascii.h.in >> $(@)~
+	tools/cmap-usascii.h.in >> $(@)~
 	mv -f $(@)~ $(@)
 
-entity.h: data/entities.dat script/entity.h.in
+entity.h: data/entities.dat tools/entity.h.in
 	cat $(autogen_header) > $(@)~
-	script/entity.h.in < $(<) >> $(@)~
+	tools/entity.h.in < $(<) >> $(@)~
 	mv -f $(@)~ $(@)
 
-entity-hash.h: data/entities.dat script/entity-hash.h.in
-	script/entity-hash.h.in < ${<} > $(@)~
+entity-hash.h: data/entities.dat tools/entity-hash.h.in
+	tools/entity-hash.h.in < ${<} > $(@)~
 	mv -f $(@)~ $(@)
 
 .PHONY: clean-hdr
