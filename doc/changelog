@@ -4,8 +4,9 @@ pwnsjp (0.700) UNRELEASED; urgency=low
   * Use Autoconf.
   * Prefer U+2018 LEFT SINGLE QUOTATION MARK to U+201B SINGLE HIGH-REVERSED-9
     QUOTATION MARK.
+  * Document the -f/--file options.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Mon, 09 Jul 2012 11:38:32 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 10 Jul 2012 17:23:02 +0200
 
 pwnsjp (0.604) unstable; urgency=low
 

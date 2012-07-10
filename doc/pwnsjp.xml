@@ -42,6 +42,13 @@
 <refsynopsisdiv>
 	<cmdsynopsis>
 		<command>&p;</command>
+		<arg choice='opt'>
+			<group choice='req'>
+				<arg choice='plain'><option>--file</option></arg>
+				<arg choice='plain'><option>-f</option></arg>
+			</group>
+			<arg choice='plain'><replaceable>dict</replaceable></arg>
+		</arg>
 		<group choice='opt'>
 			<arg choice='plain'><option>--deep</option></arg>
 			<arg choice='plain'><option>-d</option></arg>
@@ -54,6 +61,13 @@
 	</cmdsynopsis>
 	<cmdsynopsis>
 		<command>&p;</command>
+		<arg choice='opt'>
+			<group choice='req'>
+				<arg choice='plain'><option>--file</option></arg>
+				<arg choice='plain'><option>-f</option></arg>
+			</group>
+			<arg choice='plain'><replaceable>dict</replaceable></arg>
+		</arg>
 		<group choice='req'>
 			<arg choice='plain'><option>--ui</option></arg>
 			<arg choice='plain'><option>-i</option></arg>
@@ -90,6 +104,16 @@
 	</para>
 
 	<variablelist>
+		<varlistentry>
+			<term><option>-f</option></term>
+			<term><option>--file=<replaceable>dictionary</replaceable></option></term>
+			<listitem>
+				<para>
+					Use <replaceable>dictionary</replaceable> as the dictionary file.
+					Unless the path is absolute, the <filename>.win</filename> extesion can be omitted.
+				</para>
+			</listitem>
+		</varlistentry>
 		<varlistentry>
 			<term><option>-e</option></term>
 			<term><option>--entry-only</option></term>

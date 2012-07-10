@@ -42,6 +42,13 @@
 <refsynopsisdiv>
 	<cmdsynopsis>
 		<command>&p;</command>
+		<arg choice='opt'>
+			<group choice='req'>
+				<arg choice='plain'><option>--file</option></arg>
+				<arg choice='plain'><option>-f</option></arg>
+			</group>
+			<arg choice='plain'><replaceable>dict</replaceable></arg>
+		</arg>
 	</cmdsynopsis>
 	<cmdsynopsis>
 		<command>&p;</command>
@@ -72,6 +79,16 @@
 	</para>
 
 	<variablelist>
+		<varlistentry>
+			<term><option>-f</option></term>
+			<term><option>--file=<replaceable>dictionary</replaceable></option></term>
+			<listitem>
+				<para>
+					Use <replaceable>dictionary</replaceable> as the dictionary file.
+					Unless the path is absolute, the <filename>.win</filename> extesion can be omitted.
+				</para>
+			</listitem>
+		</varlistentry>
 		<varlistentry>
 			<term><option>-h</option></term>
 			<term><option>--help</option></term>
