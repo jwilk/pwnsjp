@@ -2,6 +2,7 @@ AC_PREREQ([2.59])
 AC_INIT([pwnsjp], [0.700], [jwilk@jwilk.net])
 
 AC_PROG_CC_C99
+AX_CFLAGS_WARN_ALL
 
 AX_WITH_CURSES
 if test "$ax_cv_ncursesw" != yes; then
