@@ -12,14 +12,8 @@ static const char rev_iso88592[0xe0] = "\
 #ifndef CMAP_DECODE_ISO8859_2_H
 #define CMAP_DECODE_ISO8859_2_H
 
-#ifndef ICC
 static const wchar_t iso8859_2[0x80] = L"\
 ????????????????????????????????\u00a0\u0104\u02d8\u0141\u00a4\u013d\u015a\u00a7\u00a8\u0160\u015e\u0164\u0179\u00ad\u017d\u017b\u00b0\u0105\u02db\u0142\u00b4\u013e\u015b\u02c7\u00b8\u0161\u015f\u0165\u017a\u02dd\u017e\u017c\u0154\u00c1\u00c2\u0102\u00c4\u0139\u0106\u00c7\u010c\u00c9\u0118\u00cb\u011a\u00cd\u00ce\u010e\u0110\u0143\u0147\u00d3\u00d4\u0150\u00d6\u00d7\u0158\u016e\u00da\u0170\u00dc\u00dd\u0162\u00df\u0155\u00e1\u00e2\u0103\u00e4\u013a\u0107\u00e7\u010d\u00e9\u0119\u00eb\u011b\u00ed\u00ee\u010f\u0111\u0144\u0148\u00f3\u00f4\u0151\u00f6\u00f7\u0159\u016f\u00fa\u0171\u00fc\u00fd\u0163\u02d9\
 ";
-#else
-static const wchar_t iso8859_2[0x80] = L"\
-????????????????????????????????\x00a0\x0104\x02d8\x0141\x00a4\x013d\x015a\x00a7\x00a8\x0160\x015e\x0164\x0179\x00ad\x017d\x017b\x00b0\x0105\x02db\x0142\x00b4\x013e\x015b\x02c7\x00b8\x0161\x015f\x0165\x017a\x02dd\x017e\x017c\x0154\x00c1\x00c2\x0102\x00c4\x0139\x0106\x00c7\x010c\x00c9\x0118\x00cb\x011a\x00cd\x00ce\x010e\x0110\x0143\x0147\x00d3\x00d4\x0150\x00d6\x00d7\x0158\x016e\x00da\x0170\x00dc\x00dd\x0162\x00df\x0155\x00e1\x00e2\x0103\x00e4\x013a\x0107\x00e7\x010d\x00e9\x0119\x00eb\x011b\x00ed\x00ee\x010f\x0111\x0144\x0148\x00f3\x00f4\x0151\x00f6\x00f7\x0159\x016f\x00fa\x0171\x00fc\x00fd\x0163\x02d9\
-";
-#endif
 
 #endif

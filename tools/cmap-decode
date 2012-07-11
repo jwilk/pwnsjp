@@ -10,7 +10,6 @@ print <<EOF
 #ifndef CMAP_DECODE_${CHARSET}_H
 #define CMAP_DECODE_${CHARSET}_H
 
-#ifndef ICC
 static const wchar_t ${charset}[0x80] = L"\\
 EOF
 ;
@@ -30,16 +29,6 @@ print $s{$_} foreach (0x80 .. 0xff);
 print <<EOF
 \\
 ";
-#else
-static const wchar_t ${charset}[0x80] = L"\\
-EOF
-;
-$s{$_} =~ s/u/x/ foreach (0x80 .. 0xff);
-print $s{$_} foreach (0x80 .. 0xff);
-print <<EOF
-\\
-";
-#endif
 
 #endif
 EOF

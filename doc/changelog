@@ -1,8 +1,8 @@
 pwnsjp (0.701) UNRELEASED; urgency=low
 
-  * 
+  * Drop Intel C++ Compiler compatibility code.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Wed, 11 Jul 2012 21:20:18 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 11 Jul 2012 21:25:51 +0200
 
 pwnsjp (0.700) unstable; urgency=low
 
