@@ -2,6 +2,9 @@ autogen_header = data/autogen-header.inc.h
 
 autohfiles = $(wildcard cmap-*.h) $(wildcard entity*.h)
 
+.PHONY: headers
+headers: $(autohfiles)
+
 $(autohfiles): $(autogen_header)
 
 cmap-cp1250.h: data/cmap-cp1250.gz tools/cmap-decode
