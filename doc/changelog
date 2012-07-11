@@ -1,4 +1,4 @@
-pwnsjp (0.700) UNRELEASED; urgency=low
+pwnsjp (0.700) unstable; urgency=low
 
   * Document the -f/--file options.
   * Prefer U+2018 LEFT SINGLE QUOTATION MARK to U+201B SINGLE HIGH-REVERSED-9
@@ -9,7 +9,7 @@ pwnsjp (0.700) UNRELEASED; urgency=low
   * Remove some unused code.
   * Rewrite README (in English).
 
- -- Jakub Wilk <jwilk@jwilk.net>  Wed, 11 Jul 2012 21:05:57 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 11 Jul 2012 21:08:30 +0200
 
 pwnsjp (0.604) unstable; urgency=low
 
