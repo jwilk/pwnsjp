@@ -5,8 +5,11 @@ pwnsjp (0.700) UNRELEASED; urgency=low
     QUOTATION MARK.
   * Use Autoconf.
   * Relicense to the Expat license.
+  * Remove Debian packaging from the tarball.
+  * Remove some unused code.
+  * Rewrite README (in English).
 
- -- Jakub Wilk <jwilk@jwilk.net>  Wed, 11 Jul 2012 11:56:01 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 11 Jul 2012 21:05:57 +0200
 
 pwnsjp (0.604) unstable; urgency=low
 
