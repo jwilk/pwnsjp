@@ -6,7 +6,7 @@ pwnsjp (0.700) UNRELEASED; urgency=low
   * Use Autoconf.
   * Relicense to the Expat license.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 10 Jul 2012 17:23:02 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 11 Jul 2012 11:56:01 +0200
 
 pwnsjp (0.604) unstable; urgency=low
 
