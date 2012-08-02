@@ -1,4 +1,4 @@
-AC_PREREQ([2.59])
+AC_PREREQ([2.61])
 AC_INIT([pwnsjp], [0.701], [jwilk@jwilk.net])
 
 AC_PROG_CC_C99
