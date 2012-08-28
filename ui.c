@@ -503,7 +503,8 @@ exceed:
     if (needrestart)
     {
       view->lines = lines;
-      return ui_show_content(view);
+      ui_show_content(view);
+      return;
     }
   }
 
