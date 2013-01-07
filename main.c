@@ -82,7 +82,7 @@ int main(int argc, char **argv)
 
   struct io_t io;
   if (!io_init(&io, config.filename))
-    fail("Unable to open data file: %s\n", config.filename);
+    fail("Unable to open the data file: %s\n", config.filename);
 
   if (!io_validate(&io))
     fail("Invalid data file signature.\n");
@@ -94,18 +94,18 @@ int main(int argc, char **argv)
     fail("Unexpectedly long data file.\n");
 
   if (config.conf_ui && !ui_prepare())
-    fail("Unable to initialize user interface.\n");
+    fail("Unable to initialize the user interface.\n");
 
   if (!io_prepare_index(&io))
-    fail("Unable to prepare index.\n");
+    fail("Unable to prepare the index.\n");
 
   if (io.isize < (1 << 12))
-    fail("Indecently few words.\n");
+    fail("Unexpectedly few words.\n");
   if (io.isize > (1 << 17))
-    fail("Indecently many words.\n");
+    fail("Unexpectedly many words.\n");
 
   if (!io_build_index(&io))
-    fail("Unable to build index.\n");
+    fail("Unable to build the index.\n");
 
 #undef fail
 
