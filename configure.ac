@@ -12,7 +12,7 @@ fi
 PKG_CHECK_MODULES([ZLIB], [zlib])
 
 AC_ARG_WITH([dictdir],
-    [AS_HELP_STRING
+    [AS_HELP_STRING(
         [--with-dictdir=DIR],
         [directory with dictionary files @<:@default=DATADIR/pwnsjp@:>@]
     )],
