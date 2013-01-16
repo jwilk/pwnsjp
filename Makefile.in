@@ -76,7 +76,7 @@ clean:
 	rm -f pwnsjp pwnsjpi *.o doc/*.[0-9]
 
 .PHONY: distclean
-distclean:
+distclean: clean
 	rm -f Makefile config.log config.status setup.h
 
 # vim:ts=4
