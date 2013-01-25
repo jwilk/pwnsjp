@@ -53,10 +53,11 @@ man_files = $(xml_files:.xml=.1)
 all: $(man_files)
 
 docbook_xsl = http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl
+xsltproc_options = --param man.authors.section.enabled 0
 
 %.1: %.xml
 	sed -e 's,&version;,$(version),g' -e 's,&slowin;,$(dictdir)/slo.win,g' $(<) | \
-	$(XSLTPROC) --output $(@) $(docbook_xsl) -
+	$(XSLTPROC) $(xsltproc_options) --output $(@) $(docbook_xsl) -
 
 install: install-doc
 
