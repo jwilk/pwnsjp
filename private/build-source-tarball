@@ -20,7 +20,7 @@ else
     hg clone -r "$version" "$url" "$sourceroot/$name-$version"
 fi
 cd "$sourceroot"/*
-tools/autogen
+private/autogen
 make -f Makefile.hdr headers
 rm -rf .hg*
 rm -rf *.cache
