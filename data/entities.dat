@@ -181,8 +181,8 @@ s224	25c7	"<>"
 dolnagw	2605	"<*>"
 star	2606	"*"
 diams	2666	"<>"
-quotup	8221	"\'\'"
-quotlw	8222	",,"
+quotup	201d	"\'\'"
+quotlw	201e	",,"
 Hmacrbl.x	0048+0331	NULL
 atildeacute.x	0061+0301+0303	NULL
 amacrac.x	0061+1dc4	NULL
