@@ -4,8 +4,9 @@ pwnsjp (0.8.1) UNRELEASED; urgency=low
   * Use pkg-config to determine ncursesw location.
   * Fix a few type mismatches on 64-bit architectures.
   * Don't require non-standard <endian.h> and <byteswap.h> headers.
+  * Strip trailing slash from the --with-dictdir argument.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 11 Jun 2013 21:48:50 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 11 Jun 2013 22:00:29 +0200
 
 pwnsjp (0.8) unstable; urgency=low
 

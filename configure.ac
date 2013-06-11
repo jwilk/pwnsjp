@@ -13,7 +13,7 @@ AC_ARG_WITH([dictdir],
         [--with-dictdir=DIR],
         [directory with dictionary files @<:@default=DATADIR/pwnsjp@:>@]
     )],
-    [dictdir="$with_dictdir"],
+    [dictdir="${with_dictdir%/}"],
     [dictdir="\${datadir}/pwnsjp"],
 )
 AC_SUBST([dictdir])
