@@ -42,7 +42,7 @@ bool io_init(struct io_t *io, const char *filename)
   set_pwn_charset(io->cp1250);
   io->isize = 0;
   io->header = NULL;
-  debug("data file size = %u MiB\n", io->file_size >> 20);
+  debug("data file size = %zu MiB\n", io->file_size >> 20);
   return true;
 }
 
@@ -83,7 +83,7 @@ bool io_prepare_index(struct io_t *io)
 
   io->iitems = NULL;
   io->isize = le2cpu(io->header->__word_count);
-  debug("word count = %d\n", io->isize);
+  debug("word count = %zu\n", io->isize);
 
   io->header->index_base = le2cpu(io->header->index_base);
   debug("index #1 base = 0x%08x\n", io->header->index_base);
@@ -246,7 +246,7 @@ bool io_build_index(struct io_t *io)
   if (fread(offsets, sizeof (uint32_t), io->isize, io->file) != io->isize)
     return false;
 
-  debug("sizeof(struct io_iitem_t) = %u\n", sizeof(struct io_iitem_t));
+  debug("sizeof(struct io_iitem_t) = %zu\n", sizeof(struct io_iitem_t));
 
   io->iitems = alloz(io->isize - 1, sizeof (struct io_iitem_t));
   if (io->iitems == NULL)

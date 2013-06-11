@@ -2,8 +2,9 @@ pwnsjp (0.8.1) UNRELEASED; urgency=low
 
   * Update version and dates in README and TODO files.
   * Look for the ncurses.h and term.h headers in a few directories.
+  * Fix a few type mismatches on 64-bit architectures.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 11 Jun 2013 19:11:47 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 11 Jun 2013 19:16:14 +0200
 
 pwnsjp (0.8) unstable; urgency=low
 
