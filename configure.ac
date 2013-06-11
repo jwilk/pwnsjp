@@ -2,6 +2,7 @@ AC_PREREQ([2.61])
 AC_INIT([pwnsjp], [0.8.1], [jwilk@jwilk.net])
 
 AC_PROG_CC_C99
+AC_C_BIGENDIAN
 AX_CFLAGS_WARN_ALL
 
 PKG_CHECK_MODULES([NCURSESW], [ncursesw])

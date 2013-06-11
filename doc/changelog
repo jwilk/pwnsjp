@@ -3,8 +3,9 @@ pwnsjp (0.8.1) UNRELEASED; urgency=low
   * Update versions and dates in README, TODO, and in the configure script.
   * Use pkg-config to determine ncursesw location.
   * Fix a few type mismatches on 64-bit architectures.
+  * Don't require non-standard <endian.h> and <byteswap.h> headers.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 11 Jun 2013 21:27:40 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 11 Jun 2013 21:48:50 +0200
 
 pwnsjp (0.8) unstable; urgency=low
 

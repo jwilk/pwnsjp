@@ -1,4 +1,4 @@
-/* Copyright © 2005, 2010 Jakub Wilk <jwilk@jwilk.net>
+/* Copyright © 2005, 2010, 2013 Jakub Wilk <jwilk@jwilk.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -19,16 +19,28 @@
  * SOFTWARE.
  */
 
-#include <endian.h>
-#include <byteswap.h>
-
 #ifndef BYTEORDER_H
 #define BYTEORDER_H
 
-#if BYTE_ORDER == LITTLE_ENDIAN
-#  define le2cpu(x) (x)
-#elif BYTE_ORDER == BIG_ENDIAN
-#  define le2cpu bswap_32
+#if defined WORDS_BIGENDIAN
+
+static inline uint32_t le2cpu(uint32_t x)
+{
+  return (
+    (((x) & 0x000000FFU) << 24) |
+    (((x) & 0x0000FF00U) << 8) |
+    (((x) & 0x00FF0000U) >> 8) |
+    (((x) & 0xFF000000U) >> 24)
+  );
+}
+
+#else
+
+static inline uint32_t le2cpu(uint32_t x)
+{
+  return x;
+}
+
 #endif
 
 #endif
