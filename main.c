@@ -26,7 +26,6 @@
 #include <fcntl.h>
 #include <sys/types.h>
 
-#include "byteorder.h"
 #include "config.h"
 #include "html.h"
 #include "hue.h"
