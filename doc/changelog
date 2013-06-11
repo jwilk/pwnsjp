@@ -1,8 +1,9 @@
 pwnsjp (0.8.1) UNRELEASED; urgency=low
 
   * Update version and dates in README and TODO files.
+  * Look for the ncurses.h header in a few locations.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Fri, 08 Feb 2013 10:48:39 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 11 Jun 2013 19:07:14 +0200
 
 pwnsjp (0.8) unstable; urgency=low
 
