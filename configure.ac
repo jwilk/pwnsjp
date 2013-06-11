@@ -1,5 +1,5 @@
 AC_PREREQ([2.61])
-AC_INIT([pwnsjp], [0.701], [jwilk@jwilk.net])
+AC_INIT([pwnsjp], [0.8.1], [jwilk@jwilk.net])
 
 AC_PROG_CC_C99
 AX_CFLAGS_WARN_ALL
