@@ -24,20 +24,7 @@
 #include "terminfo.h"
 
 #include <unistd.h>
-
-#if defined HAVE_NCURSESW_CURSES_H
-#include <ncursesw/term.h>
-#elif defined HAVE_NCURSESW_H
 #include <term.h>
-#elif defined HAVE_NCURSES_CURSES_H
-#include <ncurses/term.h>
-#elif defined HAVE_NCURSES_H
-#include <term.h>
-#elif defined HAVE_CURSES_H
-#include <term.h>
-#else
-#error "SysV or X/Open-compatible Curses header file required"
-#endif
 
 bool is_term = false;
 

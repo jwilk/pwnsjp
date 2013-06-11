@@ -4,11 +4,7 @@ AC_INIT([pwnsjp], [0.701], [jwilk@jwilk.net])
 AC_PROG_CC_C99
 AX_CFLAGS_WARN_ALL
 
-AX_WITH_CURSES
-if test "$ax_cv_ncursesw" != yes; then
-    AC_MSG_ERROR([the ncursesw library is required])
-fi
-
+PKG_CHECK_MODULES([NCURSESW], [ncursesw])
 PKG_CHECK_MODULES([ZLIB], [zlib])
 
 AC_ARG_WITH([dictdir],
