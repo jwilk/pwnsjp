@@ -1,4 +1,4 @@
-/* Copyright © 2005, 2010 Jakub Wilk <jwilk@jwilk.net>
+/* Copyright © 2005, 2010, 2013 Jakub Wilk <jwilk@jwilk.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -22,8 +22,8 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
-void __fatal(const char*, int, const char*);
-#define fatal(errstr) __fatal(__FILE__, __LINE__, errstr)
+void fatal_impl(const char*, int, const char*);
+#define fatal(errstr) fatal_impl(__FILE__, __LINE__, errstr)
 
 void* alloc(size_t nmemb, size_t size);
 void* alloz(size_t nmemb, size_t size);

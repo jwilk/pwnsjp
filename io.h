@@ -1,4 +1,4 @@
-/* Copyright © 2005, 2010 Jakub Wilk <jwilk@jwilk.net>
+/* Copyright © 2005, 2010, 2013 Jakub Wilk <jwilk@jwilk.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -26,11 +26,11 @@
 
 struct io_header_t
 {
-  uint32_t __tmp[5];
-  uint32_t __word_count;
+  uint32_t tmp[5];
+  uint32_t word_count;
   uint32_t index_base;
   uint32_t words_base;
-  uint32_t __tmq[5];
+  uint32_t tmq[5];
 };
 
 struct io_iitem_t

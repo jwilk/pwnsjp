@@ -1,4 +1,4 @@
-/* Copyright © 2005, 2010 Jakub Wilk <jwilk@jwilk.net>
+/* Copyright © 2005, 2010, 2013 Jakub Wilk <jwilk@jwilk.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -24,7 +24,7 @@
 
 #include <errno.h>
 
-void __fatal(const char* fstr, int line, const char* errstr)
+void fatal_impl(const char* fstr, int line, const char* errstr)
 {
   if (fstr == NULL)
     fstr = "?";
