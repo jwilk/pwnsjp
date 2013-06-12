@@ -1,4 +1,4 @@
-pwnsjp (0.8.1) UNRELEASED; urgency=low
+pwnsjp (0.8.1) unstable; urgency=low
 
   * Update versions and dates in README, TODO, and in the configure script.
   * Fix a few type mismatches on 64-bit architectures.
@@ -9,7 +9,7 @@ pwnsjp (0.8.1) UNRELEASED; urgency=low
       ncursesw cannot be found.
     + Strip trailing slash from the --with-dictdir argument.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Wed, 12 Jun 2013 16:40:03 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 12 Jun 2013 16:48:21 +0200
 
 pwnsjp (0.8) unstable; urgency=low
 
