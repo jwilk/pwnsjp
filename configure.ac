@@ -5,8 +5,18 @@ AC_PROG_CC_C99
 AC_C_BIGENDIAN
 AX_CFLAGS_WARN_ALL
 
-PKG_CHECK_MODULES([NCURSESW], [ncursesw])
-PKG_CHECK_MODULES([ZLIB], [zlib])
+PKG_CHECK_MODULES(
+    [NCURSESW],
+    [ncursesw],
+    [],
+    [NCURSESW_CFLAGS=-I/usr/include/ncursesw; NCURSESW_LIBS=-lncursesw]
+)
+PKG_CHECK_MODULES(
+    [ZLIB],
+    [zlib],
+    [],
+    [ZLIB_CFLAGS=; ZLIB_LIBS=-lz]
+)
 
 AC_ARG_WITH([dictdir],
     [AS_HELP_STRING(
@@ -26,5 +36,14 @@ fi
 AC_CONFIG_HEADER([setup.h])
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
+
+AC_MSG_NOTICE([
+
+The following flags will be used to link to external libraries:
+NCURSESW_CFLAGS = $NCURSESW_CFLAGS
+NCURSESW_LIBS = $NCURSESW_LIBS
+ZLIB_CFLAGS = $ZLIB_CFLAGS
+ZLIB_LIBS = $ZLIB_LIBS
+])
 
 dnl vim: ts=4 sw=4 et
