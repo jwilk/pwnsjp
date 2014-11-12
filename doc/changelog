@@ -65,7 +65,7 @@ pwnsjp (0.601) unstable; urgency=low
 
   * No more problems with funny colors. (Tested with: linux console,
     rxvt-unicode, xterm, gnome-terminal).
-  * Make US-ASCII fallback table consist of only US-ASCII characters. 
+  * Make US-ASCII fallback table consist of only US-ASCII characters.
 
  -- Jakub Wilk <jwilk@jwilk.net>  Tue,  7 Nov 2006 19:35:19 +0100
 
@@ -110,7 +110,7 @@ pwnsjp (0.501.2) unstable; urgency=low
 pwnsjp (0.501.1) unstable; urgency=low
 
   * New ‘pwnsjp-data’ package.
-  
+
  -- Jakub Wilk <jwilk@jwilk.net>  Sun, 22 Jan 2006 23:49:52 +0100
 
 pwnsjp (0.500) unstable; urgency=low
