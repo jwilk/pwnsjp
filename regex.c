@@ -91,4 +91,4 @@ bool regex_match(regex_t *regex, const char *string)
   return regexec(regex, string, 0, NULL, 0) == 0;
 }
 
-// vim: ts=2 sw=2 et
+// vim: ts=2 sts=2 sw=2 et

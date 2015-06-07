@@ -296,4 +296,4 @@ char *html_strip(char *str)
   return pwnstr_to_str(result);
 }
 
-// vim: ts=2 sw=2 et
+// vim: ts=2 sts=2 sw=2 et

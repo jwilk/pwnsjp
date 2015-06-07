@@ -353,4 +353,4 @@ bool io_fine(struct io_t *io)
   return fclose(io->file) == 0;
 }
 
-// vim: ts=2 sw=2 et
+// vim: ts=2 sts=2 sw=2 et

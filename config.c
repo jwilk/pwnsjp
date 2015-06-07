@@ -103,4 +103,4 @@ char *parse_options(int argc, char **argv)
 }
 
 
-// vim: ts=2 sw=2 et
+// vim: ts=2 sts=2 sw=2 et

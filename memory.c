@@ -66,4 +66,4 @@ wchar_t *wcs_clone(const wchar_t *s)
   return clone;
 }
 
-// vim: ts=2 sw=2 et
+// vim: ts=2 sts=2 sw=2 et

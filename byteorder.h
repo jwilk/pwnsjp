@@ -45,4 +45,4 @@ static inline uint32_t le2cpu(uint32_t x)
 
 #endif
 
-// vim: ts=2 sw=2 et
+// vim: ts=2 sts=2 sw=2 et

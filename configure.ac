@@ -67,4 +67,4 @@ ZLIB_CFLAGS = $ZLIB_CFLAGS
 ZLIB_LIBS = $ZLIB_LIBS
 ])
 
-dnl vim: ts=4 sw=4 et
+dnl vim: ts=4 sts=4 sw=4 et

@@ -68,4 +68,4 @@ unsigned int io_locate(struct io_t *io, const char* search);
 
 #endif
 
-// vim: ts=2 sw=2 et
+// vim: ts=2 sts=2 sw=2 et
