@@ -1,4 +1,4 @@
-/* Copyright © 2005, 2006, 2010, 2012 Jakub Wilk <jwilk@jwilk.net>
+/* Copyright © 2005-2015 Jakub Wilk <jwilk@jwilk.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -47,8 +47,6 @@ char *parse_options(int argc, char **argv)
     { .name = "raw",        .val = 'R' }, // undocumented
     { .name = NULL,         .val = '\0' }
   };
-
-  memset(&config, sizeof(config), 0);
 
   assert(argc > 0 && argv != NULL && *argv != NULL && **argv != '\0');
   if (strchr(*argv, '\0')[-1] == 'i')
