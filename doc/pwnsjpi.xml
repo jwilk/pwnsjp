@@ -1,126 +1,126 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE refentry PUBLIC '-//OASIS//DTD DocBook XML V4.5//EN' 'http://www.docbook.org/xml/4.5/docbookx.dtd'
 [
-	<!ENTITY p 'pwnsjpi'>
-	<!ENTITY d "<acronym>PWN</acronym>'s Polish Dictionary">
-	<!ENTITY jwilk '<firstname>Jakub</firstname> <surname>Wilk</surname>'>
-	<!ENTITY slowin '<filename>slo.win</filename>'>
-	<!ENTITY version '(development version)'>
+    <!ENTITY p 'pwnsjpi'>
+    <!ENTITY d "<acronym>PWN</acronym>'s Polish Dictionary">
+    <!ENTITY jwilk '<firstname>Jakub</firstname> <surname>Wilk</surname>'>
+    <!ENTITY slowin '<filename>slo.win</filename>'>
+    <!ENTITY version '(development version)'>
 ]>
 
 <refentry>
 
 <refentryinfo>
-	<title>&p; manual</title>
-	<productname>&p;</productname>
-	<author>
-		&jwilk;
-		<address>
-			<email>jwilk@jwilk.net</email>
-		</address>
-	</author>
+    <title>&p; manual</title>
+    <productname>&p;</productname>
+    <author>
+        &jwilk;
+        <address>
+            <email>jwilk@jwilk.net</email>
+        </address>
+    </author>
 </refentryinfo>
 
 <refmeta>
-	<refentrytitle>&p;</refentrytitle>
-	<manvolnum>1</manvolnum>
-	<refmiscinfo class='version'>&version;</refmiscinfo>
+    <refentrytitle>&p;</refentrytitle>
+    <manvolnum>1</manvolnum>
+    <refmiscinfo class='version'>&version;</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-	<refname>&p;</refname>
-	<refpurpose>an interactive interface to &d;</refpurpose>
+    <refname>&p;</refname>
+    <refpurpose>an interactive interface to &d;</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv>
-	<cmdsynopsis>
-		<command>&p;</command>
-		<arg choice='opt'>
-			<group choice='req'>
-				<arg choice='plain'><option>--file</option></arg>
-				<arg choice='plain'><option>-f</option></arg>
-			</group>
-			<arg choice='plain'><replaceable>dict</replaceable></arg>
-		</arg>
-	</cmdsynopsis>
-	<cmdsynopsis>
-		<command>&p;</command>
-		<group choice='req'>
-			<arg choice='plain'><option>--version</option></arg>
-			<arg choice='plain'><option>-v</option></arg>
-		</group>
-	</cmdsynopsis>
-	<cmdsynopsis>
-		<command>&p;</command>
-		<group choice='req'>
-			<arg choice='plain'><option>--help</option></arg>
-			<arg choice='plain'><option>-h</option></arg>
-		</group>
-	</cmdsynopsis>
+    <cmdsynopsis>
+        <command>&p;</command>
+        <arg choice='opt'>
+            <group choice='req'>
+                <arg choice='plain'><option>--file</option></arg>
+                <arg choice='plain'><option>-f</option></arg>
+            </group>
+            <arg choice='plain'><replaceable>dict</replaceable></arg>
+        </arg>
+    </cmdsynopsis>
+    <cmdsynopsis>
+        <command>&p;</command>
+        <group choice='req'>
+            <arg choice='plain'><option>--version</option></arg>
+            <arg choice='plain'><option>-v</option></arg>
+        </group>
+    </cmdsynopsis>
+    <cmdsynopsis>
+        <command>&p;</command>
+        <group choice='req'>
+            <arg choice='plain'><option>--help</option></arg>
+            <arg choice='plain'><option>-h</option></arg>
+        </group>
+    </cmdsynopsis>
 </refsynopsisdiv>
 <refsection>
-	<title>Description</title>
-	<para>
-		&p; runs an interactive interface to the &d;.
-	</para>
+    <title>Description</title>
+    <para>
+        &p; runs an interactive interface to the &d;.
+    </para>
 </refsection>
 
 <refsection>
-	<title>Options</title>
-	<para>
-		&p; accepts the following options:
-	</para>
+    <title>Options</title>
+    <para>
+        &p; accepts the following options:
+    </para>
 
-	<variablelist>
-		<varlistentry>
-			<term><option>-f</option></term>
-			<term><option>--file=<replaceable>dictionary</replaceable></option></term>
-			<listitem>
-				<para>
-					Use <replaceable>dictionary</replaceable> as the dictionary file.
-					Unless the path is absolute, the <filename>.win</filename> extesion can be omitted.
-				</para>
-			</listitem>
-		</varlistentry>
-		<varlistentry>
-			<term><option>-h</option></term>
-			<term><option>--help</option></term>
-			<listitem>
-				<para>Display help and exit.</para>
-			</listitem>
-		</varlistentry>
-		<varlistentry>
-			<term><option>-v</option></term>
-			<term><option>--version</option></term>
-			<listitem>
-          		<para>Output version information and exit.</para>
-			</listitem>
-		</varlistentry>
-	</variablelist>
+    <variablelist>
+        <varlistentry>
+            <term><option>-f</option></term>
+            <term><option>--file=<replaceable>dictionary</replaceable></option></term>
+            <listitem>
+                <para>
+                    Use <replaceable>dictionary</replaceable> as the dictionary file.
+                    Unless the path is absolute, the <filename>.win</filename> extesion can be omitted.
+                </para>
+            </listitem>
+        </varlistentry>
+        <varlistentry>
+            <term><option>-h</option></term>
+            <term><option>--help</option></term>
+            <listitem>
+                <para>Display help and exit.</para>
+            </listitem>
+        </varlistentry>
+        <varlistentry>
+            <term><option>-v</option></term>
+            <term><option>--version</option></term>
+            <listitem>
+                <para>Output version information and exit.</para>
+            </listitem>
+        </varlistentry>
+    </variablelist>
 </refsection>
 
 <refsection>
-	<title>Files</title>
-	<variablelist>
-		<varlistentry>
-			<term>&slowin;</term>
-			<listitem>
-				<para>The data file of the &d;.</para>
-			</listitem>
-		</varlistentry>
-	</variablelist>
+    <title>Files</title>
+    <variablelist>
+        <varlistentry>
+            <term>&slowin;</term>
+            <listitem>
+                <para>The data file of the &d;.</para>
+            </listitem>
+        </varlistentry>
+    </variablelist>
 </refsection>
 
 <refsection>
-	<title>See also</title>
-	<para>
-		<citerefentry>
-			<refentrytitle>pwnsjp</refentrytitle>
-			<manvolnum>1</manvolnum>
-		</citerefentry>
-	</para>
+    <title>See also</title>
+    <para>
+        <citerefentry>
+            <refentrytitle>pwnsjp</refentrytitle>
+            <manvolnum>1</manvolnum>
+        </citerefentry>
+    </para>
 </refsection>
 
 </refentry>
 
-<!-- vim:set ts=4 sts=4 sw=4: -->
+<!-- vim:set ts=4 sts=4 sw=4 et: -->
