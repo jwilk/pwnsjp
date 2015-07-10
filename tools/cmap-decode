@@ -23,6 +23,8 @@
 use strict;
 use warnings;
 
+use Encode;
+
 my ($charset) = @ARGV;
 my $CHARSET = uc $charset;
 
@@ -35,18 +37,16 @@ static const wchar_t ${charset}[0x80] = L"\\
 EOF
 ;
 
-my %s;
-$s{$_} = '\0' foreach (0x80 .. 0xff);
-
-while (<STDIN>)
-{
-  next unless m'^<U([0-9A-F]{4})> */(x[0-9a-f]{2}).*';
-  my $cp = hex $2;
-  $s{$cp} = '\u' . lc($1);
-  my $value = hex $1;
-  $s{$cp} = '?' if $value >= 0x80 and $value < 0xA0;
+foreach my $b (0x80 .. 0xFF) {
+    my $u = ord(Encode::decode($charset, chr($b)));
+    if ($u == 0xFFFD) {
+        print '\0';
+    } elsif ($u >= 0x80 && $u < 0xA0) {
+        print '?';
+    } else {
+        printf '\u%04x', $u;
+    }
 }
-print $s{$_} foreach (0x80 .. 0xff);
 print <<EOF
 \\
 ";
@@ -55,4 +55,4 @@ print <<EOF
 EOF
 ;
 
-# vim:ts=2 sts=2 sw=2 et ft=perl
+# vim:ts=4 sts=4 sw=4 et ft=perl

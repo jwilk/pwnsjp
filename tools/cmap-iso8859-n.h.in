@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright © 2005-2012 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2005-2015 Jakub Wilk <jwilk@jwilk.net>
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -23,6 +23,8 @@
 use strict;
 use warnings;
 
+use Encode;
+
 my $n = shift;
 
 print <<EOF
@@ -35,13 +37,9 @@ EOF
 
 my %s;
 $s{$_} = 0 foreach (0xa0 .. 0x17f);
-
-while (<>)
-{
-  next unless m'^<U([0-9A-F]{4})> *\/(x[0-9a-f]{2})';
-  my $iso = hex $2;
-  my $uni = hex $1;
-  $s{$uni} = $iso;
+foreach my $b (0x00 .. 0xff) {
+    my $u = ord(Encode::decode("ISO-8859-$n", chr($b), Encode::FB_CROAK));
+    $s{$u} = $b;
 }
 printf '\x%02x', $s{$_} foreach (0xa0 .. 0x17f);
 print <<EOF
@@ -52,4 +50,4 @@ print <<EOF
 EOF
 ;
 
-# vim:ts=2 sts=2 sw=2 et ft=perl
+# vim:ts=4 sts=4 sw=4 et ft=perl
