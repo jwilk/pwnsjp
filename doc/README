@@ -95,4 +95,4 @@ License:
 The above license does not apply to ``data/cmap*`` files, which were taken
 from the GNU C library.
 
-.. vim:tw=76 ts=3 sw=3 et ft=rst
+.. vim:tw=76 ts=3 sts=3 sw=3 et ft=rst

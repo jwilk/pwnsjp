@@ -19,4 +19,4 @@ Things to do
  - Generate indices at compile time (or runtime?).
  - Investigate what is the contents of ``sjptom1.dat``, …, ``sjptom3.dat``?
 
-.. vim:tw=76 ts=3 sw=3 et ft=rst
+.. vim:tw=76 ts=3 sts=3 sw=3 et ft=rst
