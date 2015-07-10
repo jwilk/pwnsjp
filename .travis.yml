@@ -6,11 +6,13 @@ before_install:
 - sudo apt-get update
 - sudo apt-get install -y automake autoconf autoconf-archive elinks gperf
 - sudo apt-get install -y libxml2-utils
+- sudo apt-get install -y python-docutils
 before_script:
 - private/autogen
 script:
 - ./configure
 - make -B
 - xmllint --noout --valid doc/*.xml
+- grep -r -l ft=rst doc/ | xargs -t -L1 -I{} rst2xml --strict {} /dev/null
 
 # vim:ts=2 sts=2 sw=2 et
