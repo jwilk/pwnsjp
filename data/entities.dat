@@ -201,4 +201,4 @@ umacrtilde	0075+0303+0304	NULL
 uibrevebl	0075+032f	NULL
 uibrevebl.x	0075+032f	NULL
 +vector+	20d7	"->"
-% vim: ts=16 ft=none
+% vim:ts=16 sts=16 sw=16 noet ft=none
