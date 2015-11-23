@@ -78,7 +78,7 @@
             <listitem>
                 <para>
                     Use <replaceable>dictionary</replaceable> as the dictionary file.
-                    Unless the path is absolute, the <filename>.win</filename> extesion can be omitted.
+                    Unless the path is absolute, the <filename>.win</filename> extension can be omitted.
                 </para>
             </listitem>
         </varlistentry>

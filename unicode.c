@@ -163,7 +163,7 @@ static char *ustr_fallback_ascii(const wchar_t *ustr)
       // combining character
       if (ustr[i] == 0x32f)
       {
-        // inversed breve below a characted
+        // inverted breve below a character
         appendix[0] = appendix[-1];
         appendix[-1] = '{';
         appendix[1] = '}';
