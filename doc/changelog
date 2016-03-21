@@ -72,7 +72,7 @@ pwnsjp (0.601) unstable; urgency=low
 pwnsjp (0.600) unstable; urgency=low
 
   * Rewrite entity resolver.
-  * Support for new new dictionaries.
+  * Add support for new dictionaries.
   * Better HTML rendering.
 
  -- Jakub Wilk <jwilk@jwilk.net>  Sun,  5 Nov 2006 10:43:44 +0100
