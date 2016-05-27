@@ -52,6 +52,7 @@ rm private/build-source-tarball
 private/autogen
 rm -r *.cache
 make -f Makefile.hdr headers
+mv "$(readlink -f doc/README)" doc/README
 cd ..
 tar -czf "$pwd/$name-$version.tar.gz" */
 rm -r "$sourceroot"
