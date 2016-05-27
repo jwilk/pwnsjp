@@ -5,15 +5,16 @@ pwnsjp 0.8.1 (2013-06-11)
 **pwnsjp** is a console-based frontend to some dictionaries published by
 Wydawnictwo Naukowe PWN. The following dictionaries has been tested:
 
- - “Słownika języka polskiego”, 3 volumes (distributed as an
-   attachment to Gazeta Wyborcza) [3TSJP];
- - “Multimedialny słownik PWN. Frazeologia” [MSF];
- - “Multimedialny słownik PWN. Język polski” [MSJP];
- - “Multimedialny słownik PWN. Wyrazy obce” [MSWO].
+- “Słownika języka polskiego”, 3 volumes (distributed as an
+  attachment to Gazeta Wyborcza) [3TSJP];
+- “Multimedialny słownik PWN. Frazeologia” [MSF];
+- “Multimedialny słownik PWN. Język polski” [MSJP];
+- “Multimedialny słownik PWN. Wyrazy obce” [MSWO].
 
 You will need the ``*.win`` file, which can be obtained:
- - either by extracting from ``setup/data1.cab`` using Unshield_;
- - or by installing the original interface on Windows/Wine.
+
+- either by extracting from ``setup/data1.cab`` using Unshield_;
+- or by installing the original interface on Windows/Wine.
 
 Identity data of the supported dictionaries:
 
@@ -34,18 +35,18 @@ Building
 
 You will need:
 
- - a modern C99 compiler;
- - *GNU make*;
- - *GNU C* library;
- - *zlib* library;
- - *ncursesw* library (*ncurses* with Unicode support);
- - additionally, if you want to build the manual pages:
-    - *xsltproc* (from *libxslt*, the XSLT C library for GNOME);
- - additionally, if you need to refresh some automatically generated files:
-    - *autoconf*,
-    - *perl*,
-    - *gperf*,
-    - *konwert* or *links* or *elinks*.
+- a modern C99 compiler;
+- *GNU make*;
+- *GNU C* library;
+- *zlib* library;
+- *ncursesw* library (*ncurses* with Unicode support);
+- additionally, if you want to build the manual pages:
+   - *xsltproc* (from *libxslt*, the XSLT C library for GNOME);
+- additionally, if you need to refresh some automatically generated files:
+   - *autoconf*,
+   - *perl*,
+   - *gperf*,
+   - *konwert* or *links* or *elinks*.
 
 Building instructions::
 
