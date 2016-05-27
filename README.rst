@@ -11,7 +11,7 @@ Wydawnictwo Naukowe PWN. The following dictionaries has been tested:
  - “Multimedialny słownik PWN. Język polski” [MSJP];
  - “Multimedialny słownik PWN. Wyrazy obce” [MSWO].
 
-You will need the ``*.win`` file, which can be extracted:
+You will need the ``*.win`` file, which can be obtained:
  - either by extracting from ``setup/data1.cab`` using Unshield_;
  - or by installing the original interface on Windows/Wine.
 
