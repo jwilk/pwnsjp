@@ -46,12 +46,12 @@ export TAR_OPTIONS='--owner root --group root --mode a+rX --format ustar'
 export GZIP='-9 -n'
 git archive "$commit" --prefix="$name-$version/" | tar -C "$sourceroot" -xf -
 cd "$sourceroot"/*
-private/autogen
-make -f Makefile.hdr headers
 rm .git*
 rm .travis.yml
-rm -r *.cache
 rm private/build-source-tarball
+private/autogen
+rm -r *.cache
+make -f Makefile.hdr headers
 cd ..
 tar -czf "$pwd/$name-$version.tar.gz" */
 rm -r "$sourceroot"
