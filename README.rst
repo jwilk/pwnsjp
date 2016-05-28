@@ -37,7 +37,6 @@ You will need:
 
 - a modern C99 compiler;
 - *GNU make*;
-- *GNU C* library;
 - *zlib* library;
 - *ncursesw* library (*ncurses* with Unicode support);
 - additionally, if you want to build the manual pages:
