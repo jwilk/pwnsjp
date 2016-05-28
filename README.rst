@@ -38,13 +38,17 @@ You will need:
 - *GNU make*;
 - *zlib* library;
 - *ncursesw* library (*ncurses* with Unicode support);
+
 - additionally, if you want to build the manual pages:
-   - *xsltproc* (from *libxslt*, the XSLT C library for GNOME);
+
+  - *xsltproc* (from *libxslt*, the XSLT C library for GNOME);
+
 - additionally, if you need to refresh some automatically generated files:
-   - *autoconf*,
-   - *perl*,
-   - *gperf*,
-   - *konwert* or *links* or *elinks*.
+
+  - *autoconf*,
+  - *perl*,
+  - *gperf*,
+  - *konwert* or *links* or *elinks*.
 
 Building instructions::
 
