@@ -35,7 +35,6 @@ Building
 
 You will need:
 
-- a modern C99 compiler;
 - *GNU make*;
 - *zlib* library;
 - *ncursesw* library (*ncurses* with Unicode support);
