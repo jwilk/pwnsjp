@@ -48,11 +48,11 @@ git archive "$commit" --prefix="$name-$version/" | tar -C "$sourceroot" -xf -
 cd "$sourceroot"/*
 rm .git*
 rm .travis.yml
+rm README.rst  # shipped as doc/README
 rm private/build-source-tarball
 private/autogen
 rm -r *.cache
 make -f Makefile.hdr headers
-mv "$(readlink -f doc/README)" doc/README
 cd ..
 tar -czf "$pwd/$name-$version.tar.gz" */
 rm -r "$sourceroot"
