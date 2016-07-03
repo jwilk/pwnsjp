@@ -95,4 +95,4 @@ License:
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-.. vim:tw=76 ts=3 sts=3 sw=3 et ft=rst
+.. vim:ft=rst tw=76 ts=3 sts=3 sw=3 et
