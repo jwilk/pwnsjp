@@ -11,6 +11,5 @@ doc/*.1
 m4/*.m4
 pwnsjp
 pwnsjpi
-secret
 setup.h
 setup.h.in
