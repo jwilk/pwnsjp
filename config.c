@@ -25,7 +25,7 @@
 #include "terminfo.h"
 #include "memory.h"
 
-struct config_t config;
+struct config_t config = { };
 
 static void deconfigure(void)
 {
