@@ -18,6 +18,6 @@ script:
 - ./configure
 - make -B
 - xmllint --noout --valid doc/*.xml
-- grep -r -l ft=rst doc/ | xargs -t -L1 -I{} rst2xml --strict {} /dev/null
+- private/check-rst
 
 # vim:ts=2 sts=2 sw=2 et
