@@ -10,6 +10,7 @@ addons:
     - autoconf
     - autoconf-archive
     - automake
+    - docbook-xml
     - elinks
     - gperf
     - libxml2-utils
@@ -19,7 +20,7 @@ before_script:
 script:
 - ./configure
 - make -B
-- xmllint --noout --valid doc/*.xml
+- xmllint --nonet --noout --valid doc/*.xml
 - private/check-rst
 
 # vim:ts=2 sts=2 sw=2 et
