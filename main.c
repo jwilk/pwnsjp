@@ -169,10 +169,6 @@ int main(int argc, char **argv)
         if (dofree)
           free(tbuffer);
       }
-#if 0
-      else if (!doesmatch && bspattern != NULL && pmc > 0)
-        break;
-#endif
     }
     if (bspattern != NULL)
       free(bspattern);
