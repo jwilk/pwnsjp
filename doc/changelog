@@ -1,8 +1,8 @@
-pwnsjp (0.8.2) UNRELEASED; urgency=low
+pwnsjp (0.9) UNRELEASED; urgency=low
 
   * Fix typos in the documentation.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Mon, 23 Nov 2015 23:29:11 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Sun, 27 Aug 2017 21:03:21 +0200
 
 pwnsjp (0.8.1) unstable; urgency=low
 
