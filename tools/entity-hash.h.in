@@ -24,7 +24,7 @@
   echo 'struct entity_ptr { const char *name; int id; };'
   echo '%%'
   grep -n -v '^%' \
-  | sed -E -e 's/^([0-9]+):([^\t]+).*$/\2, \1/' -e 's/^(#.+), /"\1", /'
+  | sed -E -e 's/^([0-9]+):([^	]+).*$/\2, \1/' -e 's/^(#.+), /"\1", /'
 ) | gperf -L 'ANSI-C' -c -C -F ', 0' -H entity_hash -N entity_lookup -t -m 20
 
 # vim:ft=sh ts=2 sts=2 sw=2 et
