@@ -54,9 +54,10 @@ pwnsjp: $(ofiles)
 
 .PHONY: install
 install: $(executables)
+	install -d $(DESTDIR)$(bindir)
 	echo $(executables) \
 	| xargs -n 1 \
-	| xargs -t -I {} install -D -m 755 {} $(DESTDIR)$(bindir)/{}
+	| xargs -t -I {} install -m 755 {} $(DESTDIR)$(bindir)/{}
 
 $(ofiles): %.o: %.c
 
@@ -85,9 +86,10 @@ install: install-doc
 
 .PHONY: install-doc
 install-doc:
+	install -d $(DESTDIR)$(mandir)/man1
 	echo $(notdir $(man_files)) \
 	| xargs -n 1 \
-	| xargs -t -I {} install -D doc/{} $(DESTDIR)$(mandir)/man1/{}
+	| xargs -t -I {} install doc/{} $(DESTDIR)$(mandir)/man1/{}
 
 endif
 
