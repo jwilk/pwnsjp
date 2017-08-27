@@ -44,7 +44,7 @@ static void usage(void)
 {
   fprintf(stderr,
     "Usage:\n"
-    "   pwnsjp [OPTIONS] -i\n"
+    "   pwnsjp [OPTIONS] [-i]\n"
     "   pwnsjp [OPTIONS] -a\n"
     "   pwnsjp [OPTIONS] PATTERN\n"
     "\n"

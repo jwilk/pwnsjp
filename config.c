@@ -112,7 +112,10 @@ char *parse_options(int argc, char **argv)
     return NULL;
   }
   else if (optind == argc)
+  {
+    config.conf_ui = true;
     return NULL;
+  }
   else if (optind + 1 == argc)
     return argv[optind];
   else
