@@ -45,11 +45,13 @@ static void usage(void)
   fprintf(stderr,
     "Usage:\n"
     "   pwnsjp [OPTIONS] -i\n"
+    "   pwnsjp [OPTIONS] -a\n"
     "   pwnsjp [OPTIONS] PATTERN\n"
     "\n"
     "Options:\n"
     "  -f, --file=DATAFILE\n"
     "  -i, --ui\n"
+    "  -a, --all\n"
     "  -d, --deep\n"
     "  -e, --entry-only\n"
     "  -h, --help\n"

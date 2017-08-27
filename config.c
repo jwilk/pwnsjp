@@ -36,6 +36,7 @@ char *parse_options(int argc, char **argv)
 {
   static const struct option gopts[] =
   {
+    { .name = "all",        .val = 'a' },
     { .name = "deep",       .val = 'd' },
     { .name = "entry-only", .val = 'e' },
     { .name = "file",       .val = 'f', .has_arg = 1 },
@@ -56,7 +57,7 @@ char *parse_options(int argc, char **argv)
   while (true)
   {
     int i = 0;
-    int c = getopt_long(argc, argv, "def:hivDQRT", gopts, &i);
+    int c = getopt_long(argc, argv, "adef:hivDQRT", gopts, &i);
     if (c < 0)
       break;
     if (c == 0)
@@ -64,6 +65,9 @@ char *parse_options(int argc, char **argv)
  #define on(o) ( config.conf_##o = true )
     switch (c)
     {
+    case 'a':
+      config.conf_all = true;
+      break;
     case 'f':
       config.filename = optarg;
       break;
@@ -96,8 +100,12 @@ char *parse_options(int argc, char **argv)
     config.filename = buffer;
     atexit(deconfigure);
   }
-  return
-    (optind <= argc) ? argv[optind] : NULL;
+  if (config.conf_all)
+    return NULL;
+  else if (optind <= argc)
+    return argv[optind];
+  else
+    return NULL;
 }
 
 
