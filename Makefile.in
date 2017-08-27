@@ -41,13 +41,10 @@ ofiles := $(cfiles:.c=.o)
 # code
 # ====
 
-executables = pwnsjp pwnsjpi
+executables = pwnsjp
 
 .PHONY: all
 all: $(executables)
-
-pwnsjpi: pwnsjp
-	ln -sf pwnsjp pwnsjpi
 
 pwnsjp: $(ofiles)
 	$(LINK.c) $(^) $(LOADLIBES) $(LDLIBS) -o $(@)
@@ -98,7 +95,7 @@ endif
 
 .PHONY: clean
 clean:
-	rm -f pwnsjp pwnsjpi *.o doc/*.[0-9]
+	rm -f pwnsjp *.o doc/*.[0-9]
 
 .PHONY: distclean
 distclean: clean

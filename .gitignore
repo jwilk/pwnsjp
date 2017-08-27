@@ -8,6 +8,5 @@
 /doc/*.1
 /m4/*.m4
 /pwnsjp
-/pwnsjpi
 /setup.h
 /setup.h.in

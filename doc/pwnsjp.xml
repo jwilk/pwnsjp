@@ -171,16 +171,6 @@
     </variablelist>
 </refsection>
 
-<refsection>
-    <title>See also</title>
-    <para>
-        <citerefentry>
-            <refentrytitle>pwnsjpi</refentrytitle>
-            <manvolnum>1</manvolnum>
-        </citerefentry>
-    </para>
-</refsection>
-
 </refentry>
 
 <!-- vim:set ts=4 sts=4 sw=4 et: -->

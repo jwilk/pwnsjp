@@ -43,7 +43,10 @@ static void version(void)
 static void usage(void)
 {
   fprintf(stderr,
-    "Usage: pwnsjp [OPTIONS] PATTERN\n\n"
+    "Usage:\n"
+    "   pwnsjp [OPTIONS] -i\n"
+    "   pwnsjp [OPTIONS] PATTERN\n"
+    "\n"
     "Options:\n"
     "  -f, --file=DATAFILE\n"
     "  -d, --deep\n"

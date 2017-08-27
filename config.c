@@ -49,8 +49,6 @@ char *parse_options(int argc, char **argv)
   };
 
   assert(argc > 0 && argv != NULL && *argv != NULL && **argv != '\0');
-  if (strchr(*argv, '\0')[-1] == 'i')
-    config.conf_ui = true;
 
   if (is_term)
     config.conf_color = true;
