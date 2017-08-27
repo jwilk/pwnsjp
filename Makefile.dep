@@ -24,7 +24,6 @@ io.o: io.h
 io.o: memory.h
 io.o: setup.h
 io.o: unicode.h
-main.o: byteorder.h
 main.o: common.h
 main.o: config.h
 main.o: html.h
