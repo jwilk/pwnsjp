@@ -76,7 +76,7 @@ man_files = $(xml_files:.xml=.1)
 all: $(man_files)
 
 docbook_xsl = http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl
-xsltproc_options = --param man.authors.section.enabled 0
+xsltproc_options = --nonet --param man.authors.section.enabled 0
 
 %.1: %.xml
 	sed -e 's,&version;,$(version),g' -e 's,&slowin;,$(dictdir)/slo.win,g' $(<) | \
