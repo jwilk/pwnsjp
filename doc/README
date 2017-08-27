@@ -66,6 +66,6 @@ Examples::
 
 Polish diacritic characters can be displayed correctly only if locale is
 configured properly. Please make sure than ``locale charmap`` gives the
-expected result: ``ISO-8859-2``, ``ISO-8859-16`` or ``UTF-8``.
+expected result: ``UTF-8``, ``ISO-8859-2``, or ``ISO-8859-16``.
 
 .. vim:ft=rst tw=76 ts=3 sts=3 sw=3 et
