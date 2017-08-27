@@ -1,4 +1,4 @@
-/* ANSI-C code produced by gperf version 3.0.4 */
+/* ANSI-C code produced by gperf version 3.1 */
 /* Command-line: gperf -L ANSI-C -c -C -F ', 0' -H entity_hash -N entity_lookup -t -m 20  */
 /* Computed positions: -k'1-3,$' */
 
@@ -26,7 +26,7 @@
       && ('w' == 119) && ('x' == 120) && ('y' == 121) && ('z' == 122) \
       && ('{' == 123) && ('|' == 124) && ('}' == 125) && ('~' == 126))
 /* The character set is not based on ISO-646.  */
-#error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gnu-gperf@gnu.org>."
+#error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gperf@gnu.org>."
 #endif
 
 struct entity_ptr { const char *name; int id; };
@@ -46,7 +46,7 @@ inline
 #endif
 #endif
 static unsigned int
-entity_hash (register const char *str, register unsigned int len)
+entity_hash (register const char *str, register size_t len)
 {
   static const unsigned short asso_values[] =
     {
@@ -77,7 +77,7 @@ entity_hash (register const char *str, register unsigned int len)
       368, 368, 368, 368, 368, 368, 368, 368, 368, 368,
       368, 368, 368, 368, 368, 368, 368
     };
-  register int hval = len;
+  register unsigned int hval = len;
 
   switch (hval)
     {
@@ -94,14 +94,8 @@ entity_hash (register const char *str, register unsigned int len)
   return hval + asso_values[(unsigned char)str[len - 1]];
 }
 
-#ifdef __GNUC__
-__inline
-#if defined __GNUC_STDC_INLINE__ || defined __GNUC_GNU_INLINE__
-__attribute__ ((__gnu_inline__))
-#endif
-#endif
 const struct entity_ptr *
-entity_lookup (register const char *str, register unsigned int len)
+entity_lookup (register const char *str, register size_t len)
 {
   static const struct entity_ptr wordlist[] =
     {
@@ -362,9 +356,9 @@ entity_lookup (register const char *str, register unsigned int len)
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register int key = entity_hash (str, len);
+      register unsigned int key = entity_hash (str, len);
 
-      if (key <= MAX_HASH_VALUE && key >= 0)
+      if (key <= MAX_HASH_VALUE)
         {
           register const char *s = wordlist[key].name;
 
