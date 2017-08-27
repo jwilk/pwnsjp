@@ -75,7 +75,7 @@ char *parse_options(int argc, char **argv)
       config.action = action_help;
       break;
     case 'i':
-      config.conf_ui = !config.conf_ui;
+      config.conf_ui = true;
       break;
     case 'v':
       config.action = action_version;
