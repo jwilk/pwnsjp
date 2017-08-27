@@ -86,6 +86,8 @@ char *parse_options(int argc, char **argv)
     case 'Q': on(quick);      break;
     case 'R': on(raw);        break;
     case 'T': on(tabi);       break;
+    case '?':
+      exit(1);
     }
 #undef on
   }
