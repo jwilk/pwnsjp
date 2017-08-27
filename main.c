@@ -49,9 +49,9 @@ static void usage(void)
     "\n"
     "Options:\n"
     "  -f, --file=DATAFILE\n"
+    "  -i, --ui\n"
     "  -d, --deep\n"
     "  -e, --entry-only\n"
-    "  -i, --ui\n"
     "  -h, --help\n"
     "  -v, --version\n\n");
 }
