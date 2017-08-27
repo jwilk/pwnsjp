@@ -30,6 +30,7 @@ exec_prefix = @exec_prefix@
 bindir = @bindir@
 datadir = @datadir@
 datarootdir = @datarootdir@
+mandir = @mandir@
 dictdir = @dictdir@
 
 version = @PACKAGE_VERSION@
@@ -86,7 +87,7 @@ install: install-doc
 install-doc:
 	echo $(notdir $(man_files)) \
 	| xargs -n 1 \
-	| xargs -t -I {} install -D doc/{} $(DESTDIR)/man1/{}
+	| xargs -t -I {} install -D doc/{} $(DESTDIR)$(mandir)/man1/{}
 
 endif
 
