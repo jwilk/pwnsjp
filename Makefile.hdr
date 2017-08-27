@@ -44,11 +44,6 @@ cmap-iso8859-13.h: tools/cmap-iso8859-n.h.in
 	tools/cmap-iso8859-n.h.in 13 >> $(@)~
 	mv -f $(@)~ $(@)
 
-cmap-iso8859-16.h: tools/cmap-iso8859-n.h.in
-	cat $(autogen_header) > $(@)~
-	tools/cmap-iso8859-n.h.in 16 >> $(@)~
-	mv -f $(@)~ $(@)
-
 cmap-usascii.h: tools/cmap-usascii.h.in
 	cat $(autogen_header) > $(@)~
 	tools/cmap-usascii.h.in >> $(@)~

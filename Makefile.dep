@@ -62,7 +62,6 @@ ui.o: ui.h
 ui.o: unicode.h
 unicode.o: cmap-cp1250.h
 unicode.o: cmap-iso8859-13.h
-unicode.o: cmap-iso8859-16.h
 unicode.o: cmap-iso8859-2.h
 unicode.o: cmap-usascii.h
 unicode.o: common.h
