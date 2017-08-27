@@ -103,11 +103,23 @@ char *parse_options(int argc, char **argv)
     atexit(deconfigure);
   }
   if (config.conf_all)
+  {
+    if (optind < argc)
+    {
+      fprintf(stderr, "%s: too many arguments\n", argv[0]);
+      exit(1);
+    }
     return NULL;
-  else if (optind <= argc)
+  }
+  else if (optind == argc)
+    return NULL;
+  else if (optind + 1 == argc)
     return argv[optind];
   else
-    return NULL;
+  {
+    fprintf(stderr, "%s: too many arguments\n", argv[0]);
+    exit(1);
+  }
 }
 
 
