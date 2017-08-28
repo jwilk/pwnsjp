@@ -3,7 +3,6 @@
 [
     <!ENTITY p 'pwnsjp'>
     <!ENTITY d "<acronym>PWN</acronym>'s Polish Dictionary">
-    <!ENTITY jwilk '<firstname>Jakub</firstname> <surname>Wilk</surname>'>
     <!ENTITY slowin '<filename>slo.win</filename>'>
     <!ENTITY version '(development version)'>
 ]>
@@ -14,7 +13,7 @@
     <title>&p; manual</title>
     <productname>&p;</productname>
     <author>
-        &jwilk;
+        <firstname>Jakub</firstname> <surname>Wilk</surname>
         <address>
             <email>jwilk@jwilk.net</email>
         </address>
