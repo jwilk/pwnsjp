@@ -1,8 +1,20 @@
 pwnsjp (0.9) UNRELEASED; urgency=low
 
+  * Simplify the --version message.
+  * Drop support for ISO-8859-16 encoding.
+  * Improve the build system:
+    + Install the manpage to the correct directory.
+    + Install the manpage with the correct permissions.
+    + Don't use non-portable options for install(1).
+    + Don't use non-portable constructs for sed(1).
+    + Disable network access for xsltproc.
+    + Don't hardcode Perl path in shebangs.
   * Fix typos in the documentation.
+  * Update the Unshield homepage URL.
+  * Update the requirements list in README.
+  * Put license into a separate file.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Sun, 27 Aug 2017 21:03:21 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Mon, 28 Aug 2017 10:44:30 +0200
 
 pwnsjp (0.8.1) unstable; urgency=low
 
