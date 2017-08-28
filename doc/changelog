@@ -1,5 +1,9 @@
 pwnsjp (0.9) UNRELEASED; urgency=low
 
+  * Get rid of the “pwnsjpi” binary.
+    + Make “pwnsjp” without arguments run the text UI.
+    + Add the -a/--all option to print all entries.
+  * Make the command-line argument parser stricter.
   * Simplify the --version message.
   * Drop support for ISO-8859-16 encoding.
   * Improve the build system:
@@ -14,7 +18,7 @@ pwnsjp (0.9) UNRELEASED; urgency=low
   * Update the requirements list in README.
   * Put license into a separate file.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Mon, 28 Aug 2017 10:44:30 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Mon, 28 Aug 2017 19:52:14 +0200
 
 pwnsjp (0.8.1) unstable; urgency=low
 
