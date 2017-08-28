@@ -42,14 +42,9 @@
             <arg choice='plain'><replaceable>dict</replaceable></arg>
         </arg>
         <group choice='opt'>
-            <arg choice='plain'><option>--deep</option></arg>
-            <arg choice='plain'><option>-d</option></arg>
+            <arg choice='plain'><option>--ui</option></arg>
+            <arg choice='plain'><option>-i</option></arg>
         </group>
-        <group choice='opt'>
-            <arg choice='plain'><option>--entry-only</option></arg>
-            <arg choice='plain'><option>-e</option></arg>
-        </group>
-        <arg><replaceable>pattern</replaceable></arg>
     </cmdsynopsis>
     <cmdsynopsis>
         <command>&p;</command>
@@ -60,10 +55,33 @@
             </group>
             <arg choice='plain'><replaceable>dict</replaceable></arg>
         </arg>
-        <group choice='req'>
-            <arg choice='plain'><option>--ui</option></arg>
-            <arg choice='plain'><option>-i</option></arg>
+        <group choice='opt'>
+            <arg choice='plain'><option>--entry-only</option></arg>
+            <arg choice='plain'><option>-e</option></arg>
         </group>
+        <group choice='req'>
+            <arg choice='plain'><option>--all</option></arg>
+            <arg choice='plain'><option>-a</option></arg>
+        </group>
+    </cmdsynopsis>
+    <cmdsynopsis>
+        <command>&p;</command>
+        <arg choice='opt'>
+            <group choice='req'>
+                <arg choice='plain'><option>--file</option></arg>
+                <arg choice='plain'><option>-f</option></arg>
+            </group>
+            <arg choice='plain'><replaceable>dict</replaceable></arg>
+        </arg>
+        <group choice='opt'>
+            <arg choice='plain'><option>--deep</option></arg>
+            <arg choice='plain'><option>-d</option></arg>
+        </group>
+        <group choice='opt'>
+            <arg choice='plain'><option>--entry-only</option></arg>
+            <arg choice='plain'><option>-e</option></arg>
+        </group>
+        <arg choice='plain'><replaceable>pattern</replaceable></arg>
     </cmdsynopsis>
     <cmdsynopsis>
         <command>&p;</command>
@@ -96,6 +114,20 @@
     </para>
 
     <variablelist>
+        <varlistentry>
+            <term><option>-i</option></term>
+            <term><option>--ui</option></term>
+            <listitem>
+                <para>Run an interactive version of the dictionary interface.</para>
+            </listitem>
+        </varlistentry>
+        <varlistentry>
+            <term><option>-a</option></term>
+            <term><option>--all</option></term>
+            <listitem>
+                <para>Print all the dictionary entries (and definitions).</para>
+            </listitem>
+        </varlistentry>
         <varlistentry>
             <term><option>-f</option></term>
             <term><option>--file=<replaceable>dictionary</replaceable></option></term>
@@ -132,13 +164,6 @@
                     The pattern is treated as case-insensitive POSIX Extended
                     Regular Expression.
                 </para>
-            </listitem>
-        </varlistentry>
-        <varlistentry>
-            <term><option>-i</option></term>
-            <term><option>--ui</option></term>
-            <listitem>
-                <para>Run an interactive version of the dictionary interface.</para>
             </listitem>
         </varlistentry>
         <varlistentry>
