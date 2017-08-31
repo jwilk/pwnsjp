@@ -40,7 +40,8 @@ You will need:
 
 - additionally, if you want to build the manual pages:
 
-  - *xsltproc* (from *libxslt*, the XSLT C library for GNOME);
+  - *xsltproc* (from *libxslt*, the XSLT C library for GNOME),
+  - DocBook XSL stylesheets;
 
 - additionally, if you need to refresh some automatically generated files:
 
