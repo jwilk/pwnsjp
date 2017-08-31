@@ -65,19 +65,20 @@ include Makefile.hdr
 # =============
 
 XSLTPROC = @XSLTPROC@
+DOCBOOK_XSL = @DOCBOOK_XSL@
 
 ifneq "$(XSLTPROC)" ""
+ifneq "$(DOCBOOK_XSL)" ""
 
 xml_files = $(wildcard doc/*.xml)
 man_files = $(xml_files:.xml=.1)
 all: $(man_files)
 
-docbook_xsl = http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl
 xsltproc_options = --nonet --param man.authors.section.enabled 0
 
 %.1: %.xml
 	sed -e 's,&version;,$(version),g' -e 's,&slowin;,$(dictdir)/slo.win,g' $(<) | \
-	$(XSLTPROC) $(xsltproc_options) --output $(@) $(docbook_xsl) -
+	$(XSLTPROC) $(xsltproc_options) --output $(@) $(DOCBOOK_XSL) -
 
 install: install-doc
 
@@ -88,6 +89,7 @@ install-doc:
 	| xargs -n 1 \
 	| xargs -t -I {} install -m 644 doc/{} $(DESTDIR)$(mandir)/man1/{}
 
+endif
 endif
 
 # cleaning

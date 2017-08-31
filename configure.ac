@@ -50,7 +50,17 @@ AC_ARG_WITH([dictdir],
 AC_SUBST([dictdir])
 
 AC_CHECK_PROGS([XSLTPROC], [xsltproc])
-if test -z "$XSLTPROC"; then
+if test -n "$XSLTPROC"; then
+    AC_CACHE_CHECK([for DocBook XSL stylesheet], [_cv_docbook_xsl], [
+        _cv_docbook_xsl=http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl
+        AC_RUN_LOG([$XSLTPROC --nonet "$_cv_docbook_xsl"]) || _cv_docbook_xsl=no
+    ])
+    if test "$_cv_docbook_xsl" = no; then
+        _cv_docbook_xsl=
+        AC_MSG_WARN([DocBook XSL stylesheets are needed to build the documentation])
+    fi
+    AC_SUBST([DOCBOOK_XSL], ["$_cv_docbook_xsl"])
+else
     AC_MSG_WARN([xsltproc is needed to build the documentation])
 fi
 
