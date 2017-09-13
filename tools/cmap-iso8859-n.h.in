@@ -36,12 +36,16 @@ EOF
 ;
 
 my %s;
-$s{$_} = 0 foreach (0xa0 .. 0x17f);
+foreach (0xa0 .. 0x17f) {
+    $s{$_} = 0;
+}
 foreach my $b (0x00 .. 0xff) {
     my $u = ord(Encode::decode("ISO-8859-$n", chr($b), Encode::FB_CROAK));
     $s{$u} = $b;
 }
-printf '\x%02x', $s{$_} foreach (0xa0 .. 0x17f);
+foreach (0xa0 .. 0x17f) {
+    printf '\x%02x', $s{$_};
+}
 print <<'EOF'
 \
 ";
