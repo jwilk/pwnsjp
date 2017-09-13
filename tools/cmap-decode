@@ -38,7 +38,7 @@ EOF
 ;
 
 foreach my $b (0x80 .. 0xFF) {
-    my $u = ord(Encode::decode($charset, chr($b)));
+    my $u = ord Encode::decode($charset, chr $b);
     if ($u == 0xFFFD) {
         print '\0';
     } elsif ($u >= 0x80 && $u < 0xA0) {
