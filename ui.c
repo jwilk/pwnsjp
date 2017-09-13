@@ -406,7 +406,7 @@ static void ui_show_content(struct view_t *view)
         attr = A_NORMAL;
       if (*s < ' ')
         ch = '$' | A_REVERSE;
-      else if (*s >= 0x7f)
+      else if (*s >= 0x7F)
         ch = '.' | A_REVERSE;
       else
         ch = *s;
@@ -468,7 +468,7 @@ static void ui_show_content(struct view_t *view)
       else
       switch (*right)
       {
-      case '\x1b':
+      case '\x1B':
         esc = true;
         flush();
         left++;
@@ -538,7 +538,7 @@ static void ui_react_menu(struct menu_t *menu, wchar_t ch)
     reject(menu->search_pos >= menu->search_len);
     menu->search_pos++;
   case -L'\b':
-  case -L'\x7f':
+  case -L'\x7F':
   case KEY_BACKSPACE:
     reject(menu->search_len == 0 || menu->search_pos == 0);
     for (i=menu->search_pos-1; i<menu->search_len; i++)
@@ -774,10 +774,10 @@ void ui_start(struct io_t *io)
       }
       doupdate();
       break;
-    case -L'\x1b': // Escape
+    case -L'\x1B': // Escape
       r = get_wch(&chi);
       ch = chi;
-      if (r != ERR && ch != L'\x1b')
+      if (r != ERR && ch != L'\x1B')
         break;
     case L'@' - L'C': // Control + C
     case L'@' - L'\\': // Control + Backslash

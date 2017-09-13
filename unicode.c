@@ -116,7 +116,7 @@ static wchar_t *pwnstr_to_ustr(const char *str)
   for (resptr = result; *str; str++, resptr++)
   {
     if (*str & 0x80)
-      *resptr = pwn_charset[*str & 0x7f];
+      *resptr = pwn_charset[*str & 0x7F];
     else if ((*resptr = *str) == '&')
     {
       str = entity_grep(str + 1, resptr);
@@ -138,11 +138,11 @@ static char *ustr_fallback_ascii(const wchar_t *ustr)
 #define as(t) do { strcpy(appendix, t); while (*appendix) appendix++; } while (0)
   for (i = 0; i < len; i++)
   {
-    if (ustr[i] < 0xa0)
+    if (ustr[i] < 0xA0)
       a(ustr[i]);
     else if (ustr[i] < 0x180)
     {
-      unsigned int j = ustr[i] - 0xa0;
+      unsigned int j = ustr[i] - 0xA0;
       char code = '\0';
       if (rev_iso8859n != NULL)
         code = rev_iso8859n[j];
@@ -154,7 +154,7 @@ static char *ustr_fallback_ascii(const wchar_t *ustr)
     else if (ustr[i] >= 0x300 && ustr[i] < 0x370)
     {
       // combining character
-      if (ustr[i] == 0x32f)
+      if (ustr[i] == 0x32F)
       {
         // inverted breve below a character
         appendix[0] = appendix[-1];
@@ -235,7 +235,7 @@ size_t strnwidth(const char *str, size_t len)
     for ( ; len > 0; str++, len--)
     if (*str == '\0')
       break;
-    else if ((*str & 0xc0) != 0x80)
+    else if ((*str & 0xC0) != 0x80)
       width++;
     return width;
   }

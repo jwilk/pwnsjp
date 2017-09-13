@@ -257,7 +257,7 @@ bool io_build_index(struct io_t *io)
 
   unsigned int i;
   for (i = 0; i < io->isize; i++)
-    offsets[i] = le2cpu(offsets[i]) & 0x07ffffff;
+    offsets[i] = le2cpu(offsets[i]) & 0x07FFFFFF;
   uint32_sort(offsets, io->isize);
 
   io->isize -= 2;
@@ -277,7 +277,7 @@ bool io_build_index(struct io_t *io)
   if (maxsize >= (1 << 14))
     return false;
 
-  io->csize = (maxsize | 0xff) + 1;
+  io->csize = (maxsize | 0xFF) + 1;
   io->cbuffer = alloc(io->csize << 3, sizeof (char));
   if (io->cbuffer == NULL)
     return false;
@@ -321,7 +321,7 @@ bool io_build_index(struct io_t *io)
     if (len > maxlen)
       maxlen = len;
   }
-  char *plusinf; // +oo == "\xff\xff...\xff"
+  char *plusinf; // +oo == "\xFF\xFF...\xFF"
   plusinf = alloc(maxlen + 1, sizeof (char));
   memset(plusinf, -1, maxlen);
   plusinf[maxlen] = '\0';

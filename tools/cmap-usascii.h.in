@@ -30,12 +30,12 @@ print <<'EOF'
 #ifndef CMAP_USASCII_H
 #define CMAP_USASCII_H
 
-static const char* rev_usascii[0xe0] = { "\xa0",
+static const char* rev_usascii[0xE0] = { "\xA0",
 EOF
 ;
 
 print { $tmpfh } '<html><body>';
-foreach (0xa1 .. 0x17f)
+foreach (0xA1 .. 0x17F)
 {
   print { $tmpfh } "&#$_;\n";
   print { $tmpfh } '<br />';

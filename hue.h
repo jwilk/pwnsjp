@@ -34,7 +34,7 @@ enum hue_fg
   hue_fg_white      = 0x007
 };
 #define hue_fg_count 8
-#define hue_fg_mask 0x00f
+#define hue_fg_mask 0x00F
 #define hue_fg_shift 0
 
 enum hue_bg
@@ -49,7 +49,7 @@ enum hue_bg
   hue_bg_white   = 0x070
 };
 #define hue_bg_count 8
-#define hue_bg_mask 0x0f0
+#define hue_bg_mask 0x0F0
 #define hue_bg_shift 4
 
 enum hue_ex
@@ -59,7 +59,7 @@ enum hue_ex
   hue_persistent = 0x400
 };
 #define hue_ex_count 8
-#define hue_ex_mask 0xf00
+#define hue_ex_mask 0xF00
 #define hue_ex_shift 8
 
 #define hue_count (hue_ex_count << hue_ex_shift)
