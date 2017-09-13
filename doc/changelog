@@ -4,21 +4,34 @@ pwnsjp (0.9) UNRELEASED; urgency=low
     + Make “pwnsjp” without arguments run the text UI.
     + Add the -a/--all option to print all entries.
   * Make the command-line argument parser stricter.
+  * Make --help print to stdout, not stderr.
+  * Make --version print to stdout, not stderr.
   * Simplify the --version message.
+  * Make --version print also ncurses version.
   * Drop support for ISO-8859-16 encoding.
+  * Fix typo in ASCII transliteration of Σ (Greek capital letter sigma).
   * Improve the build system:
     + Install the manpage to the correct directory.
     + Install the manpage with the correct permissions.
     + Don't use non-portable options for install(1).
     + Don't use non-portable constructs for sed(1).
     + Disable network access for xsltproc.
+    + Check for the DocBook stylesheet availability at configure time.
+    + Rewrite encoding helper scripts so that they don't require glibc data
+      files.
+    + Drop support for konwert(1).
+      (This codepath has never worked correctly.)
     + Don't hardcode Perl path in shebangs.
+    + Improve error handling.
+  * Improve the manual pages:
+    + Improve wording.
+    + Use the YYYY-MM-DD date format.
   * Fix typos in the documentation.
   * Update the Unshield homepage URL.
   * Update the requirements list in README.
   * Put license into a separate file.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Mon, 28 Aug 2017 19:52:14 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 13 Sep 2017 20:16:38 +0200
 
 pwnsjp (0.8.1) unstable; urgency=low
 
