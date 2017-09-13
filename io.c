@@ -38,7 +38,7 @@ bool io_init(struct io_t *io, const char *filename)
   if (fseek(io->file, 0, SEEK_END) != 0)
     return false;
   io->file_size = ftell(io->file);
-  io->cp1250 = io->file_size == 107564724; // that is: ,,Slownik jezyka polskiego PWN''
+  io->cp1250 = io->file_size == 107564724; // that is: “Słownik języka polskiego PWN”
   set_pwn_charset(io->cp1250);
   io->isize = 0;
   io->header = NULL;
