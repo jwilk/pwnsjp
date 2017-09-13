@@ -23,4 +23,14 @@ Generate indices at compile time (or runtime?).
 
 Investigate what is the contents of ``sjptom1.dat``, …, ``sjptom3.dat``?
 
+Add option to match by wildcard.
+
+Documentation: migrate away from DocBook
+
+Travis CI: check for version consistency.
+
+Travis CI: run perlcritic.
+
+configure: check if libraries are actually available.
+
 .. vim:ft=rst tw=76 ts=3 sts=3 sw=3 et
