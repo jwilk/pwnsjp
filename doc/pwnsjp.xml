@@ -2,8 +2,7 @@
 <!DOCTYPE refentry PUBLIC '-//OASIS//DTD DocBook XML V4.5//EN' 'http://www.docbook.org/xml/4.5/docbookx.dtd'
 [
     <!ENTITY p 'pwnsjp'>
-    <!ENTITY d "<acronym>PWN</acronym>'s Polish Dictionary">
-    <!ENTITY slowin '<filename>slo.win</filename>'>
+    <!ENTITY dictdir '/usr/local/share/pwnsjp'>
     <!ENTITY version '(development version)'>
 ]>
 
@@ -28,7 +27,7 @@
 
 <refnamediv>
     <refname>&p;</refname>
-    <refpurpose>an interface to &d;</refpurpose>
+    <refpurpose>frontend to dictionaries published by PWN</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv>
@@ -101,24 +100,22 @@
 <refsection>
     <title>Description</title>
     <para>
-        &p; finds entries in the &d; which matches a pattern (regular
-        expression). Moreover, it can run an interactive version of the
-        dictionary interface.
+        <command>&p;</command> is a text-based frontend to some dictionaries published by Wydawnictwo Naukowe PWN.
     </para>
 </refsection>
 
 <refsection>
     <title>Options</title>
     <para>
-        &p; accepts the following options:
+        <command>&p;</command> accepts the following options:
     </para>
-
     <variablelist>
         <varlistentry>
             <term><option>-i</option></term>
             <term><option>--ui</option></term>
             <listitem>
-                <para>Run an interactive version of the dictionary interface.</para>
+                <para>Run the interactive user interface.</para>
+                <para>This is the default if no <replaceable>pattern</replaceable> was specified.</para>
             </listitem>
         </varlistentry>
         <varlistentry>
@@ -133,8 +130,21 @@
             <term><option>--file=<replaceable>dictionary</replaceable></option></term>
             <listitem>
                 <para>
-                    Use <replaceable>dictionary</replaceable> as the dictionary file.
-                    Unless the path is absolute, the <filename>.win</filename> extension can be omitted.
+                    Use this dictionary file.
+                    <replaceable>dictionary</replaceable> can be either an absolute pathname,
+                    or a filename relative to <filename>&dictdir;</filename>.
+                    In the latter case, the <filename>.win</filename> extension can be omitted.
+                </para>
+            </listitem>
+        </varlistentry>
+        <varlistentry>
+            <term><option><replaceable>pattern</replaceable></option></term>
+            <listitem>
+                <para>
+                    Pattern to search for.
+                </para>
+                <para>
+                    This is a case-insensitive POSIX Extended Regular Expression.
                 </para>
             </listitem>
         </varlistentry>
@@ -142,7 +152,7 @@
             <term><option>-e</option></term>
             <term><option>--entry-only</option></term>
             <listitem>
-                <para>Display only entries, not their definitions.</para>
+                <para>Print only entries, not their definitions.</para>
             </listitem>
         </varlistentry>
         <varlistentry>
@@ -150,20 +160,6 @@
             <term><option>--deep</option></term>
             <listitem>
                 <para>Search through definitions, not only entries.</para>
-            </listitem>
-        </varlistentry>
-        <varlistentry>
-            <term><option><replaceable>pattern</replaceable></option></term>
-            <listitem>
-                <para>
-                    A pattern which an entry (or definition, if
-                    <option>--deep</option> were chosen) should match to be
-                    displayed.
-                </para>
-                <para>
-                    The pattern is treated as case-insensitive POSIX Extended
-                    Regular Expression.
-                </para>
             </listitem>
         </varlistentry>
         <varlistentry>
@@ -187,9 +183,15 @@
     <title>Files</title>
     <variablelist>
         <varlistentry>
-            <term>&slowin;</term>
+            <term><filename>&dictdir;</filename></term>
             <listitem>
-                <para>The data file of the &d;.</para>
+                <para>Directory where the dictionary files should reside.</para>
+            </listitem>
+        </varlistentry>
+        <varlistentry>
+            <term><filename>&dictdir;/slo.win</filename></term>
+            <listitem>
+                <para>The default dictionary file.</para>
             </listitem>
         </varlistentry>
     </variablelist>

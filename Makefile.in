@@ -77,7 +77,7 @@ all: $(man_files)
 xsltproc_options = --nonet --param man.authors.section.enabled 0
 
 %.1: %.xml
-	sed -e 's,&version;,$(version),g' -e 's,&slowin;,$(dictdir)/slo.win,g' $(<) | \
+	sed -e 's,&version;,$(version),g' -e 's,&dictdir;,$(dictdir),g' $(<) | \
 	$(XSLTPROC) $(xsltproc_options) --output $(@) $(DOCBOOK_XSL) -
 
 install: install-doc
