@@ -1,0 +1,48 @@
+severity = 1
+verbose = %f:%l: [%p] %m\n
+
+[-CodeLayout::RequireTidyCode]
+# no, thanks
+
+[-ErrorHandling::RequireCarping]
+# die is good enough
+
+[-InputOutput::ProhibitExplicitStdin]
+# doesn't matter for our scripts
+
+[InputOutput::RequireBriefOpen]
+lines = 30
+
+[-InputOutput::RequireCheckedClose]
+[-InputOutput::RequireCheckedOpen]
+# already covered by RequireCheckedSyscalls
+
+[InputOutput::RequireCheckedSyscalls]
+functions = :builtins
+exclude_functions = print
+
+[-Modules::RequireVersionVar]
+# we have only scripts, which don't need versions
+
+[-RegularExpressions::RequireDotMatchAnything]
+[-RegularExpressions::RequireExtendedFormatting]
+[-RegularExpressions::RequireLineBoundaryMatching]
+# no, thanks
+
+[-RegularExpressions::ProhibitEnumeratedClasses]
+# no, thanks
+
+[-ValuesAndExpressions::ProhibitEmptyQuotes]
+[-ValuesAndExpressions::ProhibitNoisyQuotes]
+# no, thanks
+
+[-ValuesAndExpressions::ProhibitMagicNumbers]
+# no, thanks
+
+[-ValuesAndExpressions::ProhibitVersionStrings]
+# we don't care about Perl << 5.6, which doesn't support version strings
+
+[-ValuesAndExpressions::RequireInterpolationOfMetachars]
+# false postives only
+
+# vim:ft=dosini
