@@ -20,6 +20,9 @@
  */
 
 #define _XOPEN_SOURCE_EXTENDED
+// _XOPEN_SOURCE_EXTENDED is deprecated in favor of _XOPEN_SOURCE,
+// but we need for old ncurses versions to declare these functions:
+// mvwaddwstr, unget_wch, get_wch.
 
 #include "common.h"
 #include "ui.h"
