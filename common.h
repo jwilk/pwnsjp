@@ -48,7 +48,7 @@
 
 #endif
 
-#include "setup.h"
+#include "autoconf.h"
 
 #endif
 

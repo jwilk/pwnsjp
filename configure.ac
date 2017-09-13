@@ -64,7 +64,7 @@ else
     AC_MSG_WARN([xsltproc is needed to build the documentation])
 fi
 
-AC_CONFIG_HEADER([setup.h])
+AC_CONFIG_HEADER([autoconf.h])
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
 

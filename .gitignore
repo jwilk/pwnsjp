@@ -1,6 +1,8 @@
 *.o
 /Makefile
 /aclocal.m4
+/autoconf.h
+/autoconf.h.in
 /autom4te.cache/
 /config.log
 /config.status
@@ -9,5 +11,3 @@
 /doc/manpage.ent
 /m4/*.m4
 /pwnsjp
-/setup.h
-/setup.h.in
