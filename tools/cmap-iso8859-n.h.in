@@ -26,6 +26,7 @@ use warnings;
 use Encode;
 
 my $n = shift;
+defined $n or die;
 
 print <<"EOF"
 #ifndef CMAP_ISO8859_${n}_H

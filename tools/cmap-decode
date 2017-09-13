@@ -26,6 +26,7 @@ use warnings;
 use Encode;
 
 my ($charset) = @ARGV;
+defined $charset or die;
 my $CHARSET = uc $charset;
 
 print <<"EOF"
