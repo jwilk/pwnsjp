@@ -39,6 +39,7 @@ sub process
     for (sort @result) {
         print "$_\n";
     }
+    return;
 }
 
 my $cc = $ENV{'CC'} // 'gcc';
