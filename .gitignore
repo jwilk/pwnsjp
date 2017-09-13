@@ -6,6 +6,7 @@
 /config.status
 /configure
 /doc/*.1
+/doc/manpage.ent
 /m4/*.m4
 /pwnsjp
 /setup.h

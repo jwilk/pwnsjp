@@ -74,9 +74,13 @@ all: doc/pwnsjp.1
 
 xsltproc_options = --nonet --param man.authors.section.enabled 0
 
-doc/pwnsjp.1: doc/manpage.xml
-	sed -e 's,&version;,$(version),g' -e 's,&dictdir;,$(dictdir),g' $(<) | \
-	$(XSLTPROC) $(xsltproc_options) --output $(@) $(DOCBOOK_XSL) -
+doc/manpage.ent: Makefile
+	printf '<!ENTITY version "%s">' '$(version)' > $(@).tmp
+	printf '<!ENTITY dictdir "%s">' '$(dictdir)' >> $(@).tmp
+	mv $(@).tmp $(@)
+
+doc/pwnsjp.1: doc/manpage.xml doc/manpage.ent
+	$(XSLTPROC) $(xsltproc_options) --output $(@) $(DOCBOOK_XSL) $(<)
 
 install: install-doc
 
@@ -93,7 +97,7 @@ endif
 
 .PHONY: clean
 clean:
-	rm -f pwnsjp *.o doc/*.1
+	rm -f pwnsjp *.o doc/*.1 doc/manpage.ent
 
 .PHONY: distclean
 distclean: clean
