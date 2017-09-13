@@ -1,7 +1,7 @@
 Overview
 ========
 
-**pwnsjp** is a console-based frontend to some dictionaries published by
+**pwnsjp** is a text-based frontend to some dictionaries published by
 Wydawnictwo Naukowe PWN. The following dictionaries has been tested:
 
 - “Słownika języka polskiego”, 3 volumes (distributed as an
