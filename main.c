@@ -42,7 +42,7 @@ static void version(void)
 
 static void usage(void)
 {
-  fprintf(stderr,
+  printf(
     "Usage:\n"
     "   pwnsjp [OPTIONS] [-i]\n"
     "   pwnsjp [OPTIONS] -a\n"
