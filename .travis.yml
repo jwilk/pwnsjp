@@ -11,10 +11,12 @@ addons:
     - autoconf-archive
     - automake
     - docbook-xml
+    - docbook-xsl
     - elinks
     - gperf
     - libxml2-utils
     - python-docutils
+    - xsltproc
 before_script:
 - private/autogen
 script:
