@@ -26,6 +26,7 @@
 
 bool ui_prepare(void);
 void ui_start(struct io_t*);
+const char * ui_get_ncurses_version(void);
 
 #endif
 

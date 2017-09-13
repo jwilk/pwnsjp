@@ -810,4 +810,9 @@ void ui_start(struct io_t *io)
 
 }
 
+const char * ui_get_ncurses_version(void)
+{
+  return curses_version();
+}
+
 // vim: ts=2 sts=2 sw=2 et

@@ -37,7 +37,12 @@
 
 static void version(void)
 {
-  printf("%s\n", PACKAGE_STRING);
+  printf(
+    "%s\n"
+    "+ %s\n",
+    PACKAGE_STRING,
+    ui_get_ncurses_version()
+  );
 }
 
 static void usage(void)
