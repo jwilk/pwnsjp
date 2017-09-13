@@ -23,7 +23,7 @@
 use strict;
 use warnings;
 
-print <<EOF
+print <<'EOF'
 #include <wchar.h>
 
 #ifndef ENTITY_H
@@ -50,7 +50,7 @@ while (<STDIN>)
   $values =~ s/\\u(00[0-7][0-9a-f])/chr(hex $1)/ge;
   print qq(  { .name = "$name", .values = L"$values", .str = $string },\n);
 }
-print <<EOF
+print <<'EOF'
   { .name = NULL, .values = NULL, .str = NULL }
 };
 

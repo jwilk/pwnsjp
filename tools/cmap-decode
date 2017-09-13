@@ -28,7 +28,7 @@ use Encode;
 my ($charset) = @ARGV;
 my $CHARSET = uc $charset;
 
-print <<EOF
+print <<"EOF"
 #include <wchar.h>
 #ifndef CMAP_DECODE_${CHARSET}_H
 #define CMAP_DECODE_${CHARSET}_H
@@ -47,8 +47,8 @@ foreach my $b (0x80 .. 0xFF) {
         printf '\u%04x', $u;
     }
 }
-print <<EOF
-\\
+print <<'EOF'
+\
 ";
 
 #endif

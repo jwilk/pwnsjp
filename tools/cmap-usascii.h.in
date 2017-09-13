@@ -26,11 +26,11 @@ use File::Temp qw();
 
 my $tmpfh = File::Temp->new();
 
-print <<EOF
+print <<'EOF'
 #ifndef CMAP_USASCII_H
 #define CMAP_USASCII_H
 
-static const char* rev_usascii[0xe0] = { "\\xa0",
+static const char* rev_usascii[0xe0] = { "\xa0",
 EOF
 ;
 
@@ -57,7 +57,7 @@ while (<CO>)
 }
 $s =~ s/, $//;
 
-print <<EOF
+print <<"EOF"
 $s };
 
 #endif
