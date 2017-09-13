@@ -42,9 +42,9 @@ foreach (0xa1 .. 0x17f)
 }
 print $tmpfh '</body></html>';
 
-my $links_args = "-dump -dump-charset US-ASCII $tmpfh";
-open CO, '-|', "links $links_args" or
-open CO, '-|', "elinks $links_args" or
+my @links_args = ('-dump', '-dump-charset', 'US-ASCII', $tmpfh);
+open CO, '-|', 'links', @links_args or
+open CO, '-|', 'elinks', @links_args or
 die;
 
 my $s='';
