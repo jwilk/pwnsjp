@@ -44,7 +44,7 @@ sub process
 
 my $cc = $ENV{'CC'} // 'gcc';
 
-open STDIN, '-|', $cc, '-MM', glob('*.c');
+open STDIN, '-|', $cc, '-MM', glob '*.c';
 open STDOUT, '>', 'Makefile.dep';
 my $line = '';
 while (<STDIN>) {
