@@ -34,13 +34,13 @@ static const char* rev_usascii[0xe0] = { "\xa0",
 EOF
 ;
 
-print $tmpfh '<html><body>';
+print { $tmpfh } '<html><body>';
 foreach (0xa1 .. 0x17f)
 {
-  print $tmpfh "&#$_;\n";
-  print $tmpfh '<br />';
+  print { $tmpfh } "&#$_;\n";
+  print { $tmpfh } '<br />';
 }
-print $tmpfh '</body></html>';
+print { $tmpfh } '</body></html>';
 
 my @links_args = ('-dump', '-dump-charset', 'US-ASCII', $tmpfh);
 my $pipe;
