@@ -112,7 +112,7 @@ static const struct entity entity_list[] =
   { .name = "Lambda", .values = L"\u039b", .str = "<Lambda>" },
   { .name = "Xi", .values = L"\u039e", .str = "<Chi>" },
   { .name = "Pi", .values = L"\u03a0", .str = "<Pi>" },
-  { .name = "Sigma", .values = L"\u03a3", .str = "<Sigma" },
+  { .name = "Sigma", .values = L"\u03a3", .str = "<Sigma>" },
   { .name = "Tau", .values = L"\u03a4", .str = "<Tau>" },
   { .name = "Upsi", .values = L"\u03a5", .str = "<Upsilon>" },
   { .name = "Phi", .values = L"\u03a6", .str = "<Fi>" },
