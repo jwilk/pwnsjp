@@ -48,7 +48,7 @@ You will need:
   - *autoconf*,
   - *perl*,
   - *gperf*,
-  - *konwert* or *links* or *elinks*.
+  - *links* or *elinks*.
 
 Building instructions::
 

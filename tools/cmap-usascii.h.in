@@ -24,8 +24,6 @@ use strict;
 use warnings;
 use File::Temp qw();
 
-my $use_konwert = 0;
-
 my $tmpfh = new File::Temp();
 
 print <<EOF
@@ -36,26 +34,18 @@ static const char* rev_usascii[0xe0] = { "\\xa0",
 EOF
 ;
 
-print $tmpfh '<html><body>' unless $use_konwert;
+print $tmpfh '<html><body>';
 foreach (0xa1 .. 0x17f)
 {
   print $tmpfh "&#$_;\n";
-  print $tmpfh '<br />' unless $use_konwert
+  print $tmpfh '<br />';
 }
-print $tmpfh '</body></html>' unless $use_konwert;
+print $tmpfh '</body></html>';
 
-if ($use_konwert)
-{
-  open(STDIN, "<&tmpfh");
-  open CO, '-|', "konwert html-ascii" or die;
-}
-else
-{
-  my $links_args = "-dump -dump-charset US-ASCII $tmpfh";
-  open CO, '-|', "links $links_args" or
-  open CO, '-|', "elinks $links_args" or
-  die;
-}
+my $links_args = "-dump -dump-charset US-ASCII $tmpfh";
+open CO, '-|', "links $links_args" or
+open CO, '-|', "elinks $links_args" or
+die;
 
 my $s='';
 while (<CO>)
