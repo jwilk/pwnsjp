@@ -184,7 +184,7 @@ static char *ustr_fallback_ascii(const wchar_t *ustr)
 static char* ustr_fallback_sys(const wchar_t *ustr)
 {
   int lim = 1 + wcstombs(NULL, ustr, 0);
-  char* result = alloc(lim, sizeof(char));
+  char* result = alloc(lim, 1);
   if (wcstombs(result, ustr, lim) == (size_t)(-1))
     fatal("wcstombs failed!");
   else
@@ -253,7 +253,7 @@ size_t strnwidth(const char *str, size_t len)
 char *strxform(const char *str)
 {
   int lim = 1 + strxfrm(NULL, str, 0);
-  char *result = alloc(lim, sizeof(char));
+  char *result = alloc(lim, 1);
   strxfrm(result, str, lim);
   return result;
 }

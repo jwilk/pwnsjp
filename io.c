@@ -278,7 +278,7 @@ bool io_build_index(struct io_t *io)
     return false;
 
   io->csize = (maxsize | 0xFF) + 1;
-  io->cbuffer = alloc(io->csize << 3, sizeof (char));
+  io->cbuffer = alloc(io->csize << 3, 1);
   if (io->cbuffer == NULL)
     return false;
 
@@ -322,7 +322,7 @@ bool io_build_index(struct io_t *io)
       maxlen = len;
   }
   char *plusinf; // +oo == "\xFF\xFF...\xFF"
-  plusinf = alloc(maxlen + 1, sizeof (char));
+  plusinf = alloc(maxlen + 1, 1);
   memset(plusinf, -1, maxlen);
   plusinf[maxlen] = '\0';
   iitem->entry = iitem->xentry = plusinf;
