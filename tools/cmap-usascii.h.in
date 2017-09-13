@@ -65,7 +65,7 @@ $s };
 EOF
 ;
 
-close $pipe;
-close $tmpfh;
+close $pipe or die;
+close $tmpfh or die;
 
 # vim:ft=perl ts=2 sts=2 sw=2 et
