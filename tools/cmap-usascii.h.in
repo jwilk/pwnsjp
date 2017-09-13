@@ -24,7 +24,7 @@ use strict;
 use warnings;
 use File::Temp qw();
 
-my $tmpfh = new File::Temp();
+my $tmpfh = File::Temp->new();
 
 print <<EOF
 #ifndef CMAP_USASCII_H
