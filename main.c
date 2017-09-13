@@ -37,7 +37,7 @@
 
 static void version(void)
 {
-  fprintf(stderr, "%s\n", PACKAGE_STRING);
+  printf("%s\n", PACKAGE_STRING);
 }
 
 static void usage(void)
