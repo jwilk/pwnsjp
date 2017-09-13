@@ -41,20 +41,16 @@ ofiles := $(cfiles:.c=.o)
 # code
 # ====
 
-executables = pwnsjp
-
 .PHONY: all
-all: $(executables)
+all: pwnsjp
 
 pwnsjp: $(ofiles)
 	$(LINK.c) $(^) $(LOADLIBES) $(LDLIBS) -o $(@)
 
 .PHONY: install
-install: $(executables)
+install: pwnsjp
 	install -d $(DESTDIR)$(bindir)
-	echo $(executables) \
-	| xargs -n 1 \
-	| xargs -t -I {} install -m 755 {} $(DESTDIR)$(bindir)/{}
+	install -m 755 $(<) $(DESTDIR)$(bindir)/$(<)
 
 $(ofiles): %.o: %.c
 
