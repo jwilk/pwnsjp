@@ -1,4 +1,4 @@
-pwnsjp (0.9) UNRELEASED; urgency=low
+pwnsjp (0.9) unstable; urgency=low
 
   * Get rid of the “pwnsjpi” binary.
     + Make “pwnsjp” without arguments run the text UI.
@@ -31,7 +31,7 @@ pwnsjp (0.9) UNRELEASED; urgency=low
   * Update the requirements list in README.
   * Put license into a separate file.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Wed, 13 Sep 2017 20:16:38 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Thu, 14 Sep 2017 21:30:45 +0200
 
 pwnsjp (0.8.1) unstable; urgency=low
 
