@@ -47,7 +47,7 @@ while (<STDIN>)
   chop;
   my ($name, $values, $string) = split /\t/;
   $values =~ s/(^|[+])/\\u/g;
-  $values =~ s/\\u(00[0-7][0-9a-f])/chr(hex $1)/ge;
+  $values =~ s/\\u(00[0-7][0-9A-F])/chr(hex $1)/ge;
   print qq(  { .name = "$name", .values = L"$values", .str = $string },\n);
 }
 print <<'EOF'
