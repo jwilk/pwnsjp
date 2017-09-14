@@ -4,10 +4,16 @@
 /autoconf.h
 /autoconf.h.in
 /autom4te.cache/
+/cmap-cp1250.h
+/cmap-iso8859-13.h
+/cmap-iso8859-2.h
+/cmap-usascii.h
 /config.log
 /config.status
 /configure
 /doc/*.1
 /doc/manpage.ent
+/entity-hash.h
+/entity.h
 /m4/*.m4
 /pwnsjp

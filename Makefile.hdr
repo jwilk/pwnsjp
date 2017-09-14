@@ -21,7 +21,7 @@
 
 autogen_header = data/autogen-header.inc.h
 
-autohfiles = $(wildcard cmap-*.h) $(wildcard entity*.h)
+autohfiles = cmap-cp1250.h cmap-iso8859-13.h cmap-iso8859-2.h cmap-usascii.h entity-hash.h entity.h
 
 .PHONY: headers
 headers: $(autohfiles)
