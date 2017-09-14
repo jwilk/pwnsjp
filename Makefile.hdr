@@ -58,7 +58,6 @@ entity-hash.h: data/entities.dat tools/entity-hash.h.in
 	tools/entity-hash.h.in < ${<} > $(@)~
 	mv -f $(@)~ $(@)
 
-
 .PHONY: clean-headers
 clean-headers:
 	rm -f $(autohfiles)
