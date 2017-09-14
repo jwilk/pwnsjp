@@ -33,4 +33,8 @@ Travis CI: run perlcritic.
 
 configure: check if libraries are actually available.
 
+Spawn pager automatically.
+
+Add option to print colors even when stdout is not a tty.
+
 .. vim:ft=rst tw=76 ts=3 sts=3 sw=3 et
