@@ -20,8 +20,11 @@ addons:
 before_script:
 - private/autogen
 script:
-- ./configure
+- ./configure --prefix ~/.local
 - make -B
+- make install
+- PATH=~/.local/bin pwnsjp; [ $? -eq 1 ]
+- MANPATH=~/.local/share/man MANWIDTH=80 man 1 pwnsjp | grep -A 15 -w PWNSJP
 - xmllint --nonet --noout --valid doc/*.xml
 - private/check-rst
 
