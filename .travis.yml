@@ -10,6 +10,7 @@ addons:
     - autoconf
     - autoconf-archive
     - automake
+    - cppcheck
     - docbook-xml
     - docbook-xsl
     - elinks
@@ -18,6 +19,7 @@ addons:
     - python-docutils
     - xsltproc
 script:
+- cppcheck --error-exitcode=1 *.c
 - private/autogen
 - ./configure --prefix ~/.local
 - make -B
