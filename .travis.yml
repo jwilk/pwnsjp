@@ -17,9 +17,8 @@ addons:
     - libxml2-utils
     - python-docutils
     - xsltproc
-before_script:
-- private/autogen
 script:
+- private/autogen
 - ./configure --prefix ~/.local
 - make -B
 - xmllint --nonet --noout --valid doc/*.xml
