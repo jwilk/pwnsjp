@@ -11,6 +11,7 @@
 /config.log
 /config.status
 /configure
+/dist
 /doc/*.1
 /doc/manpage.ent
 /entity-hash.h
