@@ -16,8 +16,9 @@ addons:
     - elinks
     - gperf
     - libxml2-utils
-    - python-docutils
     - xsltproc
+install:
+- python -m pip install --user docutils
 script:
 - cppcheck --error-exitcode=1 *.c
 - private/autogen
