@@ -35,6 +35,7 @@ Building
 You will need:
 
 - *GNU make*;
+- *pkg-config*;
 - *zlib* library;
 - *ncursesw* library (*ncurses* with Unicode support);
 
@@ -46,6 +47,8 @@ You will need:
 - additionally, if you need to refresh some automatically generated files:
 
   - *autoconf*,
+  - *automake*,
+  - *autoconf-archive*,
   - *perl*,
   - *gperf*,
   - *links* or *elinks*.
