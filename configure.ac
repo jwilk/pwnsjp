@@ -24,7 +24,6 @@ AC_INIT([pwnsjp], [0.9.1], [jwilk@jwilk.net])
 
 AC_PROG_CC_C99
 AC_C_BIGENDIAN
-AX_CFLAGS_WARN_ALL
 
 m4_pattern_forbid(
     [^PKG_CHECK_MODULES],

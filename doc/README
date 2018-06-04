@@ -48,7 +48,6 @@ You will need:
 
   - *autoconf*,
   - *automake*,
-  - *autoconf-archive*,
   - *perl*,
   - *gperf*,
   - *links* or *elinks*.
