@@ -46,25 +46,34 @@ void hue_setup_curses(void)
   }
 }
 
+static void xstrcat(char *dst, size_t size, const char *src)
+{
+  strncat(dst, src, size - strlen(dst) - 1);
+}
+
 void hue_setup_terminfo(void)
 {
 #define bufsize 32
   static char cbuf[hue_count][bufsize];
 
   for (int i = 0; i < hue_count; i++)
-    strncat(cbuf[i], term_sgr0, bufsize - 1);
+    xstrcat(cbuf[i], bufsize, term_sgr0);
 
   for (int fg = 0; fg < hue_fg_count; fg++)
   for (int bg = 0; bg < hue_bg_count; bg++)
   for (int ex = 0; ex < hue_ex_count; ex++)
   {
     int i = (fg << hue_fg_shift) + (bg << hue_bg_shift) + (ex << hue_ex_shift);
-    strncat(cbuf[i], term_setaf[fg], bufsize - 1);
-    strncat(cbuf[i], term_setab[bg], bufsize - 1);
+    xstrcat(cbuf[i], bufsize, term_setaf[fg]);
+    xstrcat(cbuf[i], bufsize, term_setab[bg]);
     if ((ex << hue_ex_shift) & hue_bold)
-      strncat(cbuf[i], term_bold, bufsize - 1);
+      xstrcat(cbuf[i], bufsize, term_bold);
     if ((ex << hue_ex_shift) & hue_reverse)
-      strncat(cbuf[i], term_rev, bufsize - 1);
+      xstrcat(cbuf[i], bufsize, term_rev);
+    assert(strlen(cbuf[i]) < bufsize);
+    if (strlen(cbuf[i]) == bufsize - 1)
+      // most likely truncation occurred
+      cbuf[i][0] = '\0';
   }
 
   for (int i = 0; i < hue_count; i++)
