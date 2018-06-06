@@ -34,23 +34,24 @@ Building
 
 You will need:
 
-- *GNU make*;
-- *pkg-config*;
-- *zlib* library;
-- *ncursesw* library (*ncurses* with Unicode support);
+- GNU make
+- pkg-config
+- zlib library
+- ncursesw library (ncurses with Unicode support)
 
-- additionally, if you want to build the manual pages:
+To build the manual pages you will also need:
 
-  - *xsltproc* (from *libxslt*, the XSLT C library for GNOME),
-  - DocBook XSL stylesheets;
+- xsltproc (from libxslt)
+- DocBook XSL stylesheets
 
-- additionally, if you need to refresh some automatically generated files:
+To build from a VCS checkout, or to refresh files that are pre-built in
+release tarballs, you will also need:
 
-  - *autoconf*,
-  - *automake*,
-  - *perl*,
-  - *gperf*,
-  - *links* or *elinks*.
+- autoconf
+- automake
+- perl
+- gperf
+- links or elinks
 
 Building instructions::
 
