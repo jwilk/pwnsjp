@@ -29,12 +29,18 @@ m4_pattern_forbid(
     [^PKG_CHECK_MODULES],
     [undefined macro PKG_CHECK_MODULES; install pkg-config and run private/autogen]
 )
+test -n "$NCURSESW_CFLAGS" || fix_ncurses_cflags=y
 PKG_CHECK_MODULES(
     [NCURSESW],
     [ncursesw],
     [],
     [NCURSESW_CFLAGS=-I/usr/include/ncursesw; NCURSESW_LIBS=-lncursesw]
 )
+if test -n "$fix_ncurses_cflags" && test -n "$NCURSESW_CFLAGS"
+then
+    NCURSESW_CFLAGS=$(printf ' %s ' "$NCURSESW_CFLAGS" | sed -e 's/ -D_GNU_SOURCE / /; s/ -D_DEFAULT_SOURCE / /; s/^ *//; s/ *$//')
+fi
+
 PKG_CHECK_MODULES(
     [ZLIB],
     [zlib],
