@@ -46,7 +46,7 @@ ofiles := $(cfiles:.c=.o)
 all: pwnsjp
 
 pwnsjp: $(ofiles)
-	$(LINK.c) $(^) $(LOADLIBES) $(LDLIBS) -o $(@)
+	$(LINK.c) $(^) $(LDLIBS) -o $(@)
 
 .PHONY: install
 install: pwnsjp
