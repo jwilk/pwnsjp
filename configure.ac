@@ -29,6 +29,7 @@ m4_pattern_forbid(
     [^PKG_CHECK_MODULES],
     [undefined macro PKG_CHECK_MODULES; install pkg-config and run private/autogen]
 )
+
 test -n "$NCURSESW_CFLAGS" || fix_ncurses_cflags=y
 PKG_CHECK_MODULES(
     [NCURSESW],
