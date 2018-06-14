@@ -36,12 +36,12 @@ You will need:
 
 - GNU make
 - pkg-config
-- zlib library
-- ncursesw library (ncurses with Unicode support)
+- zlib
+- libncursesw (ncurses with Unicode support)
 
 To build the manual pages you will also need:
 
-- xsltproc (from libxslt)
+- xsltproc (part of libxslt)
 - DocBook XSL stylesheets
 
 To build from a VCS checkout, or to refresh files that are pre-built in
