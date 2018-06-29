@@ -91,7 +91,7 @@ void term_init(void)
   if (*s0 != '\0')
     for (j = 0; j < 8; j++)
     {
-      term_setaf[j] = tparm(s0, j);
+      term_setaf[j] = tiparm(s0, j);
       term_setaf[j] = str_clone(term_setaf[j] == NULL ? "" : term_setaf[j]);
       if (term_setaf[j] == NULL)
         term_setaf[j] = str_clone("");
