@@ -22,6 +22,8 @@
 #include "common.h"
 #include "html.h"
 
+#include <strings.h>
+
 #include "hue.h"
 #include "terminfo.h"
 #include "unicode.h"
