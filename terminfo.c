@@ -43,7 +43,7 @@ static char* term_getstr(const char *str)
     return result;
 }
 
-void term_quit(void)
+static void term_quit(void)
 {
   unsigned int j;
   free(term_sgr0);
