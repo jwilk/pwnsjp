@@ -37,7 +37,7 @@ You will need:
 - GNU make
 - pkg-config
 - zlib
-- libncursesw (ncurses with Unicode support)
+- libncursesw (ncurses with Unicode support) ≥ 5.8
 
 To build the manual pages you will also need:
 
