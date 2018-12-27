@@ -49,9 +49,9 @@ static void usage(void)
 {
   printf(
     "Usage:\n"
-    "   pwnsjp [OPTIONS] [-i]\n"
-    "   pwnsjp [OPTIONS] -a\n"
-    "   pwnsjp [OPTIONS] PATTERN\n"
+    "  pwnsjp [OPTIONS] [-i]\n"
+    "  pwnsjp [OPTIONS] -a\n"
+    "  pwnsjp [OPTIONS] PATTERN\n"
     "\n"
     "Options:\n"
     "  -f, --file=DATAFILE\n"
