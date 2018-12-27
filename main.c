@@ -60,7 +60,7 @@ static void usage(void)
     "  -d, --deep\n"
     "  -e, --entry-only\n"
     "  -h, --help\n"
-    "  -v, --version\n\n");
+    "  -v, --version\n");
 }
 
 int main(int argc, char **argv)
