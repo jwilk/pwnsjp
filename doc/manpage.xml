@@ -167,14 +167,14 @@
             <term><option>-h</option></term>
             <term><option>--help</option></term>
             <listitem>
-                <para>Display help and exit.</para>
+                <para>Show help message and exit.</para>
             </listitem>
         </varlistentry>
         <varlistentry>
             <term><option>-v</option></term>
             <term><option>--version</option></term>
             <listitem>
-                <para>Output version information and exit.</para>
+                <para>Show version information and exit.</para>
             </listitem>
         </varlistentry>
     </variablelist>
