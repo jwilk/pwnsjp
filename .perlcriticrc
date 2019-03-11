@@ -43,6 +43,6 @@ exclude_functions = print
 # we don't care about Perl << 5.6, which doesn't support version strings
 
 [-ValuesAndExpressions::RequireInterpolationOfMetachars]
-# false postives only
+# false positives only
 
 # vim:ft=dosini
