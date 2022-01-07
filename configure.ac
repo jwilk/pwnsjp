@@ -22,7 +22,6 @@ dnl | SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 AC_PREREQ([2.61])
 AC_INIT([pwnsjp], [0.9.1], [https://github.com/jwilk/pwnsjp/issues])
 
-AC_PROG_CC_C99
 AC_C_BIGENDIAN
 
 m4_pattern_forbid(
