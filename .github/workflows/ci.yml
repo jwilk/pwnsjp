@@ -1,0 +1,74 @@
+name: CI
+on:
+- push
+- pull_request
+jobs:
+  main:
+    strategy:
+      matrix:
+        os:
+        - ubuntu-18.04
+        - ubuntu-20.04
+        cc:
+        - gcc
+        - clang
+    runs-on: ${{matrix.os}}
+    steps:
+    - uses: actions/checkout@v2
+    - name: APT install deps
+      run:
+        sudo apt-get install
+          autoconf
+          autoconf-archive
+          automake
+          cppcheck
+          docbook-xml
+          docbook-xsl
+          elinks
+          gperf
+          libncursesw5-dev
+          libxml2-utils
+          xsltproc
+    - name: install docutils
+      run: |
+        pip install docutils
+    - name: run cppcheck
+      run: |
+        cppcheck --error-exitcode=1 *.c
+    - name: check C compiler version
+      run: |
+        ${{matrix.cc}} --version
+    - name: generate autotools stuff
+      run: |
+        ./private/autogen
+    - name: configure
+      run: |
+        ./configure --prefix ~/.local CC=${{matrix.cc}} || cat config.log /fail
+    - name: build
+      run: |
+        make -B
+    - name: check DocBook syntax
+      run: |
+        xmllint --nonet --noout --valid doc/*.xml
+    - name: check reST syntax
+      run: |
+        private/check-rst
+    - name: install
+      run: |
+        make install
+    - name: check whether the executable was installed correctly
+      run: |
+        cd /
+        pwnsjp --help
+        set +e
+        pwnsjp
+        [ $? -eq 1 ] || exit 1
+    - name: check whether the man page was installed correctly
+      env:
+        MANPATH: /home/runner/.local/share/man
+        MANWIDTH: 80
+      run: |
+        cd /
+        man 1 pwnsjp | grep -A 15 -w PWNSJP
+
+# vim:ts=2 sts=2 sw=2 et
