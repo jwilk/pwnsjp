@@ -30,7 +30,7 @@
 #include "html.h"
 #include "hue.h"
 #include "io.h"
-#include "regex.h"
+#include "regexp.h"
 #include "terminfo.h"
 #include "ui.h"
 #include "unicode.h"

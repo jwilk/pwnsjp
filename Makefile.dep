@@ -32,7 +32,7 @@ main.o: hue.h
 main.o: io.h
 main.o: main.c
 main.o: memory.h
-main.o: regex.h
+main.o: regexp.h
 main.o: terminfo.h
 main.o: ui.h
 main.o: unicode.h
@@ -40,12 +40,12 @@ memory.o: autoconf.h
 memory.o: common.h
 memory.o: memory.c
 memory.o: memory.h
-regex.o: autoconf.h
-regex.o: common.h
-regex.o: config.h
-regex.o: memory.h
-regex.o: regex.c
-regex.o: regex.h
+regexp.o: autoconf.h
+regexp.o: common.h
+regexp.o: config.h
+regexp.o: memory.h
+regexp.o: regexp.c
+regexp.o: regexp.h
 terminfo.o: autoconf.h
 terminfo.o: common.h
 terminfo.o: memory.h

@@ -21,8 +21,8 @@
 
 #include <regex.h>
 
-#ifndef REGEX_H
-#define REGEX_H
+#ifndef REGEXP_H
+#define REGEXP_H
 
 void regex_free(regex_t *regex);
 bool regex_compile(regex_t *regex, const char* pattern);

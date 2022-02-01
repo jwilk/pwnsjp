@@ -22,7 +22,7 @@
 #include "common.h"
 #include "config.h"
 #include "memory.h"
-#include "regex.h"
+#include "regexp.h"
 
 void regex_free(regex_t *regex)
 {
