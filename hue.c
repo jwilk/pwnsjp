@@ -80,7 +80,6 @@ void hue_setup_terminfo(void)
     hue[i] = cbuf[i];
 
 #undef bufsize
-#undef build_color
 }
 
 // vim: ts=2 sts=2 sw=2 et
