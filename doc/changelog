@@ -1,8 +1,20 @@
 pwnsjp (0.9.1) UNRELEASED; urgency=low
 
-  * 
+  * Add missing #include.
+  * Use tiparm() instead of tparm(). (API of the former is more reliable.)
+  * Refurbish README.
+  * Refurbish the --help message.
+  * Improve the manual page:
+    + Rephrase descriptions of --help, --version.
+  * Improve the build system:
+    + Add check against BSD make. (Only GNU make is supported.)
+    + Filter out feature test macros from ncurses CFLAGS.
+      https://bugs.debian.org/900987
+    + Drop support for (deprecated) LOADLIBES.
+    + Stop using macros from autoconf-archive.
+    + Teach the configure script about the issue tracker.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Fri, 15 Sep 2017 23:10:42 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Mon, 13 Feb 2023 15:30:07 +0100
 
 pwnsjp (0.9) unstable; urgency=low
 
