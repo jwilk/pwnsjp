@@ -54,13 +54,13 @@ static void usage(void)
     "  pwnsjp [OPTIONS] PATTERN\n"
     "\n"
     "Options:\n"
-    "  -f, --file=DATAFILE\n"
-    "  -i, --ui\n"
-    "  -a, --all\n"
-    "  -d, --deep\n"
-    "  -e, --entry-only\n"
-    "  -h, --help\n"
-    "  -v, --version\n");
+    "  -f, --file=DATAFILE  use this dictionary\n"
+    "  -i, --ui             run interatcive UI\n"
+    "  -a, --all            print all entries (and definitions)\n"
+    "  -d, --deep           search through definitions\n"
+    "  -e, --entry-only     don't print definitions\n"
+    "  -h, --help           show this help message and exit\n"
+    "  -v, --version        show version information and exit\n");
 }
 
 int main(int argc, char **argv)
