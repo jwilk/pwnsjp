@@ -1,4 +1,4 @@
-pwnsjp (0.9.1) UNRELEASED; urgency=low
+pwnsjp (0.9.1) unstable; urgency=low
 
   * Add missing #include.
   * Use tiparm() instead of tparm(). (API of the former is more reliable.)
@@ -14,7 +14,7 @@ pwnsjp (0.9.1) UNRELEASED; urgency=low
     + Stop using macros from autoconf-archive.
     + Teach the configure script about the issue tracker.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Mon, 13 Feb 2023 15:30:07 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Mon, 29 Jan 2024 20:50:38 +0100
 
 pwnsjp (0.9) unstable; urgency=low
 
