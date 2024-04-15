@@ -41,7 +41,7 @@ void hue_setup_curses(void)
   assert(hue_count < 0x1000);
   for (i = 0; i < hue_count; i++)
   {
-    sprintf(cbuf[i], "\x1B%03xm", i);
+    sprintf(cbuf[i], "\33%03xm", i);
     hue[i] = cbuf[i];
   }
 }
