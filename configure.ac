@@ -20,7 +20,7 @@ dnl | TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 dnl | SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 AC_PREREQ([2.61])
-AC_INIT([pwnsjp], [0.9.1], [https://github.com/jwilk/pwnsjp/issues])
+AC_INIT([pwnsjp], [0.9.2], [https://github.com/jwilk/pwnsjp/issues])
 
 AC_C_BIGENDIAN
 
