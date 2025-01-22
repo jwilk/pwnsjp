@@ -119,7 +119,7 @@ static void uint32_qsort(uint32_t *l, uint32_t *r)
       return;
     }
     swap(l[dist/2], r[0]);
-    p = temp;
+    p = r[0];
     i = l - 1;
     for (j = l; j <= r; j++)
       if (*j <= p)
@@ -161,7 +161,7 @@ static void iitem_qsort(struct io_iitem_t *l, struct io_iitem_t *r)
       return;
     }
     swap(l[dist / 2], r[0]);
-    p = temp.xentry;
+    p = r[0].xentry;
     i = l - 1;
     for (j = l; j <= r; j++)
       if (!gt(j->xentry, p))
