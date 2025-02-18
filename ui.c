@@ -169,7 +169,7 @@ static void ui_windows_recreate(void)
   ui_windows_refresh();
 }
 
-static void ui_sig_resize()
+static void ui_sig_resize(int sig)
 {
   scr_needresize = true;
 }
