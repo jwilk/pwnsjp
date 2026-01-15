@@ -102,7 +102,11 @@ char *html_strip(char *str)
   bool first = true;
   unsigned int nl = 2;
 
-  char result[4 * len];
+  char result[
+    4 * len
+    + strlen(hue[hue_none])
+    + 1
+  ];
   appendix = result;
 
 #define stack_size 10
