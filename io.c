@@ -60,11 +60,11 @@ bool io_validate(struct io_t *io)
 
 bool io_prepare_index(struct io_t *io)
 {
-  if (fseek(io->file, 0x4, SEEK_SET)!=0)
+  if (fseek(io->file, 0x4, SEEK_SET) != 0)
     return false;
 #define hsize (sizeof (struct io_header_t))
   io->header = alloc(1, hsize);
-  if (fread(io->header, hsize, 1, io->file)!=1)
+  if (fread(io->header, hsize, 1, io->file) != 1)
     return false;
 #undef hsize
 
@@ -237,7 +237,7 @@ void io_read(struct io_t *io, size_t indexno)
 
 bool io_build_index(struct io_t *io)
 {
-  if (fseek(io->file, io->header->index_base, SEEK_SET)!=0)
+  if (fseek(io->file, io->header->index_base, SEEK_SET) != 0)
     return false;
 
   uint32_t *offsets = alloc(io->isize, sizeof (uint32_t));

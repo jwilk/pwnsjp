@@ -335,7 +335,7 @@ static void ui_show_menu(struct menu_t *menu)
   for (i=0, j=menu->entry_page_no; i<menu->height; i++, j++)
   {
     char *str = menu->io->iitems[j].entry;
-    wattrset(wmenu, j==menu->entry_no ? A_REVERSE : A_NORMAL);
+    wattrset(wmenu, j == menu->entry_no ? A_REVERSE : A_NORMAL);
     mvwhline(wmenu, i+1, 0, ' ', menu->width);
     mvwaddnstr(wmenu, i+1, 1, str, menu->width-2);
     if (strnwidth(str, -1) > menu->width-2)
@@ -639,7 +639,7 @@ static void ui_react_menu(struct menu_t *menu, wchar_t ch)
 
 static void ui_react_view(struct view_t *view, wchar_t ch)
 {
-  assert(view!=NULL);
+  assert(view != NULL);
 
   /* TODO: add some beeps */
   switch (ch)
