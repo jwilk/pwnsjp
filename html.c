@@ -22,9 +22,11 @@
 #include "common.h"
 #include "html.h"
 
+#include <errno.h>
 #include <strings.h>
 
 #include "hue.h"
+#include "memory.h"
 #include "terminfo.h"
 #include "unicode.h"
 
@@ -98,10 +100,14 @@ char *html_strip(char *str)
     s_tag_close
   } state = s_default;
   char *head, *tail, *appendix;
-  int len = strlen(str);
   bool first = true;
   unsigned int nl = 2;
 
+  size_t len = strlen(str);
+  if (len > (1U << 20)) /* 1 MiB */ {
+    errno = ENOMEM;
+    fatal(NULL);
+  }
   char result[
     4 * len
     + strlen(hue[hue_none])
