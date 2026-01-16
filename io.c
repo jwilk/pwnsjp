@@ -38,8 +38,7 @@ bool io_init(struct io_t *io, const char *filename)
   if (fseek(io->file, 0, SEEK_END) != 0)
     return false;
   io->file_size = ftell(io->file);
-  io->cp1250 = io->file_size == 107564724; // that is: “Słownik języka polskiego PWN”
-  set_pwn_charset(io->cp1250);
+  io->encoding = 88592;
   io->isize = 0;
   io->header = NULL;
   debug("data file size = %zu MiB\n", io->file_size >> 20);
@@ -295,10 +294,11 @@ bool io_build_index(struct io_t *io)
     if (fread(wordbuffer, iitem->size, 1, io->file) != 1)
       return false;
     dataptr = wordbuffer + 12;
-    iitem->entry =
-      config.conf_quick ?
-        str_clone(dataptr) :
-        pwnstr_to_str(dataptr);
+    iitem->entry = str_clone(dataptr);
+    if (strchr(iitem->entry, 0x9C))
+      // 0x9C is LATIN SMALL LETTER S WITH ACUTE in Windows-1250
+      // but a C1 control character in ISO-8859-2
+      io->encoding = 1250;
     dataptr = strchr(dataptr, '\0') + 2;
     if (*dataptr < ' ')
     {
@@ -309,6 +309,14 @@ bool io_build_index(struct io_t *io)
     iitem->size -= diffsize;
     iitem->offset += diffsize;
   }
+  set_pwn_charset(io->encoding == 1250);
+  if (!config.conf_quick)
+    forallitems
+    {
+      char *entry = iitem->entry;
+      iitem->entry = pwnstr_to_str(entry);
+      free(entry);
+    }
   if (posix_coll())
     forallitems iitem->xentry = iitem->entry;
   else
