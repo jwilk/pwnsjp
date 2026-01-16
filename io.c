@@ -230,7 +230,11 @@ void io_read(struct io_t *io, size_t indexno)
   if (iitem->zipped)
   {
     memset(io->cbuffer, 0, dsize);
-    uncompress((unsigned char *)io->cbuffer, &dsize, (unsigned char *)buffer, io->csize);
+    int rc = uncompress((unsigned char *)io->cbuffer, &dsize, (unsigned char *)buffer, io->csize);
+    if (rc != Z_OK) {
+      errno = EIO;
+      fatal("decompression error");
+    }
   }
   else
     memcpy(io->cbuffer, buffer, iitem->size);
