@@ -300,7 +300,7 @@ bool io_build_index(struct io_t *io)
       // but a C1 control character in ISO-8859-2
       io->encoding = 1250;
     dataptr = strchr(dataptr, '\0') + 2;
-    if (*dataptr < ' ')
+    if ((unsigned int) *dataptr < ' ')
     {
       dataptr += (*dataptr) + 1;
       iitem->zipped = 1;
