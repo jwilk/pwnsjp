@@ -197,7 +197,7 @@ wchar_t *str_to_ustr(const char *str)
   int lim = 1 + mbstowcs(NULL, str, 0);
   wchar_t *result = alloc(lim, sizeof(wchar_t));
   if (mbstowcs(result, str, lim) == (size_t)(-1))
-    fatal("{mbstowcs failed!}");
+    fatal("mbstowcs failed!");
   else
     return result;
   return NULL; // suppress compiler warnings
