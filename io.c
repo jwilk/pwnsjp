@@ -72,13 +72,13 @@ bool io_prepare_index(struct io_t *io)
   for (i = 1; i < 5; i++)
   {
     io->header->tmp[i] = le2cpu(io->header->tmp[i]);
-    debug("m(%u) = 0x%08x\n", i, io->header->tmp[i]);
+    debug("tmp[%u] = 0x%08x\n", i, io->header->tmp[i]);
   }
 
   for (i = 0; i < 5; i++)
   {
     io->header->tmq[i] = le2cpu(io->header->tmq[i]);
-    debug("m(%u) = 0x%08x\n", i+6, io->header->tmq[i]);
+    debug("tmq[%u] = 0x%08x\n", i, io->header->tmq[i]);
   }
 
   io->iitems = NULL;
