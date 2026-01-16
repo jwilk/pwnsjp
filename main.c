@@ -110,7 +110,7 @@ int main(int argc, char **argv)
 
   if (io.isize < (1 << 12))
     fail("Unexpectedly few words.\n");
-  if (io.isize > (1 << 17))
+  if (io.isize > (1 << 20))
     fail("Unexpectedly many words.\n");
 
   if (!io_build_index(&io))
