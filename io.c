@@ -23,6 +23,7 @@
 #include "memory.h"
 #include "io.h"
 
+#include <errno.h>
 #include <zlib.h>
 
 #include "byteorder.h"
@@ -219,7 +220,8 @@ void io_read(struct io_t *io, size_t indexno)
     ( (fseek(io->file, io->header->words_base + iitem->offset, SEEK_SET) != 0) ||
       (fread(buffer, iitem->size, 1, io->file) != 1) )
   {
-    io->cbuffer[0] = '\0';
+    errno = EIO;
+    fatal(NULL);
     return;
   }
 
