@@ -343,7 +343,8 @@ bool io_build_index(struct io_t *io)
 
 #undef forallitems
 
-  iitem_sort(io->iitems, io->isize);
+  if (!config.conf_quick)
+    iitem_sort(io->iitems, io->isize);
 
   return true;
 }
