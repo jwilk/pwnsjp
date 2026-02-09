@@ -219,9 +219,8 @@ bool ui_prepare(void)
   }
 
   ui_windows_create();
-  char *message = ustr_to_str(L"Prosz\u0119 czeka\u0107, trwa budowanie indeksu...");
+  const char *message = "Please wait while the index is being built...";
   mvwaddstr(wview, 0, 0, message);
-  free(message);
 
   ui_windows_refresh();
 
