@@ -265,7 +265,7 @@ bool io_build_index(struct io_t *io)
     offsets[i] = le2cpu(offsets[i]) & 0x07FFFFFF;
   uint32_sort(offsets, io->isize);
 
-  io->isize -= 2;
+  io->isize -= 2; // FIXME? Why?
 
   unsigned int size, maxsize = 1024;
   for (i = 0; i < io->isize; i++)
